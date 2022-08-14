@@ -1,48 +1,24 @@
-# Windows image file caches
-Thumbs.db
-ehthumbs.db
+# Logs
+logs
+*.log
+npm-debug.log*
 
-# Folder config file
-Desktop.ini
+# Dependencies
+node_modules/
 
-# Recycle Bin used on file shares
-$RECYCLE.BIN/
+# Coverage
+coverage
 
-# Windows Installer files
-*.cab
-*.msi
-*.msm
-*.msp
+# JetBrains IDEs
+.idea/
 
-# =========================
-# Operating System Files
-# =========================
+# Optional npm cache directory
+.npm
 
-# OSX
-# =========================
+# Optional eslint cache
+.eslintcache
 
+# Misc
 .DS_Store
-.AppleDouble
-.LSOverride
 
-# Icon must ends with two \r.
-Icon
-
-
-# Thumbnails
-._*
-
-# Files that might appear on external disk
-.Spotlight-V100
-.Trashes
-
-*.class
-*.sublime-workspace
-bin/parser/*.tokens
-.settings
-outdir/*
-config.properties
-/out
-/bin
-.metadata/
-target/generated-sources/
+dist/

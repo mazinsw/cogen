@@ -209,7 +209,7 @@ tableProp:
 
 fieldStmt: OPEN fieldLevel fieldProps* CLOSE;
 fieldProps: '.' fieldProp;
-fieldProp: 
+fieldProp:
     K_NAME
   | K_UNIX
   | K_NORM

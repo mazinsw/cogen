@@ -1,11 +1,13 @@
 {
     "antlr4.generation": {
-        "mode": "external",
+        "mode": "none",
         "language": "JavaScript",
         "listeners": true,
         "visitors": false,
         "package": "grammar",
         "outputDir": ".",
         "alternativeJar": "../../lib/antlr-4.8-complete.jar"
-    }
+    },
+    "jestrunner.jestCommand": "yarn test",
+    "jestrunner.changeDirectoryToWorkspaceRoot": false
 }
