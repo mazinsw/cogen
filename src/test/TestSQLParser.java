@@ -10,8 +10,8 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.junit.Test;
 
-import parser.SQLLexer;
-import parser.SQLParser;
+import grammar.SQLLexer;
+import grammar.SQLParser;
 
 public class TestSQLParser {
 

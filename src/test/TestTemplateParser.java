@@ -14,8 +14,8 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.junit.Test;
 
-import parser.TemplateLexer;
-import parser.TemplateParser;
+import grammar.TemplateLexer;
+import grammar.TemplateParser;
 
 public class TestTemplateParser {
 	@Test
