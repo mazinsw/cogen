@@ -1,7 +1,7 @@
 {
     "antlr4.generation": {
         "mode": "external",
-        "language": "Java",
+        "language": "JavaScript",
         "listeners": true,
         "visitors": false,
         "package": "parser",
