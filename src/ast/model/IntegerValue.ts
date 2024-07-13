@@ -1,4 +1,4 @@
-package ast;
+package ast.model;
 
 public class IntegerValue extends Value {
 	private int value;
@@ -6,7 +6,7 @@ public class IntegerValue extends Value {
 	public IntegerValue(int value) {
 		this.setValue(value);
 	}
-	
+
 	public IntegerValue(String value) {
 		this.setValue(Integer.valueOf(value));
 	}
@@ -18,7 +18,7 @@ public class IntegerValue extends Value {
 	public void setValue(int value) {
 		this.value = value;
 	}
-	
+
 	@Override
 	public String toString() {
 		return String.valueOf(value);

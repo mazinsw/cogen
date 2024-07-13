@@ -1,4 +1,5 @@
-package ast;
+package ast.model;
+package .sql;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +15,7 @@ public class Table extends CommentedNode {
 		constraints = new ArrayList<>();
 		indexes = new ArrayList<>();
 	}
-	
+
 	public List<Field> getFields() {
 		return fields;
 	}
@@ -41,7 +42,7 @@ public class Table extends CommentedNode {
 	public void addIndex(Index index) {
 		indexes.add(index);
 	}
-	
+
 	public Field find(String name) {
 		for (Field field : fields) {
 			if(field.getName().equalsIgnoreCase(name))
@@ -83,5 +84,5 @@ public class Table extends CommentedNode {
 		}
 		return null;
 	}
-	
+
 }

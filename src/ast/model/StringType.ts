@@ -1,7 +1,7 @@
-package ast;
+package ast.model;
 
 public class StringType extends DataType {
-	
+
 	private long length;
 
 	public StringType(int type) {

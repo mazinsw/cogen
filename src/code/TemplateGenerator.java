@@ -15,18 +15,18 @@ import java.util.regex.Pattern;
 import org.apache.commons.io.FileUtils;
 import org.mozilla.universalchardet.UniversalDetector;
 
-import ast.Constraint;
-import ast.DataType;
-import ast.EnumType;
-import ast.Field;
-import ast.ForeignKey;
-import ast.Index;
-import ast.OrderField;
-import ast.PrimaryKey;
-import ast.ScriptNode;
-import ast.StringType;
-import ast.Table;
-import ast.UniqueKey;
+import ast.model.Constraint;
+import ast.model.DataType;
+import ast.model.EnumType;
+import ast.model.Field;
+import ast.model.ForeignKey;
+import ast.model.Index;
+import ast.model.OrderField;
+import ast.model.PrimaryKey;
+import ast.model.ScriptNode;
+import ast.model.StringType;
+import ast.model.Table;
+import ast.model.UniqueKey;
 import util.Configuration;
 import util.Messages;
 
@@ -46,7 +46,7 @@ public class TemplateGenerator extends CodeGenerator {
 		String seconds = df.format(estimatedTime / 1000.0);
 		log("Finished after " + seconds + " s");
 	}
-	
+
 	@Override
 	protected void run() throws Exception {
 		for (File file : getTemplateLoader().getFiles()) {
@@ -62,7 +62,7 @@ public class TemplateGenerator extends CodeGenerator {
 					Hashtable<String, String> newValues = new Hashtable<>();
 					TemplateLoader.extractComment(table.getComment(), newValues, "T.");
 					TemplateLoader.extractComment(field.getComment(), newValues, "F.");
-	
+
 					String filePath = applyTemplate(tempFile.getAbsolutePath(), table, indexedFields, field, null, null, newValues, j, i);
 					filePath = filePath.replace('\\', File.separatorChar);
 					filePath = filePath.replace('/', File.separatorChar);
@@ -107,7 +107,7 @@ public class TemplateGenerator extends CodeGenerator {
 		Stack<String> condStack = new Stack<>();
 		Stack<String> stmtStack = new Stack<>();
 		int state = 0, startoffset, offset = 0;
-		
+
 		name = normalize(table.getName());
 		part = name.split("\\.");
 		name = part[part.length - 1];
@@ -115,7 +115,7 @@ public class TemplateGenerator extends CodeGenerator {
 		nameDefault = normalize(table.getName(), false);
 		part = nameDefault.split("\\.");
 		nameDefault = part[part.length - 1];
-		
+
 		unixName = unixTransform(name);
 		unixNameDefault = unixTransform(nameDefault);
 		startoffset = -1;
@@ -152,7 +152,7 @@ public class TemplateGenerator extends CodeGenerator {
 				if (state >= 2 && !command.isEmpty()) {
 					String replace = "";
 					// field.[if|exists|each] or table.[if|exists|each] or descriptor.if or primary.if
-					if (option.startsWith("each") || option.startsWith("if") || option.startsWith("exists") || 
+					if (option.startsWith("each") || option.startsWith("if") || option.startsWith("exists") ||
 							option.startsWith("match") || option.startsWith("contains")) {
 						if (i + 1 < source.length() && source.charAt(i + 1) == '\r') {
 							i++;
@@ -396,8 +396,8 @@ public class TemplateGenerator extends CodeGenerator {
 										j++;
 									}
 								}
-							} else if (command.equalsIgnoreCase("index") || command.equalsIgnoreCase("unique") || 
-									command.equalsIgnoreCase("primarykey") || command.equalsIgnoreCase("constraint") || 
+							} else if (command.equalsIgnoreCase("index") || command.equalsIgnoreCase("unique") ||
+									command.equalsIgnoreCase("primarykey") || command.equalsIgnoreCase("constraint") ||
 									command.equalsIgnoreCase("foreign")) { // index.each[(filter)] or constraint.each[(filter)]
 								int j = 0;
 								Index sourceIndex = index;
@@ -490,7 +490,7 @@ public class TemplateGenerator extends CodeGenerator {
 							if (foreignKey != null) {
 								value = foreignKey.getDeleteActionText();
 							}
-							replace = getTemplateLoader().recase(command, value);								
+							replace = getTemplateLoader().recase(command, value);
 						} else if (option.equals("on.update")) {
 							ForeignKey foreignKey = table.findForeignKey(field.getName());
 							String value = "NO ACTION";
@@ -657,7 +657,7 @@ public class TemplateGenerator extends CodeGenerator {
 						if (option.equals("name") && index != null) {
 							replace = getTemplateLoader().recase(command, index.getName());
 						}
-					} else if (command.equalsIgnoreCase("constraint") || command.equalsIgnoreCase("foreign") || 
+					} else if (command.equalsIgnoreCase("constraint") || command.equalsIgnoreCase("foreign") ||
 							command.equalsIgnoreCase("unique") || command.equalsIgnoreCase("primarykey")) {
 						if (option.equals("name") && constraint != null) {
 							replace = getTemplateLoader().recase(command, constraint.getName());
@@ -801,7 +801,7 @@ public class TemplateGenerator extends CodeGenerator {
 		name = normalize(name, despluralize);
 		return name.replaceAll("\\[[0-9]+\\]", "");
 	}
-	
+
 	private Charset detectEncoding(File file) {
 		try {
 			UniversalDetector detector = new UniversalDetector(null);
@@ -819,7 +819,7 @@ public class TemplateGenerator extends CodeGenerator {
 			return getEncoding();
 		}
 	}
-	
+
 	private List<String> splitComment(String comment, int length) {
 		List<String> result = new ArrayList<>();
 		int offset = 0;
@@ -847,5 +847,5 @@ public class TemplateGenerator extends CodeGenerator {
 		}
 		return result;
 	}
-	
+
 }

@@ -1,8 +1,8 @@
-package ast;
+package ast.model;
 
 public class NamedNode extends Node {
 	private String name;
-	
+
 	public NamedNode(String name) {
 		this.setName(name);
 	}

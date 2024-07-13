@@ -1,7 +1,7 @@
-package ast;
+package ast.model;
 
 public class CommentedNode extends NamedNode {
-	
+
 	private String comment;
 
 	public CommentedNode(String name) {

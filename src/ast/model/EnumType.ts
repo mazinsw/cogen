@@ -1,4 +1,4 @@
-package ast;
+package ast.model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,12 +18,12 @@ public class EnumType extends DataType {
 	public void addElement(String element) {
 		elements.add(element);
 	}
-	
+
 	@Override
 	public boolean isBoolean() {
 		if(getType() != DataType.ENUM || getElements().size() != 2)
 			return false;
-		if ((getElements().get(0).equals("Y") && getElements().get(1).equals("N")) || 
+		if ((getElements().get(0).equals("Y") && getElements().get(1).equals("N")) ||
 			(getElements().get(0).equals("N") &&  getElements().get(1).equals("Y")))
 			return true;
 		return false;

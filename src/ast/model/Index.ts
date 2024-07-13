@@ -1,4 +1,4 @@
-package ast;
+package ast.model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,7 +6,7 @@ import java.util.List;
 public class Index extends NamedNode {
 
 	private List<OrderField> fields;
-	
+
 	public Index() {
 		super(null);
 		fields = new ArrayList<>();

@@ -11,9 +11,9 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.commons.lang3.text.WordUtils;
 
-import ast.DataType;
-import ast.Field;
-import ast.Table;
+import ast.model.DataType;
+import ast.model.Field;
+import ast.model.Table;
 import util.Configuration;
 
 public class TemplateLoader {
@@ -39,14 +39,14 @@ public class TemplateLoader {
 		files = FileUtils.listFilesAndDirs(templateDirectory, TrueFileFilter.TRUE, TrueFileFilter.TRUE);
 		files.remove(templateDirectory);
 	}
-	
+
 	public File rebase(File file) {
 		return new File(file.getAbsolutePath().replace(templateDirectory.getAbsolutePath(), ouputDirectory.getAbsolutePath()));
 	}
 
 	/**
 	 * Return wrap text with max length characters
-	 * 
+	 *
 	 * @param text text to wrap
 	 * @param length max line width
 	 * @param preffix preffix for each line
@@ -58,11 +58,11 @@ public class TemplateLoader {
 			return text;
 		return preffix + text.replaceAll("\n", "\n" + preffix);
 	}
-	
+
 	public String recase(String wordcase, String entry) {
 		return recase(wordcase, entry, false);
 	}
-	
+
 	public static String camelCase(String name) {
 		String camelCase = "";
 		for (int i = 0; i < name.length(); i++) {
@@ -75,7 +75,7 @@ public class TemplateLoader {
 		}
 		return camelCase;
 	}
-	
+
 	public String recase(String wordcase, String entry, boolean useWordDB) {
 		String result = entry;
 		if (useWordDB && canUpper(entry)) {
@@ -91,7 +91,7 @@ public class TemplateLoader {
 			result = entry;
 		return result;
 	}
-	
+
 	public static String getTypeNameFromType(Table table, Field field) {
 		if(field.getType().isBoolean())
 			return "boolean";
@@ -128,7 +128,7 @@ public class TemplateLoader {
 			return "unknow";
 		}
 	}
-	
+
 	public static String getValueByIndex(String separatedValues, int index, String defaultValue) {
 		if(separatedValues == null)
 			return defaultValue;
@@ -141,7 +141,7 @@ public class TemplateLoader {
 	public String normalize(String name) {
 		return normalize(name, true);
 	}
-	
+
 	public String normalize(String name, boolean despluralize) {
 		if (name.matches("T[A-Z].*")) {
 			name = name.substring(1);
@@ -241,11 +241,11 @@ public class TemplateLoader {
 	public String despluralize(String word) {
 		for (String rule : dictionaryList) {
 			String[] parts = rule.split("/");
-			String[] subsjects = parts[0].split("\\|"); 
+			String[] subsjects = parts[0].split("\\|");
 			int cut = Integer.parseInt(parts[1]);
 			String replacement = "";
 			int minLength = 0;
-			
+
 			if (parts.length >= 3) {
 				replacement = parts[2];
 			}
@@ -267,7 +267,7 @@ public class TemplateLoader {
 		}
 		return word;
 	}
-	
+
 	private static String resolveSlashs(String cmm) {
 		String comment = "";
 		for (int i = 0; i < cmm.length(); i++) {
@@ -292,16 +292,16 @@ public class TemplateLoader {
 		}
 		return comment;
 	}
-	
+
 	public static String extractComment(String fieldComment) {
 		Hashtable<String, String> values = new Hashtable<>();
 		return extractComment(fieldComment, values, "");
 	}
-	
+
 	public static String extractComment(String fieldComment, Hashtable<String, String> values) {
 		return extractComment(fieldComment, values, "");
 	}
-	
+
 	public static String extractComment(String fieldComment, Hashtable<String, String> values, String preffix) {
 		String comment = "", cmm = fieldComment;
 		List<String> cmds = new ArrayList<>();
@@ -368,7 +368,7 @@ public class TemplateLoader {
 		}
 		this.upperWords = upperWords;
 	}
-	
+
 	public boolean canUpper(String entry) {
 		if (getUpperWords() == null) {
 			return false;

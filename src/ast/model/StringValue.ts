@@ -1,4 +1,5 @@
-package ast;
+package ast.model;
+package .sql;
 
 public class StringValue extends Value {
 	private String value;
@@ -14,7 +15,7 @@ public class StringValue extends Value {
 	public void setValue(String value) {
 		this.value = value;
 	}
-	
+
 	@Override
 	public String toString() {
 		return value;

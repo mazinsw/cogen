@@ -1,4 +1,5 @@
-package ast;
+package ast.model;
+package .sql;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +10,7 @@ public class ScriptNode extends Node {
 	public ScriptNode() {
 		statements = new ArrayList<>();
 	}
-	
+
 	public List<Node> getStatements() {
 		return statements;
 	}

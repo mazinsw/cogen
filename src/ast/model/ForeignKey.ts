@@ -1,4 +1,4 @@
-package ast;
+package ast.model;
 
 public class ForeignKey extends Constraint {
 	public static final int NO_ACTION = 0;
@@ -10,7 +10,7 @@ public class ForeignKey extends Constraint {
 	private String tableName;
 	private int updateAction;
 	private int deleteAction;
-	
+
 	public ForeignKey(String tableName) {
 		references = new Index();
 		setTableName(tableName);

@@ -9,15 +9,15 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import ast.Constraint;
-import ast.Field;
-import ast.ForeignKey;
-import ast.Node;
-import ast.OrderField;
-import ast.PrimaryKey;
-import ast.ScriptNode;
-import ast.Table;
-import ast.UniqueKey;
+import ast.model.Constraint;
+import ast.model.Field;
+import ast.model.ForeignKey;
+import ast.model.Node;
+import ast.model.OrderField;
+import ast.model.PrimaryKey;
+import ast.model.ScriptNode;
+import ast.model.Table;
+import ast.model.UniqueKey;
 import util.Configuration;
 import util.LogListener;
 import util.Messages;
@@ -35,11 +35,11 @@ public abstract class CodeGenerator implements LogListener {
 		setLogListener(this);
 		addTables();
 	}
-	
+
 	public TemplateLoader getTemplateLoader() {
 		return templateLoader;
 	}
-	
+
 	private void addTables() {
 		for (Node node : script.getStatements()) {
 			if (node instanceof Table) {
@@ -73,20 +73,20 @@ public abstract class CodeGenerator implements LogListener {
 	public String normalize(String name) {
 		return normalize(name, true);
 	}
-	
+
 	protected Charset getEncoding() {
 		return StandardCharsets.UTF_8;
 	}
-	
+
 	protected void log(String message) {
 		if(logListener != null)
 			logListener.addMessage(message);
 	}
-	
+
 
 	/**
 	 * Compact field from Field, Field1, Field2 to Field[1..3]
-	 * 
+	 *
 	 * @param table
 	 *            table with fields
 	 * @param indexedFields
@@ -97,7 +97,7 @@ public abstract class CodeGenerator implements LogListener {
 	protected void processArray(Table table,
 			Hashtable<String, CommonField> indexedFields) {
 		List<Field> normalFields = new ArrayList<>();
-		
+
 		indexedFields.clear();
 		for (Field field : table.getFields()) {
 			String varName = normalize(field.getName(), false);
@@ -177,7 +177,7 @@ public abstract class CodeGenerator implements LogListener {
 			commonField.setRange(newData);
 		}
 	}
-	
+
 	public static String capture(String pattern, String subject, int group) {
 		Pattern patternObj = Pattern.compile(pattern);
 		Matcher matcher = patternObj.matcher(subject);
@@ -190,7 +190,7 @@ public abstract class CodeGenerator implements LogListener {
 	public String normalize(String name, boolean despluralize) {
 		return getTemplateLoader().normalize(name, despluralize);
 	}
-	
+
 	public String getCamelCaseName(String name) {
 		return TemplateLoader.camelCase(name);
 	}
@@ -235,11 +235,11 @@ public abstract class CodeGenerator implements LogListener {
 		}
 		return list;
 	}
-	
+
 	public static boolean isVogal(char letter) {
 		return ("aeiou").indexOf(Character.toLowerCase(letter)) >= 0;
 	}
-	
+
 	public static String getGenderChar(String name) {
 		String nlc = name.toLowerCase();
 		if(!nlc.equals("id") && nlc.endsWith("id"))
@@ -266,7 +266,7 @@ public abstract class CodeGenerator implements LogListener {
 		}
 		return list;
 	}
-	
+
 	public List<UniqueKey> getUniqueKeys(Table table) {
 		return getUniqueKeys(table, false);
 	}
@@ -292,7 +292,7 @@ public abstract class CodeGenerator implements LogListener {
 		}
 		return list;
 	}
-	
+
 	public PrimaryKey getPrimaryKey(Table table) {
 		for (Constraint constraint : table.getConstraints()) {
 			if (!(constraint instanceof PrimaryKey))
@@ -339,7 +339,7 @@ public abstract class CodeGenerator implements LogListener {
 		}
 		return getPrimary(table);
 	}
-	
+
 	@Override
 	public void addMessage(String message) {
 		System.out.println(message);

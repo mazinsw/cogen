@@ -1,4 +1,4 @@
-package ast;
+package ast.model;
 
 public class FloatValue extends Value {
 	private float value;
@@ -6,7 +6,7 @@ public class FloatValue extends Value {
 	public FloatValue(float value) {
 		this.setValue(value);
 	}
-	
+
 	public FloatValue(String value) {
 		this.setValue(Float.valueOf(value));
 	}
@@ -18,7 +18,7 @@ public class FloatValue extends Value {
 	public void setValue(float value) {
 		this.value = value;
 	}
-	
+
 	@Override
 	public String toString() {
 		return String.valueOf(value);

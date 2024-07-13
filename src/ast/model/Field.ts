@@ -1,7 +1,7 @@
-package ast;
+package ast.model;
 
 public class Field extends CommentedNode {
-	
+
 	private DataType type;
 	private Value value;
 	private boolean notNull;
