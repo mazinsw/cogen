@@ -20,6 +20,30 @@ coverage
 
 # Misc
 .DS_Store
+.AppleDouble
+.LSOverride
 
+# Icon must ends with two \r.
+Icon
+
+
+# Thumbnails
+._*
+
+# Files that might appear on external disk
+.Spotlight-V100
+.Trashes
+
+*.class
+*.sublime-workspace
+bin/parser/*.tokens
+.settings
+outdir/*
+config.properties
+out/
+.metadata/
+target/generated-sources/
+node_modules/
+coverage/
 dist/
 bin/

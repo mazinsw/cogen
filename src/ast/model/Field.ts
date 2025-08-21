@@ -6,6 +6,7 @@ public class Field extends CommentedNode {
 	private Value value;
 	private boolean notNull;
 	private boolean autoIncrement;
+	private boolean unsigned;
 
 
 	public Field(String name) {
@@ -42,5 +43,13 @@ public class Field extends CommentedNode {
 
 	public void setAutoIncrement(boolean autoIncrement) {
 		this.autoIncrement = autoIncrement;
+	}
+
+	public boolean isUnsigned() {
+		return unsigned;
+	}
+
+	public void setUnsigned(boolean unsigned) {
+		this.unsigned = unsigned;
 	}
 }

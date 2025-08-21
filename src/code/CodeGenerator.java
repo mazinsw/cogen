@@ -302,6 +302,13 @@ public abstract class CodeGenerator implements LogListener {
 		return null;
 	}
 
+	protected boolean isPrimaryKeyField(Table table, Field field) {
+		PrimaryKey primaryKey = getPrimaryKey(table);
+		if(primaryKey == null)
+			return false;
+		return primaryKey.exists(field.getName());
+	}
+
 	protected Field getPrimary(Table table) {
 		Constraint constraint = getPrimaryKey(table);
 		if(constraint != null && constraint.getFields().size() == 1)
@@ -338,6 +345,18 @@ public abstract class CodeGenerator implements LogListener {
 				return field;
 		}
 		return getPrimary(table);
+	}
+
+	protected Field getImage(Table table) {
+		Hashtable<String, String> values = new Hashtable<>();
+		for (Field field : table.getFields()) {
+			values.clear();
+			TemplateLoader.extractComment(field.getComment(), values, "F.");
+			if(values.containsKey("F.I")) {
+				return field;
+			}
+		}
+    	return null;
 	}
 
 	@Override
