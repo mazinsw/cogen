@@ -265,7 +265,16 @@ tableCondition: condition;
 fieldCondition: condition;
 indexCondition: condition;
 constraintCondition: condition;
-condition: expression ('|' expression)*;
+
+condition:
+    expression
+  | priorityCondition
+  | anyCondition orCondition
+  | anyCondition andCondition;
+anyCondition: expression | priorityCondition;
+priorityCondition: LPAR condition RPAR;
+orCondition: OR condition;
+andCondition: AND condition;
 expression: attribute | property | type | word;
 
 attribute:
@@ -281,6 +290,7 @@ property:
   | K_PRIMARY
   | K_REPEATED
   | K_NULL
+  | K_UNSIGNED
   | K_DEFAULT
   | K_INFO
   | K_DESCRIPTOR

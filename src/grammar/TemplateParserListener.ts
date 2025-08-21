@@ -119,6 +119,10 @@ import { FieldConditionContext } from "./TemplateParser";
 import { IndexConditionContext } from "./TemplateParser";
 import { ConstraintConditionContext } from "./TemplateParser";
 import { ConditionContext } from "./TemplateParser";
+import { AnyConditionContext } from "./TemplateParser";
+import { PriorityConditionContext } from "./TemplateParser";
+import { OrConditionContext } from "./TemplateParser";
+import { AndConditionContext } from "./TemplateParser";
 import { ExpressionContext } from "./TemplateParser";
 import { AttributeContext } from "./TemplateParser";
 import { PropertyContext } from "./TemplateParser";
@@ -1405,6 +1409,50 @@ export interface TemplateParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	exitCondition?: (ctx: ConditionContext) => void;
+
+	/**
+	 * Enter a parse tree produced by `TemplateParser.anyCondition`.
+	 * @param ctx the parse tree
+	 */
+	enterAnyCondition?: (ctx: AnyConditionContext) => void;
+	/**
+	 * Exit a parse tree produced by `TemplateParser.anyCondition`.
+	 * @param ctx the parse tree
+	 */
+	exitAnyCondition?: (ctx: AnyConditionContext) => void;
+
+	/**
+	 * Enter a parse tree produced by `TemplateParser.priorityCondition`.
+	 * @param ctx the parse tree
+	 */
+	enterPriorityCondition?: (ctx: PriorityConditionContext) => void;
+	/**
+	 * Exit a parse tree produced by `TemplateParser.priorityCondition`.
+	 * @param ctx the parse tree
+	 */
+	exitPriorityCondition?: (ctx: PriorityConditionContext) => void;
+
+	/**
+	 * Enter a parse tree produced by `TemplateParser.orCondition`.
+	 * @param ctx the parse tree
+	 */
+	enterOrCondition?: (ctx: OrConditionContext) => void;
+	/**
+	 * Exit a parse tree produced by `TemplateParser.orCondition`.
+	 * @param ctx the parse tree
+	 */
+	exitOrCondition?: (ctx: OrConditionContext) => void;
+
+	/**
+	 * Enter a parse tree produced by `TemplateParser.andCondition`.
+	 * @param ctx the parse tree
+	 */
+	enterAndCondition?: (ctx: AndConditionContext) => void;
+	/**
+	 * Exit a parse tree produced by `TemplateParser.andCondition`.
+	 * @param ctx the parse tree
+	 */
+	exitAndCondition?: (ctx: AndConditionContext) => void;
 
 	/**
 	 * Enter a parse tree produced by `TemplateParser.expression`.

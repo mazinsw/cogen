@@ -39,6 +39,7 @@ import { TypeSetStmtContext } from "./SQLParser";
 import { FieldStmtContext } from "./SQLParser";
 import { PrimaryKeyStmtContext } from "./SQLParser";
 import { IndexStmtContext } from "./SQLParser";
+import { FulltextStmtContext } from "./SQLParser";
 import { UniqueStmtContext } from "./SQLParser";
 import { ForeignStmtContext } from "./SQLParser";
 import { ScriptContext } from "./SQLParser";
@@ -66,6 +67,7 @@ import { ColumnDefaultValueContext } from "./SQLParser";
 import { ColumnNullContext } from "./SQLParser";
 import { ColumnNotNullContext } from "./SQLParser";
 import { FieldCommentContext } from "./SQLParser";
+import { AutoIncrementValueContext } from "./SQLParser";
 import { ReferenceDefinitionContext } from "./SQLParser";
 import { ReferenceDeleteOptionContext } from "./SQLParser";
 import { ReferenceUpdateOptionContext } from "./SQLParser";
@@ -556,6 +558,19 @@ export interface SQLParserListener extends ParseTreeListener {
 	exitIndexStmt?: (ctx: IndexStmtContext) => void;
 
 	/**
+	 * Enter a parse tree produced by the `fulltextStmt`
+	 * labeled alternative in `SQLParser.createDefinition`.
+	 * @param ctx the parse tree
+	 */
+	enterFulltextStmt?: (ctx: FulltextStmtContext) => void;
+	/**
+	 * Exit a parse tree produced by the `fulltextStmt`
+	 * labeled alternative in `SQLParser.createDefinition`.
+	 * @param ctx the parse tree
+	 */
+	exitFulltextStmt?: (ctx: FulltextStmtContext) => void;
+
+	/**
 	 * Enter a parse tree produced by the `uniqueStmt`
 	 * labeled alternative in `SQLParser.createDefinition`.
 	 * @param ctx the parse tree
@@ -855,6 +870,17 @@ export interface SQLParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	exitFieldComment?: (ctx: FieldCommentContext) => void;
+
+	/**
+	 * Enter a parse tree produced by `SQLParser.autoIncrementValue`.
+	 * @param ctx the parse tree
+	 */
+	enterAutoIncrementValue?: (ctx: AutoIncrementValueContext) => void;
+	/**
+	 * Exit a parse tree produced by `SQLParser.autoIncrementValue`.
+	 * @param ctx the parse tree
+	 */
+	exitAutoIncrementValue?: (ctx: AutoIncrementValueContext) => void;
 
 	/**
 	 * Enter a parse tree produced by `SQLParser.referenceDefinition`.

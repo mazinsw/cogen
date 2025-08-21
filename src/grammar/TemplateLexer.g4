@@ -76,6 +76,7 @@ K_TEXT: T E X T;
 K_TIME: T I M E;
 K_UNIQUE: U N I Q U E;
 K_UNIX: U N I X;
+K_UNSIGNED: U N S I G N E D;
 K_WIDTH: W I D T H;
 K_FIRST: F I R S T;
 K_FEW_FIELDS: F E W '_' F I E L D S;
@@ -92,6 +93,7 @@ DOT: '.';
 LPAR: '(';
 RPAR: ')';
 OR: '|';
+AND: '&';
 
 WORD: [A-Za-z0-9_]+;
 
