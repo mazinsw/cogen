@@ -20,7 +20,7 @@
   },
   "include": [
     "src/**/*",
-    "__tests__/**/*"
+    "tests/**/*"
   ],
   "types": [
     "w3c-web-usb"
