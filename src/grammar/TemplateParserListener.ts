@@ -8,9 +8,15 @@ import { StatementContext } from "./TemplateParser";
 import { BlockContext } from "./TemplateParser";
 import { TableIfStmtContext } from "./TemplateParser";
 import { TableExistsStmtContext } from "./TemplateParser";
+import { TableFindsStmtContext } from "./TemplateParser";
+import { TableMatchStmtContext } from "./TemplateParser";
+import { TableContainsStmtContext } from "./TemplateParser";
 import { TableEachStmtContext } from "./TemplateParser";
 import { TableElseIfStmtContext } from "./TemplateParser";
 import { TableElseExistsStmtContext } from "./TemplateParser";
+import { TableElseFindsStmtContext } from "./TemplateParser";
+import { TableElseMatchStmtContext } from "./TemplateParser";
+import { TableElseContainsStmtContext } from "./TemplateParser";
 import { TableElseEachStmtContext } from "./TemplateParser";
 import { TableElseEndStmtContext } from "./TemplateParser";
 import { TableElseStmtContext } from "./TemplateParser";
@@ -18,9 +24,15 @@ import { TableElseCondEndStmtContext } from "./TemplateParser";
 import { TableElseCondStmtContext } from "./TemplateParser";
 import { InheritedIfStmtContext } from "./TemplateParser";
 import { InheritedExistsStmtContext } from "./TemplateParser";
+import { InheritedFindsStmtContext } from "./TemplateParser";
+import { InheritedMatchStmtContext } from "./TemplateParser";
+import { InheritedContainsStmtContext } from "./TemplateParser";
 import { InheritedEachStmtContext } from "./TemplateParser";
 import { InheritedElseIfStmtContext } from "./TemplateParser";
 import { InheritedElseExistsStmtContext } from "./TemplateParser";
+import { InheritedElseFindsStmtContext } from "./TemplateParser";
+import { InheritedElseMatchStmtContext } from "./TemplateParser";
+import { InheritedElseContainsStmtContext } from "./TemplateParser";
 import { InheritedElseEachStmtContext } from "./TemplateParser";
 import { InheritedElseEndStmtContext } from "./TemplateParser";
 import { InheritedElseStmtContext } from "./TemplateParser";
@@ -28,9 +40,15 @@ import { InheritedElseCondEndStmtContext } from "./TemplateParser";
 import { InheritedElseCondStmtContext } from "./TemplateParser";
 import { ReferenceIfStmtContext } from "./TemplateParser";
 import { ReferenceExistsStmtContext } from "./TemplateParser";
+import { ReferenceFindsStmtContext } from "./TemplateParser";
+import { ReferenceMatchStmtContext } from "./TemplateParser";
+import { ReferenceContainsStmtContext } from "./TemplateParser";
 import { ReferenceEachStmtContext } from "./TemplateParser";
 import { ReferenceElseIfStmtContext } from "./TemplateParser";
 import { ReferenceElseExistsStmtContext } from "./TemplateParser";
+import { ReferenceElseFindsStmtContext } from "./TemplateParser";
+import { ReferenceElseMatchStmtContext } from "./TemplateParser";
+import { ReferenceElseContainsStmtContext } from "./TemplateParser";
 import { ReferenceElseEachStmtContext } from "./TemplateParser";
 import { ReferenceElseEndStmtContext } from "./TemplateParser";
 import { ReferenceElseStmtContext } from "./TemplateParser";
@@ -38,14 +56,18 @@ import { ReferenceElseCondEndStmtContext } from "./TemplateParser";
 import { ReferenceElseCondStmtContext } from "./TemplateParser";
 import { FieldIfStmtContext } from "./TemplateParser";
 import { FieldExistsStmtContext } from "./TemplateParser";
+import { FieldFindsStmtContext } from "./TemplateParser";
 import { FieldMatchStmtContext } from "./TemplateParser";
 import { FieldContainsStmtContext } from "./TemplateParser";
 import { FieldEachStmtContext } from "./TemplateParser";
+import { FieldReverseEachStmtContext } from "./TemplateParser";
 import { FieldElseIfStmtContext } from "./TemplateParser";
 import { FieldElseExistsStmtContext } from "./TemplateParser";
+import { FieldElseFindsStmtContext } from "./TemplateParser";
 import { FieldElseMatchStmtContext } from "./TemplateParser";
 import { FieldElseContainsStmtContext } from "./TemplateParser";
 import { FieldElseEachStmtContext } from "./TemplateParser";
+import { FieldElseReverseEachStmtContext } from "./TemplateParser";
 import { FieldElseEndStmtContext } from "./TemplateParser";
 import { FieldElseStmtContext } from "./TemplateParser";
 import { FieldElseCondEndStmtContext } from "./TemplateParser";
@@ -98,9 +120,11 @@ import { ForeignElseEndStmtContext } from "./TemplateParser";
 import { ForeignElseStmtContext } from "./TemplateParser";
 import { ForeignElseCondEndStmtContext } from "./TemplateParser";
 import { ConstantContext } from "./TemplateParser";
+import { TableReplaceStmtContext } from "./TemplateParser";
 import { TableStmtContext } from "./TemplateParser";
 import { TablePropsContext } from "./TemplateParser";
 import { TablePropContext } from "./TemplateParser";
+import { FieldReplaceStmtContext } from "./TemplateParser";
 import { FieldStmtContext } from "./TemplateParser";
 import { FieldPropsContext } from "./TemplateParser";
 import { FieldPropContext } from "./TemplateParser";
@@ -190,6 +214,39 @@ export interface TemplateParserListener extends ParseTreeListener {
 	exitTableExistsStmt?: (ctx: TableExistsStmtContext) => void;
 
 	/**
+	 * Enter a parse tree produced by `TemplateParser.tableFindsStmt`.
+	 * @param ctx the parse tree
+	 */
+	enterTableFindsStmt?: (ctx: TableFindsStmtContext) => void;
+	/**
+	 * Exit a parse tree produced by `TemplateParser.tableFindsStmt`.
+	 * @param ctx the parse tree
+	 */
+	exitTableFindsStmt?: (ctx: TableFindsStmtContext) => void;
+
+	/**
+	 * Enter a parse tree produced by `TemplateParser.tableMatchStmt`.
+	 * @param ctx the parse tree
+	 */
+	enterTableMatchStmt?: (ctx: TableMatchStmtContext) => void;
+	/**
+	 * Exit a parse tree produced by `TemplateParser.tableMatchStmt`.
+	 * @param ctx the parse tree
+	 */
+	exitTableMatchStmt?: (ctx: TableMatchStmtContext) => void;
+
+	/**
+	 * Enter a parse tree produced by `TemplateParser.tableContainsStmt`.
+	 * @param ctx the parse tree
+	 */
+	enterTableContainsStmt?: (ctx: TableContainsStmtContext) => void;
+	/**
+	 * Exit a parse tree produced by `TemplateParser.tableContainsStmt`.
+	 * @param ctx the parse tree
+	 */
+	exitTableContainsStmt?: (ctx: TableContainsStmtContext) => void;
+
+	/**
 	 * Enter a parse tree produced by `TemplateParser.tableEachStmt`.
 	 * @param ctx the parse tree
 	 */
@@ -221,6 +278,39 @@ export interface TemplateParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	exitTableElseExistsStmt?: (ctx: TableElseExistsStmtContext) => void;
+
+	/**
+	 * Enter a parse tree produced by `TemplateParser.tableElseFindsStmt`.
+	 * @param ctx the parse tree
+	 */
+	enterTableElseFindsStmt?: (ctx: TableElseFindsStmtContext) => void;
+	/**
+	 * Exit a parse tree produced by `TemplateParser.tableElseFindsStmt`.
+	 * @param ctx the parse tree
+	 */
+	exitTableElseFindsStmt?: (ctx: TableElseFindsStmtContext) => void;
+
+	/**
+	 * Enter a parse tree produced by `TemplateParser.tableElseMatchStmt`.
+	 * @param ctx the parse tree
+	 */
+	enterTableElseMatchStmt?: (ctx: TableElseMatchStmtContext) => void;
+	/**
+	 * Exit a parse tree produced by `TemplateParser.tableElseMatchStmt`.
+	 * @param ctx the parse tree
+	 */
+	exitTableElseMatchStmt?: (ctx: TableElseMatchStmtContext) => void;
+
+	/**
+	 * Enter a parse tree produced by `TemplateParser.tableElseContainsStmt`.
+	 * @param ctx the parse tree
+	 */
+	enterTableElseContainsStmt?: (ctx: TableElseContainsStmtContext) => void;
+	/**
+	 * Exit a parse tree produced by `TemplateParser.tableElseContainsStmt`.
+	 * @param ctx the parse tree
+	 */
+	exitTableElseContainsStmt?: (ctx: TableElseContainsStmtContext) => void;
 
 	/**
 	 * Enter a parse tree produced by `TemplateParser.tableElseEachStmt`.
@@ -300,6 +390,39 @@ export interface TemplateParserListener extends ParseTreeListener {
 	exitInheritedExistsStmt?: (ctx: InheritedExistsStmtContext) => void;
 
 	/**
+	 * Enter a parse tree produced by `TemplateParser.inheritedFindsStmt`.
+	 * @param ctx the parse tree
+	 */
+	enterInheritedFindsStmt?: (ctx: InheritedFindsStmtContext) => void;
+	/**
+	 * Exit a parse tree produced by `TemplateParser.inheritedFindsStmt`.
+	 * @param ctx the parse tree
+	 */
+	exitInheritedFindsStmt?: (ctx: InheritedFindsStmtContext) => void;
+
+	/**
+	 * Enter a parse tree produced by `TemplateParser.inheritedMatchStmt`.
+	 * @param ctx the parse tree
+	 */
+	enterInheritedMatchStmt?: (ctx: InheritedMatchStmtContext) => void;
+	/**
+	 * Exit a parse tree produced by `TemplateParser.inheritedMatchStmt`.
+	 * @param ctx the parse tree
+	 */
+	exitInheritedMatchStmt?: (ctx: InheritedMatchStmtContext) => void;
+
+	/**
+	 * Enter a parse tree produced by `TemplateParser.inheritedContainsStmt`.
+	 * @param ctx the parse tree
+	 */
+	enterInheritedContainsStmt?: (ctx: InheritedContainsStmtContext) => void;
+	/**
+	 * Exit a parse tree produced by `TemplateParser.inheritedContainsStmt`.
+	 * @param ctx the parse tree
+	 */
+	exitInheritedContainsStmt?: (ctx: InheritedContainsStmtContext) => void;
+
+	/**
 	 * Enter a parse tree produced by `TemplateParser.inheritedEachStmt`.
 	 * @param ctx the parse tree
 	 */
@@ -331,6 +454,39 @@ export interface TemplateParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	exitInheritedElseExistsStmt?: (ctx: InheritedElseExistsStmtContext) => void;
+
+	/**
+	 * Enter a parse tree produced by `TemplateParser.inheritedElseFindsStmt`.
+	 * @param ctx the parse tree
+	 */
+	enterInheritedElseFindsStmt?: (ctx: InheritedElseFindsStmtContext) => void;
+	/**
+	 * Exit a parse tree produced by `TemplateParser.inheritedElseFindsStmt`.
+	 * @param ctx the parse tree
+	 */
+	exitInheritedElseFindsStmt?: (ctx: InheritedElseFindsStmtContext) => void;
+
+	/**
+	 * Enter a parse tree produced by `TemplateParser.inheritedElseMatchStmt`.
+	 * @param ctx the parse tree
+	 */
+	enterInheritedElseMatchStmt?: (ctx: InheritedElseMatchStmtContext) => void;
+	/**
+	 * Exit a parse tree produced by `TemplateParser.inheritedElseMatchStmt`.
+	 * @param ctx the parse tree
+	 */
+	exitInheritedElseMatchStmt?: (ctx: InheritedElseMatchStmtContext) => void;
+
+	/**
+	 * Enter a parse tree produced by `TemplateParser.inheritedElseContainsStmt`.
+	 * @param ctx the parse tree
+	 */
+	enterInheritedElseContainsStmt?: (ctx: InheritedElseContainsStmtContext) => void;
+	/**
+	 * Exit a parse tree produced by `TemplateParser.inheritedElseContainsStmt`.
+	 * @param ctx the parse tree
+	 */
+	exitInheritedElseContainsStmt?: (ctx: InheritedElseContainsStmtContext) => void;
 
 	/**
 	 * Enter a parse tree produced by `TemplateParser.inheritedElseEachStmt`.
@@ -410,6 +566,39 @@ export interface TemplateParserListener extends ParseTreeListener {
 	exitReferenceExistsStmt?: (ctx: ReferenceExistsStmtContext) => void;
 
 	/**
+	 * Enter a parse tree produced by `TemplateParser.referenceFindsStmt`.
+	 * @param ctx the parse tree
+	 */
+	enterReferenceFindsStmt?: (ctx: ReferenceFindsStmtContext) => void;
+	/**
+	 * Exit a parse tree produced by `TemplateParser.referenceFindsStmt`.
+	 * @param ctx the parse tree
+	 */
+	exitReferenceFindsStmt?: (ctx: ReferenceFindsStmtContext) => void;
+
+	/**
+	 * Enter a parse tree produced by `TemplateParser.referenceMatchStmt`.
+	 * @param ctx the parse tree
+	 */
+	enterReferenceMatchStmt?: (ctx: ReferenceMatchStmtContext) => void;
+	/**
+	 * Exit a parse tree produced by `TemplateParser.referenceMatchStmt`.
+	 * @param ctx the parse tree
+	 */
+	exitReferenceMatchStmt?: (ctx: ReferenceMatchStmtContext) => void;
+
+	/**
+	 * Enter a parse tree produced by `TemplateParser.referenceContainsStmt`.
+	 * @param ctx the parse tree
+	 */
+	enterReferenceContainsStmt?: (ctx: ReferenceContainsStmtContext) => void;
+	/**
+	 * Exit a parse tree produced by `TemplateParser.referenceContainsStmt`.
+	 * @param ctx the parse tree
+	 */
+	exitReferenceContainsStmt?: (ctx: ReferenceContainsStmtContext) => void;
+
+	/**
 	 * Enter a parse tree produced by `TemplateParser.referenceEachStmt`.
 	 * @param ctx the parse tree
 	 */
@@ -441,6 +630,39 @@ export interface TemplateParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	exitReferenceElseExistsStmt?: (ctx: ReferenceElseExistsStmtContext) => void;
+
+	/**
+	 * Enter a parse tree produced by `TemplateParser.referenceElseFindsStmt`.
+	 * @param ctx the parse tree
+	 */
+	enterReferenceElseFindsStmt?: (ctx: ReferenceElseFindsStmtContext) => void;
+	/**
+	 * Exit a parse tree produced by `TemplateParser.referenceElseFindsStmt`.
+	 * @param ctx the parse tree
+	 */
+	exitReferenceElseFindsStmt?: (ctx: ReferenceElseFindsStmtContext) => void;
+
+	/**
+	 * Enter a parse tree produced by `TemplateParser.referenceElseMatchStmt`.
+	 * @param ctx the parse tree
+	 */
+	enterReferenceElseMatchStmt?: (ctx: ReferenceElseMatchStmtContext) => void;
+	/**
+	 * Exit a parse tree produced by `TemplateParser.referenceElseMatchStmt`.
+	 * @param ctx the parse tree
+	 */
+	exitReferenceElseMatchStmt?: (ctx: ReferenceElseMatchStmtContext) => void;
+
+	/**
+	 * Enter a parse tree produced by `TemplateParser.referenceElseContainsStmt`.
+	 * @param ctx the parse tree
+	 */
+	enterReferenceElseContainsStmt?: (ctx: ReferenceElseContainsStmtContext) => void;
+	/**
+	 * Exit a parse tree produced by `TemplateParser.referenceElseContainsStmt`.
+	 * @param ctx the parse tree
+	 */
+	exitReferenceElseContainsStmt?: (ctx: ReferenceElseContainsStmtContext) => void;
 
 	/**
 	 * Enter a parse tree produced by `TemplateParser.referenceElseEachStmt`.
@@ -520,6 +742,17 @@ export interface TemplateParserListener extends ParseTreeListener {
 	exitFieldExistsStmt?: (ctx: FieldExistsStmtContext) => void;
 
 	/**
+	 * Enter a parse tree produced by `TemplateParser.fieldFindsStmt`.
+	 * @param ctx the parse tree
+	 */
+	enterFieldFindsStmt?: (ctx: FieldFindsStmtContext) => void;
+	/**
+	 * Exit a parse tree produced by `TemplateParser.fieldFindsStmt`.
+	 * @param ctx the parse tree
+	 */
+	exitFieldFindsStmt?: (ctx: FieldFindsStmtContext) => void;
+
+	/**
 	 * Enter a parse tree produced by `TemplateParser.fieldMatchStmt`.
 	 * @param ctx the parse tree
 	 */
@@ -553,6 +786,17 @@ export interface TemplateParserListener extends ParseTreeListener {
 	exitFieldEachStmt?: (ctx: FieldEachStmtContext) => void;
 
 	/**
+	 * Enter a parse tree produced by `TemplateParser.fieldReverseEachStmt`.
+	 * @param ctx the parse tree
+	 */
+	enterFieldReverseEachStmt?: (ctx: FieldReverseEachStmtContext) => void;
+	/**
+	 * Exit a parse tree produced by `TemplateParser.fieldReverseEachStmt`.
+	 * @param ctx the parse tree
+	 */
+	exitFieldReverseEachStmt?: (ctx: FieldReverseEachStmtContext) => void;
+
+	/**
 	 * Enter a parse tree produced by `TemplateParser.fieldElseIfStmt`.
 	 * @param ctx the parse tree
 	 */
@@ -573,6 +817,17 @@ export interface TemplateParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	exitFieldElseExistsStmt?: (ctx: FieldElseExistsStmtContext) => void;
+
+	/**
+	 * Enter a parse tree produced by `TemplateParser.fieldElseFindsStmt`.
+	 * @param ctx the parse tree
+	 */
+	enterFieldElseFindsStmt?: (ctx: FieldElseFindsStmtContext) => void;
+	/**
+	 * Exit a parse tree produced by `TemplateParser.fieldElseFindsStmt`.
+	 * @param ctx the parse tree
+	 */
+	exitFieldElseFindsStmt?: (ctx: FieldElseFindsStmtContext) => void;
 
 	/**
 	 * Enter a parse tree produced by `TemplateParser.fieldElseMatchStmt`.
@@ -606,6 +861,17 @@ export interface TemplateParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	exitFieldElseEachStmt?: (ctx: FieldElseEachStmtContext) => void;
+
+	/**
+	 * Enter a parse tree produced by `TemplateParser.fieldElseReverseEachStmt`.
+	 * @param ctx the parse tree
+	 */
+	enterFieldElseReverseEachStmt?: (ctx: FieldElseReverseEachStmtContext) => void;
+	/**
+	 * Exit a parse tree produced by `TemplateParser.fieldElseReverseEachStmt`.
+	 * @param ctx the parse tree
+	 */
+	exitFieldElseReverseEachStmt?: (ctx: FieldElseReverseEachStmtContext) => void;
 
 	/**
 	 * Enter a parse tree produced by `TemplateParser.fieldElseEndStmt`.
@@ -1180,6 +1446,17 @@ export interface TemplateParserListener extends ParseTreeListener {
 	exitConstant?: (ctx: ConstantContext) => void;
 
 	/**
+	 * Enter a parse tree produced by `TemplateParser.tableReplaceStmt`.
+	 * @param ctx the parse tree
+	 */
+	enterTableReplaceStmt?: (ctx: TableReplaceStmtContext) => void;
+	/**
+	 * Exit a parse tree produced by `TemplateParser.tableReplaceStmt`.
+	 * @param ctx the parse tree
+	 */
+	exitTableReplaceStmt?: (ctx: TableReplaceStmtContext) => void;
+
+	/**
 	 * Enter a parse tree produced by `TemplateParser.tableStmt`.
 	 * @param ctx the parse tree
 	 */
@@ -1211,6 +1488,17 @@ export interface TemplateParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	exitTableProp?: (ctx: TablePropContext) => void;
+
+	/**
+	 * Enter a parse tree produced by `TemplateParser.fieldReplaceStmt`.
+	 * @param ctx the parse tree
+	 */
+	enterFieldReplaceStmt?: (ctx: FieldReplaceStmtContext) => void;
+	/**
+	 * Exit a parse tree produced by `TemplateParser.fieldReplaceStmt`.
+	 * @param ctx the parse tree
+	 */
+	exitFieldReplaceStmt?: (ctx: FieldReplaceStmtContext) => void;
 
 	/**
 	 * Enter a parse tree produced by `TemplateParser.fieldStmt`.

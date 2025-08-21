@@ -19,30 +19,50 @@ statement:
 block:
     tableIfStmt
   | tableExistsStmt
+  | tableFindsStmt
+  | tableMatchStmt
+  | tableContainsStmt
   | tableEachStmt
+
   | inheritedIfStmt
   | inheritedExistsStmt
+  | inheritedFindsStmt
+  | inheritedMatchStmt
+  | inheritedContainsStmt
   | inheritedEachStmt
+
   | referenceIfStmt
   | referenceExistsStmt
+  | referenceFindsStmt
+  | referenceMatchStmt
+  | referenceContainsStmt
   | referenceEachStmt
+
   | fieldIfStmt
   | fieldExistsStmt
-  | fieldEachStmt
+  | fieldFindsStmt
   | fieldMatchStmt
   | fieldContainsStmt
+  | fieldEachStmt
+  | fieldReverseEachStmt
+
   | descriptorIfStmt
-  | descriptorEachStmt
   | descriptorMatchStmt
   | descriptorContainsStmt
+  | descriptorEachStmt
+
   | indexIfStmt
   | indexEachStmt
+
   | uniqueIfStmt
   | uniqueEachStmt
+
   | primaryIfStmt
   | primaryEachStmt
+
   | constraintIfStmt
   | constraintEachStmt
+
   | foreignIfStmt
   | foreignEachStmt
   ;
@@ -50,71 +70,113 @@ block:
 /** Table */
 tableIfStmt: OPEN K_TABLE '.' K_IF LPAR tableCondition RPAR CLOSE statement* tableElseStmt? OPEN K_TABLE '.' K_END CLOSE;
 tableExistsStmt: OPEN K_TABLE '.' K_EXISTS LPAR tableCondition RPAR CLOSE statement* tableElseStmt? OPEN K_TABLE '.' K_END CLOSE;
+tableFindsStmt: OPEN K_TABLE '.' FINDS_OPEN regex REGEX_CLOSE CLOSE statement* tableElseStmt? OPEN K_TABLE '.' K_END CLOSE;
+tableMatchStmt: OPEN K_TABLE '.' MATCH_OPEN regex REGEX_CLOSE CLOSE statement* tableElseStmt? OPEN K_TABLE '.' K_END CLOSE;
+tableContainsStmt: OPEN K_TABLE '.' K_CONTAINS LPAR word RPAR CLOSE statement* tableElseStmt? OPEN K_TABLE '.' K_END CLOSE;
 tableEachStmt: OPEN K_TABLE '.' K_EACH ( LPAR tableCondition RPAR )? CLOSE statement* OPEN K_TABLE '.' K_END CLOSE;
 
 tableElseIfStmt: OPEN K_TABLE '.' K_ELSE '.' K_IF LPAR tableCondition RPAR CLOSE statement*;
 tableElseExistsStmt: OPEN K_TABLE '.' K_ELSE '.' K_EXISTS LPAR tableCondition RPAR CLOSE statement*;
+tableElseFindsStmt: OPEN K_TABLE '.' K_ELSE '.' FINDS_OPEN regex REGEX_CLOSE CLOSE statement*;
+tableElseMatchStmt: OPEN K_TABLE '.' K_ELSE '.' MATCH_OPEN regex REGEX_CLOSE CLOSE statement*;
+tableElseContainsStmt: OPEN K_TABLE '.' K_ELSE '.' K_CONTAINS LPAR word RPAR CLOSE statement*;
 tableElseEachStmt: OPEN K_TABLE '.' K_ELSE '.' K_EACH ( LPAR tableCondition RPAR )? CLOSE statement*;
 tableElseEndStmt: OPEN K_TABLE '.' K_ELSE CLOSE statement*;
 
 tableElseStmt: (tableElseCondEndStmt | tableElseEachStmt | tableElseEndStmt);
 tableElseCondEndStmt: tableElseCondStmt+ (tableElseEachStmt | tableElseEndStmt)?;
-tableElseCondStmt: tableElseIfStmt | tableElseExistsStmt;
+tableElseCondStmt:
+    tableElseIfStmt
+  | tableElseExistsStmt
+  | tableElseFindsStmt
+  | tableElseMatchStmt
+  | tableElseContainsStmt;
 
 /** Inherited */
 inheritedIfStmt: OPEN K_INHERITED '.' K_IF LPAR tableCondition RPAR CLOSE statement* inheritedElseStmt? OPEN K_INHERITED '.' K_END CLOSE;
 inheritedExistsStmt: OPEN K_INHERITED '.' K_EXISTS LPAR tableCondition RPAR CLOSE statement* inheritedElseStmt? OPEN K_INHERITED '.' K_END CLOSE;
+inheritedFindsStmt: OPEN K_INHERITED '.' FINDS_OPEN regex REGEX_CLOSE CLOSE statement* inheritedElseStmt? OPEN K_INHERITED '.' K_END CLOSE;
+inheritedMatchStmt: OPEN K_INHERITED '.' MATCH_OPEN regex REGEX_CLOSE CLOSE statement* inheritedElseStmt? OPEN K_INHERITED '.' K_END CLOSE;
+inheritedContainsStmt: OPEN K_INHERITED '.' K_CONTAINS LPAR word RPAR CLOSE statement* inheritedElseStmt? OPEN K_INHERITED '.' K_END CLOSE;
 inheritedEachStmt: OPEN K_INHERITED '.' K_EACH ( LPAR tableCondition RPAR )? CLOSE statement* OPEN K_INHERITED '.' K_END CLOSE;
 
 inheritedElseIfStmt: OPEN K_INHERITED '.' K_ELSE '.' K_IF LPAR tableCondition RPAR CLOSE statement*;
 inheritedElseExistsStmt: OPEN K_INHERITED '.' K_ELSE '.' K_EXISTS LPAR tableCondition RPAR CLOSE statement*;
+inheritedElseFindsStmt: OPEN K_INHERITED '.' K_ELSE '.' FINDS_OPEN regex REGEX_CLOSE CLOSE statement*;
+inheritedElseMatchStmt: OPEN K_INHERITED '.' K_ELSE '.' MATCH_OPEN regex REGEX_CLOSE CLOSE statement*;
+inheritedElseContainsStmt: OPEN K_INHERITED '.' K_ELSE '.' K_CONTAINS LPAR word RPAR CLOSE statement*;
 inheritedElseEachStmt: OPEN K_INHERITED '.' K_ELSE '.' K_EACH ( LPAR tableCondition RPAR )? CLOSE statement*;
 inheritedElseEndStmt: OPEN K_INHERITED '.' K_ELSE CLOSE statement*;
 
 inheritedElseStmt: (inheritedElseCondEndStmt | inheritedElseEachStmt | inheritedElseEndStmt);
 inheritedElseCondEndStmt: inheritedElseCondStmt+ (inheritedElseEachStmt | inheritedElseEndStmt)?;
-inheritedElseCondStmt: inheritedElseIfStmt | inheritedElseExistsStmt;
+inheritedElseCondStmt:
+    inheritedElseIfStmt
+  | inheritedElseExistsStmt
+  | inheritedElseFindsStmt
+  | inheritedElseMatchStmt
+  | inheritedElseContainsStmt;
 
 /** Reference */
 referenceIfStmt: OPEN K_REFERENCE '.' K_IF LPAR tableCondition RPAR CLOSE statement* referenceElseStmt? OPEN K_REFERENCE '.' K_END CLOSE;
 referenceExistsStmt: OPEN K_REFERENCE '.' K_EXISTS LPAR tableCondition RPAR CLOSE statement* referenceElseStmt? OPEN K_REFERENCE '.' K_END CLOSE;
+referenceFindsStmt: OPEN K_REFERENCE '.' FINDS_OPEN regex REGEX_CLOSE CLOSE statement* referenceElseStmt? OPEN K_REFERENCE '.' K_END CLOSE;
+referenceMatchStmt: OPEN K_REFERENCE '.' MATCH_OPEN regex REGEX_CLOSE CLOSE statement* referenceElseStmt? OPEN K_REFERENCE '.' K_END CLOSE;
+referenceContainsStmt: OPEN K_REFERENCE '.' K_CONTAINS LPAR word RPAR CLOSE statement* referenceElseStmt? OPEN K_REFERENCE '.' K_END CLOSE;
 referenceEachStmt: OPEN K_REFERENCE '.' K_EACH ( LPAR tableCondition RPAR )? CLOSE statement* OPEN K_REFERENCE '.' K_END CLOSE;
 
 referenceElseIfStmt: OPEN K_REFERENCE '.' K_ELSE '.' K_IF LPAR tableCondition RPAR CLOSE statement*;
 referenceElseExistsStmt: OPEN K_REFERENCE '.' K_ELSE '.' K_EXISTS LPAR tableCondition RPAR CLOSE statement*;
+referenceElseFindsStmt: OPEN K_REFERENCE '.' K_ELSE '.' FINDS_OPEN regex REGEX_CLOSE CLOSE statement*;
+referenceElseMatchStmt: OPEN K_REFERENCE '.' K_ELSE '.' MATCH_OPEN regex REGEX_CLOSE CLOSE statement*;
+referenceElseContainsStmt: OPEN K_REFERENCE '.' K_ELSE '.' K_CONTAINS LPAR word RPAR CLOSE statement*;
 referenceElseEachStmt: OPEN K_REFERENCE '.' K_ELSE '.' K_EACH ( LPAR tableCondition RPAR )? CLOSE statement*;
 referenceElseEndStmt: OPEN K_REFERENCE '.' K_ELSE CLOSE statement*;
 
-referenceElseStmt: (referenceElseCondEndStmt | referenceElseEachStmt | referenceElseEndStmt);
+referenceElseStmt: (referenceElseCondEndStmt | referenceElseEachStmt |  referenceElseEndStmt);
 referenceElseCondEndStmt: referenceElseCondStmt+ (referenceElseEachStmt | referenceElseEndStmt)?;
-referenceElseCondStmt: referenceElseIfStmt | referenceElseExistsStmt;
+referenceElseCondStmt:
+    referenceElseIfStmt
+  | referenceElseExistsStmt
+  | referenceElseFindsStmt
+  | referenceElseMatchStmt
+  | referenceElseContainsStmt;
 
 /** Field */
 fieldIfStmt: OPEN K_FIELD '.' K_IF LPAR fieldCondition RPAR CLOSE statement* fieldElseStmt? OPEN K_FIELD '.' K_END CLOSE;
 fieldExistsStmt: OPEN K_FIELD '.' K_EXISTS LPAR fieldCondition RPAR CLOSE statement* fieldElseStmt? OPEN K_FIELD '.' K_END CLOSE;
-fieldMatchStmt: OPEN K_FIELD '.' MATCH_OPEN regex MATCH_CLOSE CLOSE statement* fieldElseStmt? OPEN K_FIELD '.' K_END CLOSE;
+fieldFindsStmt: OPEN K_FIELD '.' FINDS_OPEN regex REGEX_CLOSE CLOSE statement* fieldElseStmt? OPEN K_FIELD '.' K_END CLOSE;
+fieldMatchStmt: OPEN K_FIELD '.' MATCH_OPEN regex REGEX_CLOSE CLOSE statement* fieldElseStmt? OPEN K_FIELD '.' K_END CLOSE;
 fieldContainsStmt: OPEN K_FIELD '.' K_CONTAINS LPAR word RPAR CLOSE statement* fieldElseStmt? OPEN K_FIELD '.' K_END CLOSE;
 fieldEachStmt: OPEN K_FIELD '.' K_EACH ( LPAR fieldCondition RPAR )? CLOSE statement* OPEN K_FIELD '.' K_END CLOSE;
+fieldReverseEachStmt: OPEN K_FIELD '.' K_REVERSE_EACH ( LPAR fieldCondition RPAR )? CLOSE statement* OPEN K_FIELD '.' K_END CLOSE;
 
 fieldElseIfStmt: OPEN K_FIELD '.' K_ELSE '.' K_IF LPAR fieldCondition RPAR CLOSE statement*;
 fieldElseExistsStmt: OPEN K_FIELD '.' K_ELSE '.' K_EXISTS LPAR fieldCondition RPAR CLOSE statement*;
-fieldElseMatchStmt: OPEN K_FIELD '.' K_ELSE '.' MATCH_OPEN regex MATCH_CLOSE CLOSE statement*;
+fieldElseFindsStmt: OPEN K_FIELD '.' K_ELSE '.' FINDS_OPEN regex REGEX_CLOSE CLOSE statement*;
+fieldElseMatchStmt: OPEN K_FIELD '.' K_ELSE '.' MATCH_OPEN regex REGEX_CLOSE CLOSE statement*;
 fieldElseContainsStmt: OPEN K_FIELD '.' K_ELSE '.' K_CONTAINS LPAR word RPAR CLOSE statement*;
 fieldElseEachStmt: OPEN K_FIELD '.' K_ELSE '.' K_EACH ( LPAR fieldCondition RPAR )? CLOSE statement*;
+fieldElseReverseEachStmt: OPEN K_FIELD '.' K_ELSE '.' K_REVERSE_EACH ( LPAR fieldCondition RPAR )? CLOSE statement*;
 fieldElseEndStmt: OPEN K_FIELD '.' K_ELSE CLOSE statement*;
 
-fieldElseStmt: (fieldElseEachStmt | fieldElseEndStmt | fieldElseCondEndStmt);
-fieldElseCondEndStmt: fieldElseCondStmt+ (fieldElseEachStmt | fieldElseEndStmt)?;
-fieldElseCondStmt: fieldElseIfStmt | fieldElseExistsStmt | fieldElseMatchStmt | fieldElseContainsStmt;
+fieldElseStmt: (fieldElseEachStmt | fieldElseReverseEachStmt | fieldElseEndStmt | fieldElseCondEndStmt);
+fieldElseCondEndStmt: fieldElseCondStmt+ (fieldElseEachStmt | fieldElseReverseEachStmt | fieldElseEndStmt)?;
+fieldElseCondStmt:
+    fieldElseIfStmt
+  | fieldElseExistsStmt
+  | fieldElseFindsStmt
+  | fieldElseMatchStmt
+  | fieldElseContainsStmt;
 
 /** Descriptor */
 descriptorIfStmt: OPEN K_DESCRIPTOR '.' K_IF LPAR fieldCondition RPAR CLOSE statement* descriptorElseStmt? OPEN K_DESCRIPTOR '.' K_END CLOSE;
-descriptorMatchStmt: OPEN K_DESCRIPTOR '.' MATCH_OPEN regex MATCH_CLOSE CLOSE statement* descriptorElseStmt? OPEN K_DESCRIPTOR '.' K_END CLOSE;
+descriptorMatchStmt: OPEN K_DESCRIPTOR '.' MATCH_OPEN regex REGEX_CLOSE CLOSE statement* descriptorElseStmt? OPEN K_DESCRIPTOR '.' K_END CLOSE;
 descriptorContainsStmt: OPEN K_DESCRIPTOR '.' K_CONTAINS LPAR word RPAR CLOSE statement* descriptorElseStmt? OPEN K_DESCRIPTOR '.' K_END CLOSE;
 descriptorEachStmt: OPEN K_DESCRIPTOR '.' K_EACH ( LPAR fieldCondition RPAR )? CLOSE statement* OPEN K_DESCRIPTOR '.' K_END CLOSE;
 
 descriptorElseIfStmt: OPEN K_DESCRIPTOR '.' K_ELSE '.' K_IF LPAR fieldCondition RPAR CLOSE statement*;
-descriptorElseMatchStmt: OPEN K_DESCRIPTOR '.' K_ELSE '.' MATCH_OPEN regex MATCH_CLOSE CLOSE statement*;
+descriptorElseMatchStmt: OPEN K_DESCRIPTOR '.' K_ELSE '.' MATCH_OPEN regex REGEX_CLOSE CLOSE statement*;
 descriptorElseContainsStmt: OPEN K_DESCRIPTOR '.' K_ELSE '.' K_CONTAINS LPAR word RPAR CLOSE statement*;
 descriptorElseEachStmt: OPEN K_DESCRIPTOR '.' K_ELSE '.' K_EACH ( LPAR fieldCondition RPAR )? CLOSE statement*;
 descriptorElseEndStmt: OPEN K_DESCRIPTOR '.' K_ELSE CLOSE statement*;
@@ -182,6 +244,7 @@ foreignElseCondEndStmt: foreignElseIfStmt+ (foreignElseEachStmt | foreignElseEnd
 constant:
     tableStmt
   | fieldStmt
+  | fieldReplaceStmt
   | indexNameStmt
   | uniqueNameStmt
   | primaryNameStmt
@@ -189,6 +252,7 @@ constant:
   | foreignNameStmt
   ;
 
+tableReplaceStmt: OPEN tableLevel '.' REPLACE_OPEN regex (',' regex)? REGEX_CLOSE CLOSE;
 tableStmt: OPEN tableLevel tableProps* CLOSE;
 tableProps: '.' tableProp;
 tableProp:
@@ -207,6 +271,7 @@ tableProp:
   | K_STYLE
   ;
 
+fieldReplaceStmt: OPEN fieldLevel '.' REPLACE_OPEN regex (',' regex)? REGEX_CLOSE CLOSE;
 fieldStmt: OPEN fieldLevel fieldProps* CLOSE;
 fieldProps: '.' fieldProp;
 fieldProp:
@@ -275,7 +340,7 @@ anyCondition: expression | priorityCondition;
 priorityCondition: LPAR condition RPAR;
 orCondition: OR condition;
 andCondition: AND condition;
-expression: attribute | property | type | word;
+expression: attribute | property | type;
 
 attribute:
     K_COMMENT
@@ -290,6 +355,8 @@ property:
   | K_PRIMARY
   | K_REPEATED
   | K_NULL
+  | K_OPTIONAL
+  | K_REQUIRED
   | K_UNSIGNED
   | K_DEFAULT
   | K_INFO
@@ -300,6 +367,7 @@ property:
   | K_CONSTRAINT
   | K_FOREIGN
   | K_UNIQUE
+  | K_FULLTEXT
   | K_RADIO
   | K_MASKED
   | K_ARRAY
@@ -307,19 +375,24 @@ property:
   | K_OPTION
   | K_FEW_FIELDS
   | K_FIRST
+  | K_NON_FIRST
   ;
 
 type:
     K_INTEGER
+  | K_TINYINT
   | K_BIGINT
   | K_STRING
+  | K_CHAR
   | K_TEXT
   | K_BOOLEAN
   | K_CURRENCY
   | K_DOUBLE
   | K_FLOAT
   | K_DATE
+  | K_JSON
   | K_DATETIME
+  | K_TIMESTAMP
   | K_TIME
   | K_ENUM
   | K_BLOB

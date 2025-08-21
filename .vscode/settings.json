@@ -8,6 +8,9 @@
         "outputDir": ".",
         "alternativeJar": "../../lib/antlr-4.8-complete.jar"
     },
+    "[typescript]": {
+        "editor.formatOnSave": true
+    },
     "jestrunner.jestCommand": "yarn test",
     "jestrunner.changeDirectoryToWorkspaceRoot": false
 }
