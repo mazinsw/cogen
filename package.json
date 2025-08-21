@@ -1,11 +1,14 @@
 {
-  "name": "codegen",
+  "name": "gentity",
   "version": "1.0.0",
-  "description": "A code generator for any language based on modeling",
-  "main": "index.js",
-  "repository": "https://github.com/mazinsw/codegen.git",
+  "description": "A code generator for any language based on entity modeling",
+  "repository": "https://github.com/mazinsw/gentity.git",
   "author": "Francimar Alves <mazinsw@gmail.com>",
   "license": "MIT",
+  "main": "./dist/main/main.js",
+  "bin": {
+    "gentity": "./dist/main/cli.js"
+  },
   "scripts": {
     "clean": "rimraf coverage dist tmp",
     "build": "tsc -d -p tsconfig.release.json",
@@ -14,6 +17,7 @@
     "style:fix": "prettier --write \"src/**/*.ts\"",
     "style:check": "prettier --check \"src/**/*.ts\"",
     "test": "jest",
+    "cli": "ts-node ./src/main/cli.ts",
     "test:cover": "jest --coverage",
     "test:watch": "jest --watch",
     "test:debug": "node --inspect-brk=9229 node_modules/.bin/jest -i",
@@ -38,6 +42,8 @@
     "prettier": "^3.6.2",
     "rimraf": "^6.0.1",
     "ts-jest": "^29.4.1",
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
     "tsutils": "^3.21.0",
     "typescript": "^5.9.2"
   },

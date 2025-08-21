@@ -16,12 +16,18 @@
     "noUnusedParameters": true,
     "noImplicitAny": false,
     "noImplicitThis": false,
-    "strictNullChecks": false
+    "strictNullChecks": false,
+    "paths": {
+      "@/*": ["./src/*"]
+    }
   },
   "include": [
     "src/**/*",
     "tests/**/*"
   ],
+  "ts-node": {
+    "require": ["tsconfig-paths/register"]
+  },
   "types": [
     "w3c-web-usb"
   ]
