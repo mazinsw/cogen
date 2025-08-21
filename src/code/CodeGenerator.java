@@ -346,6 +346,18 @@ public abstract class CodeGenerator implements LogListener {
 		}
 		return getPrimary(table);
 	}
+
+	protected Field getImage(Table table) {
+		Hashtable<String, String> values = new Hashtable<>();
+		for (Field field : table.getFields()) {
+			values.clear();
+			TemplateLoader.extractComment(field.getComment(), values, "F.");
+			if(values.containsKey("F.I")) {
+				return field;
+			}
+		}
+    	return null;
+	}
 	
 	@Override
 	public void addMessage(String message) {

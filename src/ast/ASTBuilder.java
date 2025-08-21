@@ -161,6 +161,7 @@ public class ASTBuilder extends SQLParserBaseListener {
 		Field field = (Field) stack.peek();
 		DataType type = new DataType(DataType.INTEGER);
 		field.setType(type);
+		field.setUnsigned(ctx.K_UNSIGNED() != null);
 	}
 
 	@Override
@@ -169,6 +170,7 @@ public class ASTBuilder extends SQLParserBaseListener {
 		Field field = (Field) stack.peek();
 		DataType type = new DataType(DataType.INTEGER);
 		field.setType(type);
+		field.setUnsigned(ctx.K_UNSIGNED() != null);
 	}
 
 	@Override
@@ -290,6 +292,7 @@ public class ASTBuilder extends SQLParserBaseListener {
 		Field field = (Field) stack.peek();
 		DataType type = new DataType(DataType.BIGINT);
 		field.setType(type);
+		field.setUnsigned(ctx.K_UNSIGNED() != null);
 	}
 	
 	@Override
@@ -307,6 +310,7 @@ public class ASTBuilder extends SQLParserBaseListener {
 		Field field = (Field) stack.peek();
 		DataType type = new DataType(DataType.TINYINT);
 		field.setType(type);
+		field.setUnsigned(ctx.K_UNSIGNED() != null);
 	}
 
 	@Override

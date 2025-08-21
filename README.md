@@ -50,7 +50,7 @@ G: name gender
 	example: [G:a] or [G:o]
 
 L: field style
-	[L:form-control]
+	[L:form-control|extra style]
 
 P: Treats that field as password field
 
@@ -92,6 +92,7 @@ table.order = left zero padded table order
 table.if(attribute) = table condition, attributes: comment, inherited, package, path, unpluralizable, pluralizable, index, unique
 table.exists(type|attribute) = check if the table contains a field with matching type or attribute
 	example: $[table.exists(comment)] = check if table has commentary
+table.match(regex) = test if regex match table name
 table.finds(column_name) = check if the table contains a field called column_name
 	example: $[table.finds(.*_at)] = check if table has field name as date
 table.each = for each all tables
@@ -114,10 +115,15 @@ constraint.each(type|attribute) = for each field of constraint
 foreign.name = foreign key name
 foreign.each(type|attribute) = for each field of foreign key
 inherited =  inherited table
+image = first image field of table [I]
 primary = primary key field have all field properties, when primary key have only one field
 descriptor = main field of table, have all field properties
 reference = referenced table by field or constraint, have all table commands
-*reference.each(type|attribute&all) = for each field of referenced constraint table
+reference.match(regex) = test if regex match referenced table name
+reference.finds(column_name) = check if the referenced table contains a field called column_name
+	example: $[reference.finds(.*_at)] = check if referenced table has field name as date pattern
+reference.reverse_each = reverse for each field process content
+reference.each(type|attribute&all) = for each field of referenced constraint table
 field = name of table field
 field.unix = name of field in unix format
 field.norm = name of field normalized
@@ -145,7 +151,7 @@ field.each = for each field process content
 	example: field.each(all), for each all table field
 field.end = end each loop
 field.if(type|attribute) = test if field type or has attributes
-	types: reference, primary, repeated, few_fields, many, single, first, non_first, null, optional, non_null, not_null, required, default, info, descriptor, searchable, comment, description, unique, radio, masked, array, image, integer, bigint, string, text, boolean, currency, double, float, date, datetime, time, enum, blob
+	types: reference, primary, repeated, few_fields, many, single, first, non_first, null, optional, non_null, not_null, required, default, info, descriptor, searchable, comment, description, unique, radio, masked, array, image, integer, bigint, string, text, boolean, currency, double, float, date, datetime, time, enum, blob, unsigned
 	example: field.if(reference)
 field.else = when if condition is false (must be the last before field.end)
 field.else.if(type|attribute) = when if condition is false and make a test if field type or has attributes

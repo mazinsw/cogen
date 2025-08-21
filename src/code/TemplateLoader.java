@@ -49,14 +49,14 @@ public class TemplateLoader {
 	 * 
 	 * @param text text to wrap
 	 * @param length max line width
-	 * @param preffix preffix for each line
+	 * @param prefix prefix for each line
 	 * @return
 	 */
-	public static String wrap(String text, int length, String preffix) {
+	public static String wrap(String text, int length, String prefix) {
 		text = WordUtils.wrap(text, length);
-		if(preffix == null)
+		if(prefix == null)
 			return text;
-		return preffix + text.replaceAll("\n", "\n" + preffix);
+		return prefix + text.replaceAll("\n", "\n" + prefix);
 	}
 	
 	public String recase(String wordcase, String entry) {
@@ -87,6 +87,8 @@ public class TemplateLoader {
 			result = result.toLowerCase();
 		else if(wordcase.length() > 1 && Character.isUpperCase(wordcase.charAt(1)))
 			result = result.toUpperCase();
+		else if(wordcase.length() > 1 && Character.isUpperCase(wordcase.charAt(0)) && Character.isLowerCase(wordcase.charAt(1)))
+			result = result.substring(0, 1).toUpperCase() + result.substring(1);
 		else
 			result = entry;
 		return result;
@@ -113,6 +115,7 @@ public class TemplateLoader {
 		case DataType.BLOB:
 			return "blob";
 		case DataType.TINYINT:
+			return "tinyint";
 		case DataType.INTEGER:
 			return "integer";
 		case DataType.BIGINT:
