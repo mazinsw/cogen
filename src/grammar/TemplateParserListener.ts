@@ -120,24 +120,13 @@ import { ForeignElseEndStmtContext } from "./TemplateParser";
 import { ForeignElseStmtContext } from "./TemplateParser";
 import { ForeignElseCondEndStmtContext } from "./TemplateParser";
 import { ConstantContext } from "./TemplateParser";
-import { TableReplaceStmtContext } from "./TemplateParser";
+import { ReplaceStmtContext } from "./TemplateParser";
 import { TableStmtContext } from "./TemplateParser";
 import { TablePropsContext } from "./TemplateParser";
-import { TablePropContext } from "./TemplateParser";
-import { FieldReplaceStmtContext } from "./TemplateParser";
 import { FieldStmtContext } from "./TemplateParser";
 import { FieldPropsContext } from "./TemplateParser";
-import { FieldPropContext } from "./TemplateParser";
-import { IndexNameStmtContext } from "./TemplateParser";
-import { UniqueNameStmtContext } from "./TemplateParser";
-import { PrimaryNameStmtContext } from "./TemplateParser";
-import { ConstraintNameStmtContext } from "./TemplateParser";
-import { ForeignNameStmtContext } from "./TemplateParser";
-import { TextContentContext } from "./TemplateParser";
-import { TableLevelContext } from "./TemplateParser";
-import { FieldLevelContext } from "./TemplateParser";
-import { RegexContext } from "./TemplateParser";
-import { WordContext } from "./TemplateParser";
+import { ConstraintStmtContext } from "./TemplateParser";
+import { AllLevelsContext } from "./TemplateParser";
 import { TableConditionContext } from "./TemplateParser";
 import { FieldConditionContext } from "./TemplateParser";
 import { IndexConditionContext } from "./TemplateParser";
@@ -148,6 +137,14 @@ import { PriorityConditionContext } from "./TemplateParser";
 import { OrConditionContext } from "./TemplateParser";
 import { AndConditionContext } from "./TemplateParser";
 import { ExpressionContext } from "./TemplateParser";
+import { TextContentContext } from "./TemplateParser";
+import { TableLevelContext } from "./TemplateParser";
+import { FieldLevelContext } from "./TemplateParser";
+import { ConstraintLevelContext } from "./TemplateParser";
+import { RegexContext } from "./TemplateParser";
+import { WordContext } from "./TemplateParser";
+import { TablePropContext } from "./TemplateParser";
+import { FieldPropContext } from "./TemplateParser";
 import { AttributeContext } from "./TemplateParser";
 import { PropertyContext } from "./TemplateParser";
 import { TypeContext } from "./TemplateParser";
@@ -1446,15 +1443,15 @@ export interface TemplateParserListener extends ParseTreeListener {
 	exitConstant?: (ctx: ConstantContext) => void;
 
 	/**
-	 * Enter a parse tree produced by `TemplateParser.tableReplaceStmt`.
+	 * Enter a parse tree produced by `TemplateParser.replaceStmt`.
 	 * @param ctx the parse tree
 	 */
-	enterTableReplaceStmt?: (ctx: TableReplaceStmtContext) => void;
+	enterReplaceStmt?: (ctx: ReplaceStmtContext) => void;
 	/**
-	 * Exit a parse tree produced by `TemplateParser.tableReplaceStmt`.
+	 * Exit a parse tree produced by `TemplateParser.replaceStmt`.
 	 * @param ctx the parse tree
 	 */
-	exitTableReplaceStmt?: (ctx: TableReplaceStmtContext) => void;
+	exitReplaceStmt?: (ctx: ReplaceStmtContext) => void;
 
 	/**
 	 * Enter a parse tree produced by `TemplateParser.tableStmt`.
@@ -1479,28 +1476,6 @@ export interface TemplateParserListener extends ParseTreeListener {
 	exitTableProps?: (ctx: TablePropsContext) => void;
 
 	/**
-	 * Enter a parse tree produced by `TemplateParser.tableProp`.
-	 * @param ctx the parse tree
-	 */
-	enterTableProp?: (ctx: TablePropContext) => void;
-	/**
-	 * Exit a parse tree produced by `TemplateParser.tableProp`.
-	 * @param ctx the parse tree
-	 */
-	exitTableProp?: (ctx: TablePropContext) => void;
-
-	/**
-	 * Enter a parse tree produced by `TemplateParser.fieldReplaceStmt`.
-	 * @param ctx the parse tree
-	 */
-	enterFieldReplaceStmt?: (ctx: FieldReplaceStmtContext) => void;
-	/**
-	 * Exit a parse tree produced by `TemplateParser.fieldReplaceStmt`.
-	 * @param ctx the parse tree
-	 */
-	exitFieldReplaceStmt?: (ctx: FieldReplaceStmtContext) => void;
-
-	/**
 	 * Enter a parse tree produced by `TemplateParser.fieldStmt`.
 	 * @param ctx the parse tree
 	 */
@@ -1523,125 +1498,26 @@ export interface TemplateParserListener extends ParseTreeListener {
 	exitFieldProps?: (ctx: FieldPropsContext) => void;
 
 	/**
-	 * Enter a parse tree produced by `TemplateParser.fieldProp`.
+	 * Enter a parse tree produced by `TemplateParser.constraintStmt`.
 	 * @param ctx the parse tree
 	 */
-	enterFieldProp?: (ctx: FieldPropContext) => void;
+	enterConstraintStmt?: (ctx: ConstraintStmtContext) => void;
 	/**
-	 * Exit a parse tree produced by `TemplateParser.fieldProp`.
+	 * Exit a parse tree produced by `TemplateParser.constraintStmt`.
 	 * @param ctx the parse tree
 	 */
-	exitFieldProp?: (ctx: FieldPropContext) => void;
+	exitConstraintStmt?: (ctx: ConstraintStmtContext) => void;
 
 	/**
-	 * Enter a parse tree produced by `TemplateParser.indexNameStmt`.
+	 * Enter a parse tree produced by `TemplateParser.allLevels`.
 	 * @param ctx the parse tree
 	 */
-	enterIndexNameStmt?: (ctx: IndexNameStmtContext) => void;
+	enterAllLevels?: (ctx: AllLevelsContext) => void;
 	/**
-	 * Exit a parse tree produced by `TemplateParser.indexNameStmt`.
+	 * Exit a parse tree produced by `TemplateParser.allLevels`.
 	 * @param ctx the parse tree
 	 */
-	exitIndexNameStmt?: (ctx: IndexNameStmtContext) => void;
-
-	/**
-	 * Enter a parse tree produced by `TemplateParser.uniqueNameStmt`.
-	 * @param ctx the parse tree
-	 */
-	enterUniqueNameStmt?: (ctx: UniqueNameStmtContext) => void;
-	/**
-	 * Exit a parse tree produced by `TemplateParser.uniqueNameStmt`.
-	 * @param ctx the parse tree
-	 */
-	exitUniqueNameStmt?: (ctx: UniqueNameStmtContext) => void;
-
-	/**
-	 * Enter a parse tree produced by `TemplateParser.primaryNameStmt`.
-	 * @param ctx the parse tree
-	 */
-	enterPrimaryNameStmt?: (ctx: PrimaryNameStmtContext) => void;
-	/**
-	 * Exit a parse tree produced by `TemplateParser.primaryNameStmt`.
-	 * @param ctx the parse tree
-	 */
-	exitPrimaryNameStmt?: (ctx: PrimaryNameStmtContext) => void;
-
-	/**
-	 * Enter a parse tree produced by `TemplateParser.constraintNameStmt`.
-	 * @param ctx the parse tree
-	 */
-	enterConstraintNameStmt?: (ctx: ConstraintNameStmtContext) => void;
-	/**
-	 * Exit a parse tree produced by `TemplateParser.constraintNameStmt`.
-	 * @param ctx the parse tree
-	 */
-	exitConstraintNameStmt?: (ctx: ConstraintNameStmtContext) => void;
-
-	/**
-	 * Enter a parse tree produced by `TemplateParser.foreignNameStmt`.
-	 * @param ctx the parse tree
-	 */
-	enterForeignNameStmt?: (ctx: ForeignNameStmtContext) => void;
-	/**
-	 * Exit a parse tree produced by `TemplateParser.foreignNameStmt`.
-	 * @param ctx the parse tree
-	 */
-	exitForeignNameStmt?: (ctx: ForeignNameStmtContext) => void;
-
-	/**
-	 * Enter a parse tree produced by `TemplateParser.textContent`.
-	 * @param ctx the parse tree
-	 */
-	enterTextContent?: (ctx: TextContentContext) => void;
-	/**
-	 * Exit a parse tree produced by `TemplateParser.textContent`.
-	 * @param ctx the parse tree
-	 */
-	exitTextContent?: (ctx: TextContentContext) => void;
-
-	/**
-	 * Enter a parse tree produced by `TemplateParser.tableLevel`.
-	 * @param ctx the parse tree
-	 */
-	enterTableLevel?: (ctx: TableLevelContext) => void;
-	/**
-	 * Exit a parse tree produced by `TemplateParser.tableLevel`.
-	 * @param ctx the parse tree
-	 */
-	exitTableLevel?: (ctx: TableLevelContext) => void;
-
-	/**
-	 * Enter a parse tree produced by `TemplateParser.fieldLevel`.
-	 * @param ctx the parse tree
-	 */
-	enterFieldLevel?: (ctx: FieldLevelContext) => void;
-	/**
-	 * Exit a parse tree produced by `TemplateParser.fieldLevel`.
-	 * @param ctx the parse tree
-	 */
-	exitFieldLevel?: (ctx: FieldLevelContext) => void;
-
-	/**
-	 * Enter a parse tree produced by `TemplateParser.regex`.
-	 * @param ctx the parse tree
-	 */
-	enterRegex?: (ctx: RegexContext) => void;
-	/**
-	 * Exit a parse tree produced by `TemplateParser.regex`.
-	 * @param ctx the parse tree
-	 */
-	exitRegex?: (ctx: RegexContext) => void;
-
-	/**
-	 * Enter a parse tree produced by `TemplateParser.word`.
-	 * @param ctx the parse tree
-	 */
-	enterWord?: (ctx: WordContext) => void;
-	/**
-	 * Exit a parse tree produced by `TemplateParser.word`.
-	 * @param ctx the parse tree
-	 */
-	exitWord?: (ctx: WordContext) => void;
+	exitAllLevels?: (ctx: AllLevelsContext) => void;
 
 	/**
 	 * Enter a parse tree produced by `TemplateParser.tableCondition`.
@@ -1752,6 +1628,94 @@ export interface TemplateParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	exitExpression?: (ctx: ExpressionContext) => void;
+
+	/**
+	 * Enter a parse tree produced by `TemplateParser.textContent`.
+	 * @param ctx the parse tree
+	 */
+	enterTextContent?: (ctx: TextContentContext) => void;
+	/**
+	 * Exit a parse tree produced by `TemplateParser.textContent`.
+	 * @param ctx the parse tree
+	 */
+	exitTextContent?: (ctx: TextContentContext) => void;
+
+	/**
+	 * Enter a parse tree produced by `TemplateParser.tableLevel`.
+	 * @param ctx the parse tree
+	 */
+	enterTableLevel?: (ctx: TableLevelContext) => void;
+	/**
+	 * Exit a parse tree produced by `TemplateParser.tableLevel`.
+	 * @param ctx the parse tree
+	 */
+	exitTableLevel?: (ctx: TableLevelContext) => void;
+
+	/**
+	 * Enter a parse tree produced by `TemplateParser.fieldLevel`.
+	 * @param ctx the parse tree
+	 */
+	enterFieldLevel?: (ctx: FieldLevelContext) => void;
+	/**
+	 * Exit a parse tree produced by `TemplateParser.fieldLevel`.
+	 * @param ctx the parse tree
+	 */
+	exitFieldLevel?: (ctx: FieldLevelContext) => void;
+
+	/**
+	 * Enter a parse tree produced by `TemplateParser.constraintLevel`.
+	 * @param ctx the parse tree
+	 */
+	enterConstraintLevel?: (ctx: ConstraintLevelContext) => void;
+	/**
+	 * Exit a parse tree produced by `TemplateParser.constraintLevel`.
+	 * @param ctx the parse tree
+	 */
+	exitConstraintLevel?: (ctx: ConstraintLevelContext) => void;
+
+	/**
+	 * Enter a parse tree produced by `TemplateParser.regex`.
+	 * @param ctx the parse tree
+	 */
+	enterRegex?: (ctx: RegexContext) => void;
+	/**
+	 * Exit a parse tree produced by `TemplateParser.regex`.
+	 * @param ctx the parse tree
+	 */
+	exitRegex?: (ctx: RegexContext) => void;
+
+	/**
+	 * Enter a parse tree produced by `TemplateParser.word`.
+	 * @param ctx the parse tree
+	 */
+	enterWord?: (ctx: WordContext) => void;
+	/**
+	 * Exit a parse tree produced by `TemplateParser.word`.
+	 * @param ctx the parse tree
+	 */
+	exitWord?: (ctx: WordContext) => void;
+
+	/**
+	 * Enter a parse tree produced by `TemplateParser.tableProp`.
+	 * @param ctx the parse tree
+	 */
+	enterTableProp?: (ctx: TablePropContext) => void;
+	/**
+	 * Exit a parse tree produced by `TemplateParser.tableProp`.
+	 * @param ctx the parse tree
+	 */
+	exitTableProp?: (ctx: TablePropContext) => void;
+
+	/**
+	 * Enter a parse tree produced by `TemplateParser.fieldProp`.
+	 * @param ctx the parse tree
+	 */
+	enterFieldProp?: (ctx: FieldPropContext) => void;
+	/**
+	 * Exit a parse tree produced by `TemplateParser.fieldProp`.
+	 * @param ctx the parse tree
+	 */
+	exitFieldProp?: (ctx: FieldPropContext) => void;
 
 	/**
 	 * Enter a parse tree produced by `TemplateParser.attribute`.

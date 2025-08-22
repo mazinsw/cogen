@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS `TEmpresas` (
   UNIQUE INDEX `Email_UNIQUE` (`Email` ASC),
   UNIQUE INDEX `GUID_UNIQUE` (`GUID` ASC))
 ENGINE = InnoDB
-COMMENT = 'Informações da empresa Informações da empresa Informações da empresa Informações da empresa Informações da empresa[N:Company|Companies]';
+COMMENT = 'Informações da empresa Informações da empresa Informações da empresa Informações da empresa Informações da empresa[N:Company|Companies][L:Company|Companies]';
 
 -- -----------------------------------------------------
 -- Table `TDispositivos`
@@ -60,7 +60,7 @@ CREATE TABLE IF NOT EXISTS `TDispositivos` (
     ON DELETE SET NULL
     ON UPDATE CASCADE)
 ENGINE = InnoDB
-COMMENT = '[N:Device|Devices][G:o]';
+COMMENT = '[N:Device|Devices][L:Device|Devices][G:o]';
 
 
 SET SQL_MODE=@OLD_SQL_MODE;

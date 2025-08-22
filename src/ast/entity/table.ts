@@ -5,7 +5,6 @@ import { Field } from '@/ast/entity/field';
 import { ForeignKey } from '@/ast/entity/foreign-key';
 import { PrimaryKey } from '@/ast/entity/primary-key';
 import { UniqueKey } from '@/ast/entity/unique-key';
-import { Comment } from '@/util/comment';
 
 export class Table extends CommentedNode {
   private fields: Field[];
@@ -25,6 +24,7 @@ export class Table extends CommentedNode {
 
   public addField(field: Field) {
     this.fields.push(field);
+    field.prepare();
   }
 
   public getConstraints() {
@@ -169,14 +169,15 @@ export class Table extends CommentedNode {
   }
 
   public getDescriptor(): Field | null {
-    const values = new Map<string, string>();
     let descField: Field | null = null;
     for (const field of this.getFields()) {
-      values.clear();
-      Comment.extract(field.getComment(), values, 'F.');
-      if (values.has('F.S')) {
-        if (field.getType().isString() || descField == null) descField = field;
-        if (!values.get('F.S')) return field;
+      if (field.is(Field.Attribute.DESCRIPTOR)) {
+        if (field.getType().isString() || descField == null) {
+          descField = field;
+        }
+        if (!field.getAttribute(Field.Attribute.DESCRIPTOR)) {
+          return field;
+        }
       }
     }
     if (descField != null) return descField;
@@ -184,22 +185,23 @@ export class Table extends CommentedNode {
       if (constraint instanceof UniqueKey) {
         if (constraint.getFields().length == 1) {
           const field = this.find(constraint.getFields()[0].getName());
-          if (field.getType().isString()) return field;
+          if (field.getType().isString()) {
+            return field;
+          }
         }
       }
     }
     for (const field of this.getFields()) {
-      if (field.getType().isString()) return field;
+      if (field.getType().isString()) {
+        return field;
+      }
     }
     return this.getPrimary();
   }
 
   public getImage(): Field | null {
-    const values = new Map<string, string>();
     for (const field of this.getFields()) {
-      values.clear();
-      Comment.extract(field.getComment(), values, 'F.');
-      if (values.has('F.I')) {
+      if (field.is(Field.Attribute.IMAGE)) {
         return field;
       }
     }

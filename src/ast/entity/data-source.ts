@@ -1,17 +1,14 @@
 import { Node } from '@/ast/entity/node';
+import { Source } from '@/ast/entity/source';
 import { Table } from '@/ast/entity/table';
 import { ASTBuilder } from '@/ast/sql/ast-builder';
 import { Configuration } from '@/util/configuration';
-import { LogListener } from '@/util/log-listener';
 
-export class DataSource extends Node {
+export class DataSource extends Source {
   private tables: Table[];
-  private statements: Node[];
-  private logger?: LogListener;
 
-  constructor(private configuration: Configuration) {
-    super();
-    this.statements = [];
+  constructor(configuration: Configuration) {
+    super(configuration);
     this.tables = [];
   }
 
@@ -27,20 +24,13 @@ export class DataSource extends Node {
     throw new Error('Failed to load or parse data source');
   }
 
-  public setLogger(logger: LogListener) {
-    this.logger = logger;
-  }
-
-  public getStatements(): Node[] {
-    return this.statements;
-  }
-
   public addStatement(statement: Node) {
     if (statement instanceof Table) {
       this.tables.push(statement);
+      statement.prepare();
       return;
     }
-    this.statements.push(statement);
+    super.addStatement(statement);
   }
 
   public getTables() {

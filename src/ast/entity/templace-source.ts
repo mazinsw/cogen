@@ -1,17 +1,13 @@
-import { DataSource } from '@/ast/entity/data-source';
-import { Field } from '@/ast/entity/field';
-import { Node } from '@/ast/entity/node';
-import { Table } from '@/ast/entity/table';
+import { Source, SourceContext } from '@/ast/entity/source';
 import { ASTBuilder } from '@/ast/template/ast-builder';
-import { LogListener } from '@/util/log-listener';
+import { Configuration } from '@/util/configuration';
 
-export class TemplateSource extends Node {
-  private statements: Node[];
-  private logger?: LogListener;
-
-  constructor(private filePathOrContents?: string) {
-    super();
-    this.statements = [];
+export class TemplateSource extends Source {
+  constructor(
+    configuration: Configuration,
+    private filePathOrContents?: string,
+  ) {
+    super(configuration);
   }
 
   public async load(pathAsContent?: boolean) {
@@ -27,26 +23,9 @@ export class TemplateSource extends Node {
     throw new Error('Failed to load or parse template source');
   }
 
-  public setLogger(logger: LogListener) {
-    this.logger = logger;
-  }
-
-  public getStatements(): Node[] {
-    return this.statements;
-  }
-
-  public addStatement(statement: Node) {
-    this.statements.push(statement);
-  }
-
-  public execute(
-    dataSource: DataSource,
-    context: {
-      table: Table;
-      field: Field;
-      index: { table: number; field: number };
-    },
-  ): string {
-    return this.filePathOrContents;
+  public execute(context: SourceContext) {
+    this.statements.forEach((statement) => {
+      statement.execute(context);
+    });
   }
 }

@@ -1,3 +1,4 @@
+import { SourceContext } from '@/ast/entity/source';
 import { Value } from '@/ast/entity/value';
 
 export class StringValue extends Value {
@@ -15,5 +16,9 @@ export class StringValue extends Value {
 
   public toString(): string {
     return this.value;
+  }
+
+  public execute(context: SourceContext): void {
+    context.output.appendContents(this.value);
   }
 }

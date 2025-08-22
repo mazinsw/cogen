@@ -244,17 +244,48 @@ foreignElseCondEndStmt: foreignElseIfStmt+ (foreignElseEachStmt | foreignElseEnd
 constant:
     tableStmt
   | fieldStmt
-  | fieldReplaceStmt
-  | indexNameStmt
-  | uniqueNameStmt
-  | primaryNameStmt
-  | constraintNameStmt
-  | foreignNameStmt
+  | constraintStmt
+  | replaceStmt
   ;
 
-tableReplaceStmt: OPEN tableLevel '.' REPLACE_OPEN regex (',' regex)? REGEX_CLOSE CLOSE;
+replaceStmt: OPEN allLevels '.' REPLACE_OPEN regex (',' regex)? REGEX_CLOSE CLOSE;
 tableStmt: OPEN tableLevel tableProps* CLOSE;
 tableProps: '.' tableProp;
+
+fieldStmt: OPEN fieldLevel fieldProps* CLOSE;
+fieldProps: '.' fieldProp;
+
+constraintStmt: OPEN constraintLevel '.' K_NAME CLOSE;
+
+allLevels: tableLevel | fieldLevel | constraintLevel;
+
+tableCondition: condition;
+fieldCondition: condition;
+indexCondition: condition;
+constraintCondition: condition;
+
+condition:
+    expression
+  | priorityCondition
+  | anyCondition orCondition
+  | anyCondition andCondition;
+anyCondition: expression | priorityCondition;
+priorityCondition: LPAR condition RPAR;
+orCondition: OR condition;
+andCondition: AND condition;
+expression: attribute | property | type;
+
+textContent: TEXT;
+
+tableLevel: K_TABLE | K_INHERITED | K_REFERENCE;
+
+fieldLevel: K_FIELD | K_DESCRIPTOR | K_OPTION | K_IMAGE;
+
+constraintLevel: K_CONSTRAINT | K_INDEX | K_UNIQUE | K_PRIMARY | K_FOREIGN;
+
+regex: REGEX;
+word: WORD;
+
 tableProp:
     K_UNIX
   | K_PLURAL
@@ -269,11 +300,9 @@ tableProp:
   | K_INHERITED
   | K_PATH
   | K_STYLE
+  | K_EXTRA
   ;
 
-fieldReplaceStmt: OPEN fieldLevel '.' REPLACE_OPEN regex (',' regex)? REGEX_CLOSE CLOSE;
-fieldStmt: OPEN fieldLevel fieldProps* CLOSE;
-fieldProps: '.' fieldProp;
 fieldProp:
     K_NAME
   | K_UNIX
@@ -306,41 +335,6 @@ fieldProp:
   | K_INSERT
   | K_NOID
   ;
-
-indexNameStmt: OPEN K_INDEX '.' K_NAME CLOSE;
-
-uniqueNameStmt: OPEN K_UNIQUE '.' K_NAME CLOSE;
-
-primaryNameStmt: OPEN K_PRIMARY '.' K_NAME CLOSE;
-
-constraintNameStmt: OPEN K_CONSTRAINT '.' K_NAME CLOSE;
-
-foreignNameStmt: OPEN K_FOREIGN '.' K_NAME CLOSE;
-
-textContent: TEXT;
-
-tableLevel: K_TABLE | K_INHERITED | K_REFERENCE;
-
-fieldLevel: K_FIELD | K_DESCRIPTOR | K_OPTION | K_IMAGE;
-
-regex: REGEX;
-word: WORD;
-
-tableCondition: condition;
-fieldCondition: condition;
-indexCondition: condition;
-constraintCondition: condition;
-
-condition:
-    expression
-  | priorityCondition
-  | anyCondition orCondition
-  | anyCondition andCondition;
-anyCondition: expression | priorityCondition;
-priorityCondition: LPAR condition RPAR;
-orCondition: OR condition;
-andCondition: AND condition;
-expression: attribute | property | type;
 
 attribute:
     K_COMMENT

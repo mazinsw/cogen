@@ -5,10 +5,10 @@ export class Comment {
     return comment.substring(1, comment.length - 1);
   }
 
-  public static extract(
+  public static extract<T>(
     field: string,
-    values: Map<string, string>,
-    preffix: string,
+    values: Map<T, string[]>,
+    toKey: (entry: string) => T,
   ): string | null {
     let comment = '';
     let cmm = field;
@@ -45,12 +45,12 @@ export class Comment {
     for (const cmd of cmds) {
       offset = cmd.indexOf(':');
       if (offset == -1) {
-        if (cmd) values.set(preffix + cmd, '');
+        if (cmd) values.set(toKey(cmd), ['']);
         continue;
       }
       const key = cmd.substring(0, offset);
       if (!key) continue;
-      values.set(preffix + key, cmd.substring(offset + 1));
+      values.set(toKey(key), cmd.substring(offset + 1).split('|'));
     }
     return comment;
   }

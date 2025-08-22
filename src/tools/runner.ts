@@ -10,6 +10,7 @@ export class Runner {
   private configuration: Configuration;
   private dataSource: DataSource;
   private files: FileEntry[];
+  private contents: string;
 
   constructor(private logger: LogListener) {
     this.setConfiguration(new Configuration());
@@ -21,6 +22,10 @@ export class Runner {
 
   public setConfiguration(configuration: Configuration) {
     this.configuration = configuration;
+  }
+
+  public appendContents(text: string) {
+    this.contents += text;
   }
 
   public async execute(saveOnSuccess = false): Promise<number> {
@@ -36,7 +41,7 @@ export class Runner {
       await this.generate();
       if (saveOnSuccess) await this.configuration.save();
     } catch (error) {
-      this.logger?.addMessage(error.message);
+      console.error(error);
       return 5;
     }
     const estimatedTime = Date.now() - startTime;
@@ -53,12 +58,18 @@ export class Runner {
         continue;
       }
       const tempFile = this.configuration.rebasePath(file.path);
-      const filenameTemplateSource = new TemplateSource(tempFile);
+      const filenameTemplateSource = new TemplateSource(
+        this.configuration,
+        tempFile,
+      );
       filenameTemplateSource.setLogger(this.logger);
       if (tempFile.includes('$[')) {
         await filenameTemplateSource.load(true);
       }
-      const contentTemplateSource = new TemplateSource(file.path);
+      const contentTemplateSource = new TemplateSource(
+        this.configuration,
+        file.path,
+      );
       contentTemplateSource.setLogger(this.logger);
       if (!file.isDirectory) {
         await contentTemplateSource.load();
@@ -74,16 +85,16 @@ export class Runner {
         let pathFieldIndex = -1;
         for (const field of table.getFields()) {
           pathFieldIndex++;
-          // Hashtable<String, String> newValues = new Hashtable<>();
-          // TemplateLoader.extractComment(table.getComment(), newValues, "T.");
-          // TemplateLoader.extractComment(field.getComment(), newValues, "F.");
           let destFile = tempFile;
           if (filenameTemplateSource.getStatements().length > 0) {
-            destFile = filenameTemplateSource.execute(this.dataSource, {
+            this.contents = '';
+            filenameTemplateSource.execute({
               table,
               field,
+              output: this,
               index: { table: tableIndex, field: pathFieldIndex },
             });
+            destFile = this.contents;
             destFile = destFile.replaceAll('\\', path.sep);
             destFile = destFile.replaceAll('/', path.sep);
             if (destFile.includes(path.sep + path.sep)) {
@@ -93,7 +104,7 @@ export class Runner {
           if (parentFile === destFile) {
             continue;
           }
-          if (prevFile != null && prevFile === destFile) {
+          if (prevFile === destFile) {
             continue;
           }
           prevFile = destFile;
@@ -106,14 +117,18 @@ export class Runner {
             recursive: true,
           });
           fieldIndex++;
-          const encoding = 'utf8'; // detectEncoding(file);
-          // String fileContent = FileUtils.readFileToString(file, charset);
-          const fileContent = filenameTemplateSource.execute(this.dataSource, {
+          this.contents = '';
+          contentTemplateSource.execute({
             table,
             field,
+            output: this,
             index: { table: tableIndex, field: fieldIndex },
           });
-          await fs.promises.writeFile(destFile, fileContent, { encoding });
+          await fs.promises.writeFile(
+            destFile,
+            this.contents,
+            contentTemplateSource.encoding,
+          );
           if (filenameTemplateSource.getStatements().length === 0) {
             break;
           }

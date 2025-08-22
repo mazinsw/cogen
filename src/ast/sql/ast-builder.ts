@@ -104,7 +104,7 @@ export class ASTBuilder implements SQLParserListener {
     let chars: CharStream;
     try {
       chars = CharStreams.fromString(
-        await fs.promises.readFile(fileName, 'utf-8'),
+        await fs.promises.readFile(fileName, this.dataSource.encoding),
       );
     } catch (error) {
       this.errors.push(error.message);
