@@ -1,4 +1,4 @@
-import { DataType } from '@/ast/model/data-type';
+import { DataType } from '@/ast/entity/data-type';
 
 export class StringType extends DataType {
   private length: number;

@@ -1,5 +1,5 @@
-import { NamedNode } from '@/ast/model/named-node';
-import { OrderField } from '@/ast/model/order-field';
+import { NamedNode } from '@/ast/entity/named-node';
+import { OrderField } from '@/ast/entity/order-field';
 
 export class Index extends NamedNode {
   constructor(private fields: OrderField[] = []) {

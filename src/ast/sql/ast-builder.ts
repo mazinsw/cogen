@@ -1,105 +1,99 @@
-import * as fs from 'fs';
-import { SQLLexer } from '../../grammar/SQLLexer';
+import { Index } from '@/ast/entity';
+import { BooleanValue } from '@/ast/entity/boolean-value';
+import { DataSource } from '@/ast/entity/data-source';
+import { DataType } from '@/ast/entity/data-type';
+import { EnumType } from '@/ast/entity/enum-type';
+import { Field } from '@/ast/entity/field';
+import { FloatValue } from '@/ast/entity/float-value';
+import { ForeignKey } from '@/ast/entity/foreign-key';
+import { FulltextIndex } from '@/ast/entity/fulltext-index';
+import { IntegerValue } from '@/ast/entity/integer-value';
+import { LiteralValue } from '@/ast/entity/literal-value';
+import { NamedNode } from '@/ast/entity/named-node';
+import { Node } from '@/ast/entity/node';
+import { OrderField } from '@/ast/entity/order-field';
+import { PrimaryKey } from '@/ast/entity/primary-key';
+import { StringType } from '@/ast/entity/string-type';
+import { StringValue } from '@/ast/entity/string-value';
+import { Table } from '@/ast/entity/table';
+import { UniqueKey } from '@/ast/entity/unique-key';
+import { Value } from '@/ast/entity/value';
+import { ListErrorListener } from '@/ast/list-error-listener';
+import { Stack } from '@/data/struct/stack';
+import { SQLLexer } from '@/grammar/SQLLexer';
 import {
+  AutoIncrementContext,
+  CharsetNameContext,
+  CollateNameContext,
+  ColumnDefaultValueContext,
+  ColumnNameContext,
+  ColumnNotNullContext,
+  ColumnNullContext,
+  ConstraintNameContext,
+  ConstraintTableContext,
+  CreateSchemaContext,
+  CreateTableContext,
+  DefaultValueContext,
+  DropSchemaContext,
+  DropTableNameContext,
+  FieldCommentContext,
+  FieldStmtContext,
+  ForeignStmtContext,
   FulltextStmtContext,
+  IdNameContext,
+  IndexColNameContext,
+  IndexStmtContext,
+  PrimaryKeyStmtContext,
+  ReferenceDefinitionContext,
+  ReferenceDeleteOptionContext,
+  ReferenceTableContext,
+  ReferenceUpdateOptionContext,
+  SetDefaultValueContext,
   SQLParser,
+  StringItemContext,
+  TableCommentContext,
+  TableNameContext,
+  TypeBigIntStmtContext,
+  TypeBlobStmtContext,
+  TypeBooleanStmtContext,
+  TypeCharStmtContext,
+  TypeDateStmtContext,
+  TypeDateTimeStmtContext,
+  TypeDecimalStmtContext,
+  TypeDoubleStmtContext,
+  TypeEnumStmtContext,
+  TypeFloatStmtContext,
+  TypeIntegerStmtContext,
+  TypeIntStmtContext,
+  TypeJsonStmtContext,
+  TypeLongBlobStmtContext,
+  TypeLongTextStmtContext,
+  TypeMediumBlobStmtContext,
+  TypeMediumTextStmtContext,
+  TypeNumericStmtContext,
+  TypeTextStmtContext,
   TypeTimeStampStmtContext,
-} from '../../grammar/SQLParser';
-import { SQLParserListener } from '../../grammar/SQLParserListener';
-import { AutoIncrementContext } from '../../grammar/SQLParser';
-import { CharsetNameContext } from '../../grammar/SQLParser';
-import { CollateNameContext } from '../../grammar/SQLParser';
-import { ColumnDefaultValueContext } from '../../grammar/SQLParser';
-import { ColumnNameContext } from '../../grammar/SQLParser';
-import { ColumnNotNullContext } from '../../grammar/SQLParser';
-import { ColumnNullContext } from '../../grammar/SQLParser';
-import { ConstraintNameContext } from '../../grammar/SQLParser';
-import { ConstraintTableContext } from '../../grammar/SQLParser';
-import { CreateSchemaContext } from '../../grammar/SQLParser';
-import { CreateTableContext } from '../../grammar/SQLParser';
-import { DefaultValueContext } from '../../grammar/SQLParser';
-import { DropSchemaContext } from '../../grammar/SQLParser';
-import { DropTableNameContext } from '../../grammar/SQLParser';
-import { FieldCommentContext } from '../../grammar/SQLParser';
-import { FieldStmtContext } from '../../grammar/SQLParser';
-import { ForeignStmtContext } from '../../grammar/SQLParser';
-import { IdNameContext } from '../../grammar/SQLParser';
-import { IndexColNameContext } from '../../grammar/SQLParser';
-import { IndexStmtContext } from '../../grammar/SQLParser';
-import { PrimaryKeyStmtContext } from '../../grammar/SQLParser';
-import { ReferenceDefinitionContext } from '../../grammar/SQLParser';
-import { ReferenceDeleteOptionContext } from '../../grammar/SQLParser';
-import { ReferenceTableContext } from '../../grammar/SQLParser';
-import { ReferenceUpdateOptionContext } from '../../grammar/SQLParser';
-import { SetDefaultValueContext } from '../../grammar/SQLParser';
-import { StringItemContext } from '../../grammar/SQLParser';
-import { TableCommentContext } from '../../grammar/SQLParser';
-import { TableNameContext } from '../../grammar/SQLParser';
-import { TypeBigIntStmtContext } from '../../grammar/SQLParser';
-import { TypeBlobStmtContext } from '../../grammar/SQLParser';
-import { TypeBooleanStmtContext } from '../../grammar/SQLParser';
-import { TypeCharStmtContext } from '../../grammar/SQLParser';
-import { TypeDateStmtContext } from '../../grammar/SQLParser';
-import { TypeDateTimeStmtContext } from '../../grammar/SQLParser';
-import { TypeDecimalStmtContext } from '../../grammar/SQLParser';
-import { TypeDoubleStmtContext } from '../../grammar/SQLParser';
-import { TypeEnumStmtContext } from '../../grammar/SQLParser';
-import { TypeFloatStmtContext } from '../../grammar/SQLParser';
-import { TypeIntStmtContext } from '../../grammar/SQLParser';
-import { TypeIntegerStmtContext } from '../../grammar/SQLParser';
-import { TypeJsonStmtContext } from '../../grammar/SQLParser';
-import { TypeLongBlobStmtContext } from '../../grammar/SQLParser';
-import { TypeLongTextStmtContext } from '../../grammar/SQLParser';
-import { TypeMediumBlobStmtContext } from '../../grammar/SQLParser';
-import { TypeMediumTextStmtContext } from '../../grammar/SQLParser';
-import { TypeNumericStmtContext } from '../../grammar/SQLParser';
-import { TypeTextStmtContext } from '../../grammar/SQLParser';
-import { TypeTimeStmtContext } from '../../grammar/SQLParser';
-import { TypeTinyBlobStmtContext } from '../../grammar/SQLParser';
-import { TypeTinyIntStmtContext } from '../../grammar/SQLParser';
-import { TypeTinyTextStmtContext } from '../../grammar/SQLParser';
-import { TypeVarCharStmtContext } from '../../grammar/SQLParser';
-import { UniqueStmtContext } from '../../grammar/SQLParser';
-import { UseStmtContext } from '../../grammar/SQLParser';
-import { Stack } from '../../data/struct/stack';
+  TypeTimeStmtContext,
+  TypeTinyBlobStmtContext,
+  TypeTinyIntStmtContext,
+  TypeTinyTextStmtContext,
+  TypeVarCharStmtContext,
+  UniqueStmtContext,
+  UseStmtContext,
+} from '@/grammar/SQLParser';
+import { SQLParserListener } from '@/grammar/SQLParserListener';
+import { Comment } from '@/util/comment';
 import { CharStream, CharStreams, CommonTokenStream, Token } from 'antlr4ts';
 import { ParseTreeWalker } from 'antlr4ts/tree/ParseTreeWalker';
-import { ListErrorListener } from './list-error-listener';
-import { ScriptNode } from '@/ast/model/script-node';
-import { Node } from '@/ast/model/node';
-import { NamedNode } from '@/ast/model/named-node';
-import { Field } from '@/ast/model/field';
-import { DataType } from '@/ast/model/data-type';
-import { Value } from '@/ast/model/value';
-import { Table } from '@/ast/model/table';
-import { StringType } from '@/ast/model/string-type';
-import { EnumType } from '@/ast/model/enum-type';
-import { StringValue } from '@/ast/model/string-value';
-import { IntegerValue } from '@/ast/model/integer-value';
-import { FloatValue } from '@/ast/model/float-value';
-import { BooleanValue } from '@/ast/model/boolean-value';
-import { PrimaryKey } from '@/ast/model/primary-key';
-import { Index } from '@/ast/model';
-import { Comment } from '@/util/comment';
-import { UniqueKey } from '@/ast/model/unique-key';
-import { ForeignKey } from '@/ast/model/foreign-key';
-import { OrderField } from '@/ast/model/order-field';
-import { LiteralValue } from '@/ast/model/literal-value';
-import { FulltextIndex } from '@/ast/model/fulltext-index';
+import * as fs from 'fs';
 
 export class ASTBuilder implements SQLParserListener {
   private stack: Stack<Node>;
-  private script: ScriptNode;
   private errors: string[];
 
-  constructor() {
-    this.script = new ScriptNode();
+  constructor(private dataSource: DataSource) {
     this.errors = [];
     this.stack = new Stack<Node>();
-  }
-
-  public getScript(): ScriptNode {
-    return this.script;
   }
 
   public getErrors(): string[] {
@@ -150,7 +144,7 @@ export class ASTBuilder implements SQLParserListener {
   }
 
   public exitCreateTable(_: CreateTableContext): void {
-    this.script.addStatement(this.stack.pop());
+    this.dataSource.addStatement(this.stack.pop());
   }
 
   public enterFieldStmt(_: FieldStmtContext): void {

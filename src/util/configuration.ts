@@ -1,4 +1,5 @@
 import { Properties } from '@/util/properties';
+import * as path from 'path';
 
 export class Configuration {
   private lang: string;
@@ -74,6 +75,15 @@ export class Configuration {
 
   public setDictionary(dictionary: string) {
     this.dictionary = dictionary.split(';');
+  }
+
+  public rebasePath(filePath: string): string {
+    return path
+      .resolve(filePath)
+      .replace(
+        path.resolve(this.getTemplatePath()),
+        path.resolve(this.getOutputPath()),
+      );
   }
 
   public async load() {

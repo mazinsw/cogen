@@ -11,6 +11,9 @@
   "[typescript]": {
     "editor.formatOnSave": true
   },
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "explicit"
+  },
   "typescript.preferences.importModuleSpecifier": "non-relative",
   "jestrunner.jestCommand": "yarn test",
   "jestrunner.changeDirectoryToWorkspaceRoot": false

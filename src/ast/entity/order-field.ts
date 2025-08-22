@@ -1,4 +1,4 @@
-import { NamedNode } from '@/ast/model/named-node';
+import { NamedNode } from '@/ast/entity/named-node';
 
 export class OrderField extends NamedNode {
   public static ASCENDENT = 0;

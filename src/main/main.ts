@@ -1,15 +1,15 @@
 import { Runner } from '@/tools/runner';
-import { LogListener } from '@/util/log-listener';
 import { Configuration } from '@/util/configuration';
+import { LogListener } from '@/util/log-listener';
 
 export class Main implements LogListener {
   public static async run() {
     const main = new Main();
-    const status = await main.runConsole(process.argv.slice(2));
+    const status = await main.start(process.argv.slice(2));
     process.exitCode = status;
   }
 
-  public async runConsole(args: string[]): Promise<number> {
+  public async start(args: string[]): Promise<number> {
     const config = new Configuration();
     let silent = false;
     let saveOnComplete = false;

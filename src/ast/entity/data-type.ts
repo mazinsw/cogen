@@ -1,4 +1,4 @@
-import { Node } from '@/ast/model/node';
+import { Node } from '@/ast/entity/node';
 
 export class DataType extends Node {
   public static STRING = 0;

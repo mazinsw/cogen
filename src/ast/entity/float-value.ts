@@ -1,6 +1,6 @@
-import { Value } from '@/ast/model/value';
+import { Value } from '@/ast/entity/value';
 
-export class IntegerValue extends Value {
+export class FloatValue extends Value {
   private value: number;
 
   constructor(value: string | number) {

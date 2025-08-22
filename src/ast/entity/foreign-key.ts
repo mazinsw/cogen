@@ -1,5 +1,5 @@
-import { Constraint } from '@/ast/model/constraint';
-import { Index } from '@/ast/model';
+import { Index } from '@/ast/entity';
+import { Constraint } from '@/ast/entity/constraint';
 
 export class ForeignKey extends Constraint {
   public static NO_ACTION = 0;

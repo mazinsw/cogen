@@ -1,6 +1,6 @@
-import { Value } from '@/ast/model/value';
+import { Value } from '@/ast/entity/value';
 
-export class StringValue extends Value {
+export class LiteralValue extends Value {
   constructor(private value: string) {
     super();
   }

@@ -1,4 +1,4 @@
-import { Value } from '@/ast/model/value';
+import { Value } from '@/ast/entity/value';
 
 export class BooleanValue extends Value {
   public value: boolean;

@@ -1,6 +1,6 @@
-import { CommentedNode } from '@/ast/model/commented-node';
-import { DataType } from '@/ast/model/data-type';
-import { Value } from '@/ast/model/value';
+import { CommentedNode } from '@/ast/entity/commented-node';
+import { DataType } from '@/ast/entity/data-type';
+import { Value } from '@/ast/entity/value';
 
 export class Field extends CommentedNode {
   private type: DataType;
