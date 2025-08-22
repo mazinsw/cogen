@@ -254,7 +254,7 @@ export class TemplateParser extends Parser {
 	public static readonly RULE_primaryNameStmt = 127;
 	public static readonly RULE_constraintNameStmt = 128;
 	public static readonly RULE_foreignNameStmt = 129;
-	public static readonly RULE_text = 130;
+	public static readonly RULE_textContent = 130;
 	public static readonly RULE_tableLevel = 131;
 	public static readonly RULE_fieldLevel = 132;
 	public static readonly RULE_regex = 133;
@@ -307,11 +307,11 @@ export class TemplateParser extends Parser {
 		"foreignElseEndStmt", "foreignElseStmt", "foreignElseCondEndStmt", "constant", 
 		"tableReplaceStmt", "tableStmt", "tableProps", "tableProp", "fieldReplaceStmt", 
 		"fieldStmt", "fieldProps", "fieldProp", "indexNameStmt", "uniqueNameStmt", 
-		"primaryNameStmt", "constraintNameStmt", "foreignNameStmt", "text", "tableLevel", 
-		"fieldLevel", "regex", "word", "tableCondition", "fieldCondition", "indexCondition", 
-		"constraintCondition", "condition", "anyCondition", "priorityCondition", 
-		"orCondition", "andCondition", "expression", "attribute", "property", 
-		"type",
+		"primaryNameStmt", "constraintNameStmt", "foreignNameStmt", "textContent", 
+		"tableLevel", "fieldLevel", "regex", "word", "tableCondition", "fieldCondition", 
+		"indexCondition", "constraintCondition", "condition", "anyCondition", 
+		"priorityCondition", "orCondition", "andCondition", "expression", "attribute", 
+		"property", "type",
 	];
 
 	private static readonly _LITERAL_NAMES: Array<string | undefined> = [
@@ -442,7 +442,7 @@ export class TemplateParser extends Parser {
 				this.enterOuterAlt(_localctx, 3);
 				{
 				this.state = 306;
-				this.text();
+				this.textContent();
 				}
 				break;
 			}
@@ -8612,9 +8612,9 @@ export class TemplateParser extends Parser {
 		return _localctx;
 	}
 	// @RuleVersion(0)
-	public text(): TextContext {
-		let _localctx: TextContext = new TextContext(this._ctx, this.state);
-		this.enterRule(_localctx, 260, TemplateParser.RULE_text);
+	public textContent(): TextContentContext {
+		let _localctx: TextContentContext = new TextContentContext(this._ctx, this.state);
+		this.enterRule(_localctx, 260, TemplateParser.RULE_textContent);
 		try {
 			this.enterOuterAlt(_localctx, 1);
 			{
@@ -10514,8 +10514,8 @@ export class StatementContext extends ParserRuleContext {
 	public constant(): ConstantContext | undefined {
 		return this.tryGetRuleContext(0, ConstantContext);
 	}
-	public text(): TextContext | undefined {
-		return this.tryGetRuleContext(0, TextContext);
+	public textContent(): TextContentContext | undefined {
+		return this.tryGetRuleContext(0, TextContentContext);
 	}
 	constructor(parent: ParserRuleContext | undefined, invokingState: number) {
 		super(parent, invokingState);
@@ -17147,23 +17147,23 @@ export class ForeignNameStmtContext extends ParserRuleContext {
 }
 
 
-export class TextContext extends ParserRuleContext {
+export class TextContentContext extends ParserRuleContext {
 	public TEXT(): TerminalNode { return this.getToken(TemplateParser.TEXT, 0); }
 	constructor(parent: ParserRuleContext | undefined, invokingState: number) {
 		super(parent, invokingState);
 	}
 	// @Override
-	public get ruleIndex(): number { return TemplateParser.RULE_text; }
+	public get ruleIndex(): number { return TemplateParser.RULE_textContent; }
 	// @Override
 	public enterRule(listener: TemplateParserListener): void {
-		if (listener.enterText) {
-			listener.enterText(this);
+		if (listener.enterTextContent) {
+			listener.enterTextContent(this);
 		}
 	}
 	// @Override
 	public exitRule(listener: TemplateParserListener): void {
-		if (listener.exitText) {
-			listener.exitText(this);
+		if (listener.exitTextContent) {
+			listener.exitTextContent(this);
 		}
 	}
 }

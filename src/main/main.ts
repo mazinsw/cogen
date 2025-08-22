@@ -82,7 +82,7 @@ export class Main implements LogListener {
   }
 
   private showHelp(status: number, cmd: string, errorMessage?: string): number {
-    console.log('===== Gentity (Code Generator for Entities) =====');
+    console.log('===== codeg (CODE Generator) =====');
     if (status == 4) console.log('Command not found: ' + cmd);
     else if (status == 3) console.log("Parameter of '" + cmd + "' not found");
     else if (status != 0)
@@ -93,21 +93,19 @@ export class Main implements LogListener {
     if (status != 0) {
       console.log();
     }
-    console.log('Usage: gentity [options] input.sql');
+    console.log('Usage: codeg [options] input.sql');
     console.log('Options:');
-    console.log(
-      '\t(-p|--project) project.properties: read a project from file',
-    );
+    console.log('\t(-p|--project) codeg.properties: read a project from file');
     console.log('\t(-f|--file|-i|--input) input.sql: set the input sql file');
     console.log(
-      '\t(-t|--template) template/: set the template input directory',
+      '\t(-t|--template) scripts/template/: set the template input directory',
     );
-    console.log('\t(-o|--output) output_dir: set the output directory');
+    console.log('\t(-o|--output) storage/generated: set the output directory');
     console.log(
       '\t(-d|--database) word1|word2: set the uppercase database name',
     );
     console.log(
-      '\t(-w|--write) project.properties: save configuration to file when finishes',
+      '\t(-w|--write) codeg.properties: save configuration to file when finishes',
     );
     console.log('\t(-h|--help): show this help');
     console.log('\t(-s|--silent): run without print anything');

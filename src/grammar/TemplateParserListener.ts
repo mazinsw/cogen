@@ -133,7 +133,7 @@ import { UniqueNameStmtContext } from "./TemplateParser";
 import { PrimaryNameStmtContext } from "./TemplateParser";
 import { ConstraintNameStmtContext } from "./TemplateParser";
 import { ForeignNameStmtContext } from "./TemplateParser";
-import { TextContext } from "./TemplateParser";
+import { TextContentContext } from "./TemplateParser";
 import { TableLevelContext } from "./TemplateParser";
 import { FieldLevelContext } from "./TemplateParser";
 import { RegexContext } from "./TemplateParser";
@@ -1589,15 +1589,15 @@ export interface TemplateParserListener extends ParseTreeListener {
 	exitForeignNameStmt?: (ctx: ForeignNameStmtContext) => void;
 
 	/**
-	 * Enter a parse tree produced by `TemplateParser.text`.
+	 * Enter a parse tree produced by `TemplateParser.textContent`.
 	 * @param ctx the parse tree
 	 */
-	enterText?: (ctx: TextContext) => void;
+	enterTextContent?: (ctx: TextContentContext) => void;
 	/**
-	 * Exit a parse tree produced by `TemplateParser.text`.
+	 * Exit a parse tree produced by `TemplateParser.textContent`.
 	 * @param ctx the parse tree
 	 */
-	exitText?: (ctx: TextContext) => void;
+	exitTextContent?: (ctx: TextContentContext) => void;
 
 	/**
 	 * Enter a parse tree produced by `TemplateParser.tableLevel`.

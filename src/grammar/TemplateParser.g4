@@ -13,7 +13,7 @@ template: statement* EOF;
 statement:
     block
   | constant
-  | text
+  | textContent
   ;
 
 block:
@@ -317,7 +317,7 @@ constraintNameStmt: OPEN K_CONSTRAINT '.' K_NAME CLOSE;
 
 foreignNameStmt: OPEN K_FOREIGN '.' K_NAME CLOSE;
 
-text: TEXT;
+textContent: TEXT;
 
 tableLevel: K_TABLE | K_INHERITED | K_REFERENCE;
 

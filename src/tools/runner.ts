@@ -25,6 +25,8 @@ export class Runner {
       }
       return 5;
     }
+    console.log(builder.getScript().getStatements());
+
     try {
       // const generator = new TemplateGenerator(
       //   builder.getScript(),

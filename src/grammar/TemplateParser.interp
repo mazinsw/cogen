@@ -331,7 +331,7 @@ uniqueNameStmt
 primaryNameStmt
 constraintNameStmt
 foreignNameStmt
-text
+textContent
 tableLevel
 fieldLevel
 regex

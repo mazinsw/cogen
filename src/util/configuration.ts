@@ -9,9 +9,10 @@ export class Configuration {
   private templatePath: string;
   private dictionary: string[];
 
-  public Configuration() {
+  constructor() {
     this.setProjectFile('config.properties');
-    this.setTemplatePath('template/');
+    this.setTemplatePath('scripts/template/');
+    this.setOutputPath('storage/generated/');
     this.setDictionary('');
   }
 
@@ -95,7 +96,7 @@ export class Configuration {
   }
 
   public async save() {
-    const props = new Properties(this.projectFile || 'config.properties');
+    const props = new Properties(this.projectFile || 'e2t.properties');
     props.set('inputFile', this.inputFile);
     props.set('outputPath', this.outputPath);
     props.set('templatePath', this.templatePath);
