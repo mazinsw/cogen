@@ -1,15 +1,17 @@
-import { Value } from "./Value";
+import { Value } from '@/ast/model/value';
 
 export class BooleanValue extends Value {
   public value: boolean;
 
-  public constructor(value: boolean) {
+  constructor(value: boolean) {
     super();
     this.value = value;
   }
 
   public static fromString(value: string) {
-    return new this(!['false', '0', 'n'].includes(value.toLocaleLowerCase()) && value !== "");
+    return new this(
+      !['false', '0', 'n'].includes(value.toLocaleLowerCase()) && value !== '',
+    );
   }
 
   public toString(): String {

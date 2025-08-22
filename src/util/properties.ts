@@ -40,7 +40,7 @@ export class Properties {
       '# ' + new Date().toString(),
     ];
     for (const [key, value] of this.entries()) {
-      lines.push(`${key}=${value.replace(/[\n\r]/g, ' ')}`);
+      lines.push(`${key}=${(value || '').replace(/[\n\r]/g, ' ')}`);
     }
     await fs.promises.writeFile(this.filePath, lines.join('\n'), 'utf-8');
   }

@@ -1,8 +1,8 @@
 import { CharStreams, CommonTokenStream } from 'antlr4ts';
-import { SQLLexer } from '../src/grammar/SQLLexer';
-import { SQLParser } from '../src/grammar/SQLParser';
-import { TemplateLexer } from '../src/grammar/TemplateLexer';
-import { TemplateParser } from '../src/grammar/TemplateParser';
+import { SQLLexer } from '../grammar/SQLLexer';
+import { SQLParser } from '../grammar/SQLParser';
+import { TemplateLexer } from '../grammar/TemplateLexer';
+import { TemplateParser } from '../grammar/TemplateParser';
 
 export function parseSQL(input: string): SQLParser {
   const chars = CharStreams.fromString(input);

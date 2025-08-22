@@ -1,3 +1,4 @@
+import { ASTBuilder } from '@/ast/sql/ast-builder';
 import { Configuration } from '@/util/configuration';
 import { LogListener } from '@/util/log-listener';
 
@@ -17,13 +18,13 @@ export class Runner {
   }
 
   public async execute(saveOnSuccess = false): Promise<number> {
-    // const builder = new ASTBuilder();
-    // if (!builder.build(this.configuration.getInputFile())) {
-    //   for (const error of builder.getErrors()) {
-    //     this.logger?.addMessage(error);
-    //   }
-    //   return 500;
-    // }
+    const builder = new ASTBuilder();
+    if (!(await builder.build(this.configuration.getInputFile()))) {
+      for (const error of builder.getErrors()) {
+        this.logger?.addMessage(error);
+      }
+      return 5;
+    }
     try {
       // const generator = new TemplateGenerator(
       //   builder.getScript(),
@@ -34,7 +35,7 @@ export class Runner {
       if (saveOnSuccess) await this.configuration.save();
     } catch (error) {
       this.logger?.addMessage(error.message);
-      return 500;
+      return 5;
     }
     return 0;
   }

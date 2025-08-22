@@ -5,7 +5,7 @@ import { Configuration } from '@/util/configuration';
 export class Main implements LogListener {
   public static async run() {
     const main = new Main();
-    const status = await main.runConsole(process.argv.slice(1));
+    const status = await main.runConsole(process.argv.slice(2));
     process.exitCode = status;
   }
 

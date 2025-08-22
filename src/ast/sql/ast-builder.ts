@@ -1,73 +1,98 @@
-import fs from "fs";
-import { SQLLexer } from '../../../src/grammar/SQLLexer';
-import { SQLParser } from '../../../src/grammar/SQLParser';
-import { SQLParserListener } from '../../../src/grammar/SQLParserListener';
-import { AutoIncrementContext } from '../../../src/grammar/SQLParser';
-import { CharsetNameContext } from '../../../src/grammar/SQLParser';
-import { CollateNameContext } from '../../../src/grammar/SQLParser';
-import { ColumnDefaultValueContext } from '../../../src/grammar/SQLParser';
-import { ColumnNameContext } from '../../../src/grammar/SQLParser';
-import { ColumnNotNullContext } from '../../../src/grammar/SQLParser';
-import { ColumnNullContext } from '../../../src/grammar/SQLParser';
-import { ConstraintNameContext } from '../../../src/grammar/SQLParser';
-import { ConstraintTableContext } from '../../../src/grammar/SQLParser';
-import { CreateSchemaContext } from '../../../src/grammar/SQLParser';
-import { CreateTableContext } from '../../../src/grammar/SQLParser';
-import { DefaultValueContext } from '../../../src/grammar/SQLParser';
-import { DropSchemaContext } from '../../../src/grammar/SQLParser';
-import { DropTableNameContext } from '../../../src/grammar/SQLParser';
-import { FieldCommentContext } from '../../../src/grammar/SQLParser';
-import { FieldStmtContext } from '../../../src/grammar/SQLParser';
-import { ForeignStmtContext } from '../../../src/grammar/SQLParser';
-import { IdNameContext } from '../../../src/grammar/SQLParser';
-import { IndexColNameContext } from '../../../src/grammar/SQLParser';
-import { IndexStmtContext } from '../../../src/grammar/SQLParser';
-import { PrimaryKeyStmtContext } from '../../../src/grammar/SQLParser';
-import { ReferenceDefinitionContext } from '../../../src/grammar/SQLParser';
-import { ReferenceDeleteOptionContext } from '../../../src/grammar/SQLParser';
-import { ReferenceTableContext } from '../../../src/grammar/SQLParser';
-import { ReferenceUpdateOptionContext } from '../../../src/grammar/SQLParser';
-import { SetDefaultValueContext } from '../../../src/grammar/SQLParser';
-import { StringItemContext } from '../../../src/grammar/SQLParser';
-import { TableCommentContext } from '../../../src/grammar/SQLParser';
-import { TableNameContext } from '../../../src/grammar/SQLParser';
-import { TypeBigIntStmtContext } from '../../../src/grammar/SQLParser';
-import { TypeBlobStmtContext } from '../../../src/grammar/SQLParser';
-import { TypeBooleanStmtContext } from '../../../src/grammar/SQLParser';
-import { TypeCharStmtContext } from '../../../src/grammar/SQLParser';
-import { TypeDateStmtContext } from '../../../src/grammar/SQLParser';
-import { TypeDateTimeStmtContext } from '../../../src/grammar/SQLParser';
-import { TypeDecimalStmtContext } from '../../../src/grammar/SQLParser';
-import { TypeDoubleStmtContext } from '../../../src/grammar/SQLParser';
-import { TypeEnumStmtContext } from '../../../src/grammar/SQLParser';
-import { TypeFloatStmtContext } from '../../../src/grammar/SQLParser';
-import { TypeIntStmtContext } from '../../../src/grammar/SQLParser';
-import { TypeIntegerStmtContext } from '../../../src/grammar/SQLParser';
-import { TypeJsonStmtContext } from '../../../src/grammar/SQLParser';
-import { TypeLongBlobStmtContext } from '../../../src/grammar/SQLParser';
-import { TypeLongTextStmtContext } from '../../../src/grammar/SQLParser';
-import { TypeMediumBlobStmtContext } from '../../../src/grammar/SQLParser';
-import { TypeMediumTextStmtContext } from '../../../src/grammar/SQLParser';
-import { TypeNumericStmtContext } from '../../../src/grammar/SQLParser';
-import { TypeTextStmtContext } from '../../../src/grammar/SQLParser';
-import { TypeTimeStmtContext } from '../../../src/grammar/SQLParser';
-import { TypeTinyBlobStmtContext } from '../../../src/grammar/SQLParser';
-import { TypeTinyIntStmtContext } from '../../../src/grammar/SQLParser';
-import { TypeTinyTextStmtContext } from '../../../src/grammar/SQLParser';
-import { TypeVarCharStmtContext } from '../../../src/grammar/SQLParser';
-import { UniqueStmtContext } from '../../../src/grammar/SQLParser';
-import { UseStmtContext } from '../../../src/grammar/SQLParser';
+import * as fs from 'fs';
+import { SQLLexer } from '../../grammar/SQLLexer';
+import {
+  FulltextStmtContext,
+  SQLParser,
+  TypeTimeStampStmtContext,
+} from '../../grammar/SQLParser';
+import { SQLParserListener } from '../../grammar/SQLParserListener';
+import { AutoIncrementContext } from '../../grammar/SQLParser';
+import { CharsetNameContext } from '../../grammar/SQLParser';
+import { CollateNameContext } from '../../grammar/SQLParser';
+import { ColumnDefaultValueContext } from '../../grammar/SQLParser';
+import { ColumnNameContext } from '../../grammar/SQLParser';
+import { ColumnNotNullContext } from '../../grammar/SQLParser';
+import { ColumnNullContext } from '../../grammar/SQLParser';
+import { ConstraintNameContext } from '../../grammar/SQLParser';
+import { ConstraintTableContext } from '../../grammar/SQLParser';
+import { CreateSchemaContext } from '../../grammar/SQLParser';
+import { CreateTableContext } from '../../grammar/SQLParser';
+import { DefaultValueContext } from '../../grammar/SQLParser';
+import { DropSchemaContext } from '../../grammar/SQLParser';
+import { DropTableNameContext } from '../../grammar/SQLParser';
+import { FieldCommentContext } from '../../grammar/SQLParser';
+import { FieldStmtContext } from '../../grammar/SQLParser';
+import { ForeignStmtContext } from '../../grammar/SQLParser';
+import { IdNameContext } from '../../grammar/SQLParser';
+import { IndexColNameContext } from '../../grammar/SQLParser';
+import { IndexStmtContext } from '../../grammar/SQLParser';
+import { PrimaryKeyStmtContext } from '../../grammar/SQLParser';
+import { ReferenceDefinitionContext } from '../../grammar/SQLParser';
+import { ReferenceDeleteOptionContext } from '../../grammar/SQLParser';
+import { ReferenceTableContext } from '../../grammar/SQLParser';
+import { ReferenceUpdateOptionContext } from '../../grammar/SQLParser';
+import { SetDefaultValueContext } from '../../grammar/SQLParser';
+import { StringItemContext } from '../../grammar/SQLParser';
+import { TableCommentContext } from '../../grammar/SQLParser';
+import { TableNameContext } from '../../grammar/SQLParser';
+import { TypeBigIntStmtContext } from '../../grammar/SQLParser';
+import { TypeBlobStmtContext } from '../../grammar/SQLParser';
+import { TypeBooleanStmtContext } from '../../grammar/SQLParser';
+import { TypeCharStmtContext } from '../../grammar/SQLParser';
+import { TypeDateStmtContext } from '../../grammar/SQLParser';
+import { TypeDateTimeStmtContext } from '../../grammar/SQLParser';
+import { TypeDecimalStmtContext } from '../../grammar/SQLParser';
+import { TypeDoubleStmtContext } from '../../grammar/SQLParser';
+import { TypeEnumStmtContext } from '../../grammar/SQLParser';
+import { TypeFloatStmtContext } from '../../grammar/SQLParser';
+import { TypeIntStmtContext } from '../../grammar/SQLParser';
+import { TypeIntegerStmtContext } from '../../grammar/SQLParser';
+import { TypeJsonStmtContext } from '../../grammar/SQLParser';
+import { TypeLongBlobStmtContext } from '../../grammar/SQLParser';
+import { TypeLongTextStmtContext } from '../../grammar/SQLParser';
+import { TypeMediumBlobStmtContext } from '../../grammar/SQLParser';
+import { TypeMediumTextStmtContext } from '../../grammar/SQLParser';
+import { TypeNumericStmtContext } from '../../grammar/SQLParser';
+import { TypeTextStmtContext } from '../../grammar/SQLParser';
+import { TypeTimeStmtContext } from '../../grammar/SQLParser';
+import { TypeTinyBlobStmtContext } from '../../grammar/SQLParser';
+import { TypeTinyIntStmtContext } from '../../grammar/SQLParser';
+import { TypeTinyTextStmtContext } from '../../grammar/SQLParser';
+import { TypeVarCharStmtContext } from '../../grammar/SQLParser';
+import { UniqueStmtContext } from '../../grammar/SQLParser';
+import { UseStmtContext } from '../../grammar/SQLParser';
 import { Stack } from '../../data/struct/stack';
 import { CharStream, CharStreams, CommonTokenStream, Token } from 'antlr4ts';
-import { ParseTreeWalker } from 'antlr4ts/tree/ParseTreeWalker'
-import { ListErrorListener } from "./ListErrorListener";
+import { ParseTreeWalker } from 'antlr4ts/tree/ParseTreeWalker';
+import { ListErrorListener } from './list-error-listener';
+import { ScriptNode } from '@/ast/model/script-node';
+import { Node } from '@/ast/model/node';
+import { NamedNode } from '@/ast/model/named-node';
+import { Field } from '@/ast/model/field';
+import { DataType } from '@/ast/model/data-type';
+import { Value } from '@/ast/model/value';
+import { Table } from '@/ast/model/table';
+import { StringType } from '@/ast/model/string-type';
+import { EnumType } from '@/ast/model/enum-type';
+import { StringValue } from '@/ast/model/string-value';
+import { IntegerValue } from '@/ast/model/integer-value';
+import { FloatValue } from '@/ast/model/float-value';
+import { BooleanValue } from '@/ast/model/boolean-value';
+import { PrimaryKey } from '@/ast/model/primary-key';
+import { Index } from '@/ast/model';
+import { Comment } from '@/util/comment';
+import { UniqueKey } from '@/ast/model/unique-key';
+import { ForeignKey } from '@/ast/model/foreign-key';
+import { OrderField } from '@/ast/model/order-field';
+import { LiteralValue } from '@/ast/model/literal-value';
+import { FulltextIndex } from '@/ast/model/fulltext-index';
 
 export class ASTBuilder implements SQLParserListener {
   private stack: Stack<Node>;
   private script: ScriptNode;
   private errors: string[];
 
-  constructor () {
+  constructor() {
     this.script = new ScriptNode();
     this.errors = [];
     this.stack = new Stack<Node>();
@@ -81,12 +106,14 @@ export class ASTBuilder implements SQLParserListener {
     return this.errors;
   }
 
-  public build(fileName: string): boolean {
+  public async build(fileName: string): Promise<boolean> {
     let chars: CharStream;
     try {
-      chars = CharStreams.fromString(fs.readFileSync(fileName, "utf-8"));
-    } catch (e: any) {
-      this.errors.push("can't load SQL source file");
+      chars = CharStreams.fromString(
+        await fs.promises.readFile(fileName, 'utf-8'),
+      );
+    } catch (error) {
+      this.errors.push(error.message);
       return false;
     }
     const lexer = new SQLLexer(chars);
@@ -112,7 +139,7 @@ export class ASTBuilder implements SQLParserListener {
   }
 
   public enterCreateTable(_: CreateTableContext): void {
-    const table = new Table("[Undefined]");
+    const table = new Table('[Undefined]');
     this.stack.push(table);
   }
 
@@ -123,32 +150,34 @@ export class ASTBuilder implements SQLParserListener {
   }
 
   public exitCreateTable(_: CreateTableContext): void {
-    this.script.addStatement(stack.pop());
+    this.script.addStatement(this.stack.pop());
   }
 
   public enterFieldStmt(_: FieldStmtContext): void {
-    const field = new Field("");
+    const field = new Field('');
     const table = this.stack.peek() as Table;
     table.addField(field);
     this.stack.push(field);
   }
 
   public exitColumnName(_: ColumnNameContext): void {
-    NamedNode node = this.stack.pop(); // pop Nam as NamedNodee
+    const node = this.stack.pop() as NamedNode;
     const field = this.stack.peek() as Field;
     field.setName(node.getName());
   }
 
-  public enterTypeIntegerStmt(_: TypeIntegerStmtContext): void {
+  public enterTypeIntegerStmt(ctx: TypeIntegerStmtContext): void {
     const field = this.stack.peek() as Field;
     const type = new DataType(DataType.INTEGER);
     field.setType(type);
+    field.setUnsigned(ctx.K_UNSIGNED() != null);
   }
 
-  public enterTypeIntStmt(_: TypeIntStmtContext): void {
+  public enterTypeIntStmt(ctx: TypeIntStmtContext): void {
     const field = this.stack.peek() as Field;
     const type = new DataType(DataType.INTEGER);
     field.setType(type);
+    field.setUnsigned(ctx.K_UNSIGNED() != null);
   }
 
   public enterTypeDoubleStmt(_: TypeDoubleStmtContext): void {
@@ -205,6 +234,12 @@ export class ASTBuilder implements SQLParserListener {
     field.setType(type);
   }
 
+  public enterTypeTimeStampStmt(_: TypeTimeStampStmtContext) {
+    const field = this.stack.peek() as Field;
+    const type = new DataType(DataType.TIMESTAMP);
+    field.setType(type);
+  }
+
   public enterTypeBooleanStmt(_: TypeBooleanStmtContext): void {
     const field = this.stack.peek() as Field;
     const type = new DataType(DataType.BOOLEAN);
@@ -226,27 +261,29 @@ export class ASTBuilder implements SQLParserListener {
   public enterTypeVarCharStmt(ctx: TypeVarCharStmtContext): void {
     const field = this.stack.peek() as Field;
     const type = new StringType(DataType.STRING);
-    type.setLength(Long.valueOf(ctx.INT().getText()));
+    type.setLength(Number(ctx.INT().text));
     field.setType(type);
   }
 
-  public enterTypeBigIntStmt(_: TypeBigIntStmtContext): void {
+  public enterTypeBigIntStmt(ctx: TypeBigIntStmtContext): void {
     const field = this.stack.peek() as Field;
     const type = new DataType(DataType.BIGINT);
     field.setType(type);
+    field.setUnsigned(ctx.K_UNSIGNED() != null);
   }
 
   public enterTypeJsonStmt(_: TypeJsonStmtContext): void {
     const field = this.stack.peek() as Field;
     const type = new StringType(DataType.JSON);
-    type.setLength(4294967295L);
+    type.setLength(4294967295);
     field.setType(type);
   }
 
-  public enterTypeTinyIntStmt(_: TypeTinyIntStmtContext): void {
+  public enterTypeTinyIntStmt(ctx: TypeTinyIntStmtContext): void {
     const field = this.stack.peek() as Field;
     const type = new DataType(DataType.TINYINT);
     field.setType(type);
+    field.setUnsigned(ctx.K_UNSIGNED() != null);
   }
 
   public enterTypeTextStmt(_: TypeTextStmtContext): void {
@@ -259,7 +296,7 @@ export class ASTBuilder implements SQLParserListener {
   public enterTypeLongTextStmt(_: TypeLongTextStmtContext): void {
     const field = this.stack.peek() as Field;
     const type = new StringType(DataType.TEXT);
-    type.setLength(4294967295L);
+    type.setLength(4294967295);
     field.setType(type);
   }
 
@@ -301,19 +338,19 @@ export class ASTBuilder implements SQLParserListener {
 
   public enterDefaultValue(ctx: DefaultValueContext): void {
     let value: Value = null;
-    if (ctx.STRING() != null)
-      value = new StringValue(ctx.STRING().getText());
-    else if (ctx.INT() != null)
-      value = new IntegerValue(ctx.INT().getText());
-    else if (ctx.FLOAT() != null)
-      value = new FloatValue(ctx.FLOAT().getText());
+    if (ctx.STRING() != null) value = new StringValue(ctx.STRING().text);
+    else if (ctx.INT() != null) value = new IntegerValue(ctx.INT().text);
+    else if (ctx.FLOAT() != null) value = new FloatValue(ctx.FLOAT().text);
     else if (ctx.BOOL() != null)
-      value = new BooleanValue(ctx.BOOL().getText());
+      value = BooleanValue.fromString(ctx.BOOL().text);
+    else if (ctx.K_CURRENT_TIMESTAMP() != null)
+      value = new LiteralValue(ctx.K_CURRENT_TIMESTAMP().text);
+    else if (ctx.K_NULL() != null) value = new StringValue('null');
     this.stack.push(value);
   }
 
   public exitColumnDefaultValue(_: ColumnDefaultValueContext): void {
-    const value = stack.pop() as Value;
+    const value = this.stack.pop() as Value;
     const field = this.stack.peek() as Field;
     field.setValue(value);
   }
@@ -324,9 +361,9 @@ export class ASTBuilder implements SQLParserListener {
 
   public exitStringItem(ctx: StringItemContext): void {
     const field = this.stack.peek() as Field;
-    const type = (EnumType) field.getType();
-    String elem = ctx.STRING().getText();
-    elem = elem.substring(1, elem.length() - 1);
+    const type = field.getType() as EnumType;
+    let elem = ctx.STRING().text;
+    elem = elem.substring(1, elem.length - 1);
     type.addElement(elem);
   }
 
@@ -335,8 +372,8 @@ export class ASTBuilder implements SQLParserListener {
   }
 
   public enterPrimaryKeyStmt(_: PrimaryKeyStmtContext): void {
-    PrimaryKey pk = new PrimaryKey();
-    pk.setName("PRIMARY");
+    const pk = new PrimaryKey();
+    pk.setName('PRIMARY');
     const table = this.stack.peek() as Table;
     table.addConstraint(pk);
     this.stack.push(pk);
@@ -347,7 +384,7 @@ export class ASTBuilder implements SQLParserListener {
   }
 
   public enterIndexStmt(_: IndexStmtContext): void {
-    Index index = new Index();
+    const index = new Index();
     const table = this.stack.peek() as Table;
     table.addIndex(index);
     this.stack.push(index);
@@ -360,15 +397,26 @@ export class ASTBuilder implements SQLParserListener {
 
   public enterFieldComment(ctx: FieldCommentContext): void {
     const field = this.stack.peek() as Field;
-    field.setComment(ParseComment.parse(ctx.STRING().getText()));
+    field.setComment(Comment.parse(ctx.STRING().text));
   }
 
   public exitIndexStmt(_: IndexStmtContext): void {
     this.stack.pop();
   }
 
+  public enterFulltextStmt(_: FulltextStmtContext) {
+    const fi = new FulltextIndex();
+    const table = this.stack.peek() as Table;
+    table.addIndex(fi);
+    this.stack.push(fi);
+  }
+
+  public exitFulltextStmt(_: FulltextStmtContext) {
+    this.stack.pop();
+  }
+
   public enterUniqueStmt(_: UniqueStmtContext): void {
-    UniqueKey uk = new UniqueKey();
+    const uk = new UniqueKey();
     const table = this.stack.peek() as Table;
     table.addConstraint(uk);
     this.stack.push(uk);
@@ -379,7 +427,7 @@ export class ASTBuilder implements SQLParserListener {
   }
 
   public enterForeignStmt(_: ForeignStmtContext): void {
-    ForeignKey fk = new ForeignKey("[Unknow]");
+    const fk = new ForeignKey('[Unknow]');
     const table = this.stack.peek() as Table;
     table.addConstraint(fk);
     this.stack.push(fk);
@@ -390,7 +438,7 @@ export class ASTBuilder implements SQLParserListener {
   }
 
   public enterReferenceDefinition(_: ReferenceDefinitionContext): void {
-    ForeignKey fk = (ForeignKey) this.stack.peek();
+    const fk = this.stack.peek() as ForeignKey;
     this.stack.push(fk.getReferences());
   }
 
@@ -399,16 +447,16 @@ export class ASTBuilder implements SQLParserListener {
   }
 
   public enterReferenceUpdateOption(ctx: ReferenceUpdateOptionContext): void {
-    Index index = (Index) this.stack.pop();
-    ForeignKey fk = (ForeignKey) this.stack.peek();
-    fk.setUpdateAction(ctx.getText());
+    const index = this.stack.pop() as Index;
+    const fk = this.stack.peek() as ForeignKey;
+    fk.setUpdateActionFromString(ctx.text);
     this.stack.push(index);
   }
 
   public enterReferenceDeleteOption(ctx: ReferenceDeleteOptionContext): void {
-    Index index = (Index) this.stack.pop();
-    ForeignKey fk = (ForeignKey) this.stack.peek();
-    fk.setDeleteAction(ctx.getText());
+    const index = this.stack.pop() as Index;
+    const fk = this.stack.peek() as ForeignKey;
+    fk.setDeleteActionFromString(ctx.text);
     this.stack.push(index);
   }
 
@@ -418,7 +466,7 @@ export class ASTBuilder implements SQLParserListener {
 
   public enterTableComment(ctx: TableCommentContext): void {
     const table = this.stack.peek() as Table;
-    table.setComment(ParseComment.parse(ctx.STRING().getText()));
+    table.setComment(Comment.parse(ctx.STRING().text));
   }
 
   public exitUseStmt(_: UseStmtContext): void {
@@ -442,49 +490,45 @@ export class ASTBuilder implements SQLParserListener {
   }
 
   public exitConstraintName(_: ConstraintNameContext): void {
-    NamedNode namedNode = this.stack.pop() as NamedNode;
-    Index index = (Index) this.stack.peek();
+    const namedNode = this.stack.pop() as NamedNode;
+    const index = this.stack.peek() as Index;
     index.setName(namedNode.getName());
   }
 
   public exitConstraintTable(_: ConstraintTableContext): void {
-    NamedNode namedNode = this.stack.pop() as NamedNode;
-    Index index = (Index) this.stack.peek();
+    const namedNode = this.stack.pop() as NamedNode;
+    const index = this.stack.peek() as Index;
     index.setName(namedNode.getName());
   }
 
   public exitIndexColName(ctx: IndexColNameContext): void {
-    NamedNode namedNode = this.stack.pop() as NamedNode;
-    Index index = (Index) this.stack.peek();
-    int type = OrderField.ASCENDENT;
-    if (ctx.Type != null && ctx.Type.getText().equals("DESC"))
-      type = OrderField.DESCENDENT;
+    const namedNode = this.stack.pop() as NamedNode;
+    const index = this.stack.peek() as Index;
+    let type = OrderField.ASCENDENT;
+    if (ctx.K_DESC) type = OrderField.DESCENDENT;
     index.addField(new OrderField(namedNode.getName(), type));
   }
 
   public exitReferenceTable(_: ReferenceTableContext): void {
-    NamedNode namedNode = this.stack.pop() as NamedNode;
-    Index index = (Index) this.stack.pop();
-    ForeignKey fk = (ForeignKey) this.stack.peek();
+    const namedNode = this.stack.pop() as NamedNode;
+    const index = this.stack.pop() as Index;
+    const fk = this.stack.peek() as ForeignKey;
     fk.setTableName(namedNode.getName());
     this.stack.push(index);
   }
 
-  private discard(node: Node): void {
-//		System.out.print("Discarding: " + node.getClass().getName());
-//		if (node instanceof NamedNode)
-//			System.out.println(" = " + ((NamedNode) node).getName());
-//		else
-//			System.out.println();
+  private discard(_node: Node): void {
+    // process.stdout.write('Discarding: ' + _node.constructor.name);
+    // if (_node instanceof NamedNode) process.stdout.write(' = ' + _node.getName());
+    // else console.log();
   }
 
   public enterIdName(ctx: IdNameContext): void {
     if (ctx.ID() != null) {
-      String name = ctx.ID().getText();
-      this.stack.push(new NamedNode(name.substring(1, name.length() - 1)));
+      const name = ctx.ID().text;
+      this.stack.push(new NamedNode(name.substring(1, name.length - 1)));
     } else {
-      this.stack.push(new NamedNode(ctx.NAME().getText()));
-
+      this.stack.push(new NamedNode(ctx.NAME().text));
     }
   }
 }

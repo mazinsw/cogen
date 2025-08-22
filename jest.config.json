@@ -8,6 +8,9 @@
       }
     ]
   },
+  "moduleNameMapper": {
+    "@/(.*)": "<rootDir>/src/$1"
+  },
   "moduleFileExtensions": [
     "js",
     "json",

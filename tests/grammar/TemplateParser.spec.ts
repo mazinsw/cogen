@@ -1,5 +1,5 @@
 import * as fs from 'node:fs';
-import { parseTemplate } from '../helper';
+import { parseTemplate } from '@/util/helper';
 import * as path from 'node:path';
 
 describe('TemplateParser', () => {
