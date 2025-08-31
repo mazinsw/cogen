@@ -23,6 +23,7 @@ export class Configuration {
 
   public setProjectFile(projectFile: string) {
     this.projectFile = projectFile;
+    return this;
   }
 
   public getInputFile() {
@@ -31,6 +32,7 @@ export class Configuration {
 
   public setInputFile(inputFile: string) {
     this.inputFile = inputFile;
+    return this;
   }
 
   public getOutputPath() {
@@ -39,10 +41,12 @@ export class Configuration {
 
   public setOutputPath(outputPath: string) {
     this.outputPath = outputPath;
+    return this;
   }
 
   public setTemplatePath(templatePath: string) {
     this.templatePath = templatePath;
+    return this;
   }
 
   public getTemplatePath() {
@@ -55,6 +59,7 @@ export class Configuration {
 
   public setUpperWords(upperWords: string) {
     this.upperWords = upperWords;
+    return this;
   }
 
   public getLang() {
@@ -63,18 +68,16 @@ export class Configuration {
 
   public setLang(lang: string) {
     this.lang = lang;
+    return this;
   }
 
   public getDictionary() {
     return this.dictionary;
   }
 
-  public getDictionaryList() {
-    return this.dictionary;
-  }
-
   public setDictionary(dictionary: string) {
     this.dictionary = dictionary.split(';');
+    return this;
   }
 
   public rebasePath(filePath: string): string {

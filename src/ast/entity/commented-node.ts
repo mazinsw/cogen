@@ -24,7 +24,8 @@ enum Attribute {
 export class CommentedNode extends NamedNode {
   static readonly Attribute = Attribute;
 
-  private comment: string;
+  private comment: string | undefined;
+  public parsedComment: string | null;
   attributes: Map<Attribute, string[]>;
 
   getComment() {
@@ -37,44 +38,48 @@ export class CommentedNode extends NamedNode {
 
   prepare() {
     this.attributes = new Map<Attribute, string[]>();
-    Comment.extract(this.comment, this.attributes, (entry) => {
-      switch (entry) {
-        case 'D':
-          return Attribute.HIDDEN;
-        case 'E':
-          return Attribute.ENUM_NAMES;
-        case 'F':
-          return Attribute.INFORMATION;
-        case 'G':
-          return Attribute.GENDER;
-        case 'H':
-          return Attribute.INHERITED;
-        case 'I':
-          return Attribute.IMAGE;
-        case 'K':
-          return Attribute.PACKAGE;
-        case 'L':
-          return Attribute.STYLES;
-        case 'M':
-          return Attribute.MASK;
-        case 'N':
-          return Attribute.NAMES;
-        case 'P':
-          return Attribute.PASSWORD;
-        case 'R':
-          return Attribute.RADIO;
-        case 'S':
-          return Attribute.DESCRIPTOR;
-        case 'T':
-          return Attribute.TEXT;
-        case 'U':
-          return Attribute.UNIX_NAMES;
-        case 'ID':
-          return Attribute.IDENTIFIER;
-        default:
-          return Attribute.UNKNOWN;
-      }
-    });
+    this.parsedComment = Comment.extract(
+      this.comment,
+      this.attributes,
+      (entry) => {
+        switch (entry) {
+          case 'D':
+            return Attribute.HIDDEN;
+          case 'E':
+            return Attribute.ENUM_NAMES;
+          case 'F':
+            return Attribute.INFORMATION;
+          case 'G':
+            return Attribute.GENDER;
+          case 'H':
+            return Attribute.INHERITED;
+          case 'I':
+            return Attribute.IMAGE;
+          case 'K':
+            return Attribute.PACKAGE;
+          case 'L':
+            return Attribute.STYLES;
+          case 'M':
+            return Attribute.MASK;
+          case 'N':
+            return Attribute.NAMES;
+          case 'P':
+            return Attribute.PASSWORD;
+          case 'R':
+            return Attribute.RADIO;
+          case 'S':
+            return Attribute.DESCRIPTOR;
+          case 'T':
+            return Attribute.TEXT;
+          case 'U':
+            return Attribute.UNIX_NAMES;
+          case 'ID':
+            return Attribute.IDENTIFIER;
+          default:
+            return Attribute.UNKNOWN;
+        }
+      },
+    );
   }
 
   is(attribute: Attribute): boolean {

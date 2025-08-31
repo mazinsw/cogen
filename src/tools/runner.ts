@@ -92,6 +92,8 @@ export class Runner {
               table,
               field,
               output: this,
+              data: this.dataSource,
+              config: this.configuration,
               index: { table: tableIndex, field: pathFieldIndex },
             });
             destFile = this.contents;
@@ -122,6 +124,8 @@ export class Runner {
             table,
             field,
             output: this,
+            data: this.dataSource,
+            config: this.configuration,
             index: { table: tableIndex, field: fieldIndex },
           });
           await fs.promises.writeFile(

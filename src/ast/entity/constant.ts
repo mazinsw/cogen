@@ -36,6 +36,10 @@ enum Property {
   UPDATE,
   WIDTH,
   EXTRA,
+  UPPERCASE_DATABASE,
+  ORDER,
+  DESCRIPTION,
+  IDENTIFIER,
 }
 
 export class Constant extends Node {

@@ -1,5 +1,5 @@
-import * as fs from 'node:fs';
 import { parseTemplate } from '@/util/helper';
+import * as fs from 'node:fs';
 import * as path from 'node:path';
 
 describe('TemplateParser', () => {
@@ -10,9 +10,9 @@ describe('TemplateParser', () => {
     const root = parser.template();
     expect(root.toStringTree(parser)).toBe(
       '(template ' +
-        '(statement (text $a )) ' +
+        '(statement (textContent $a )) ' +
         '(statement (constant (tableStmt $[ (tableLevel table) ]))) ' +
-        '(statement (text  \\$[table] $b \\nwo[(])rd$a )) ' +
+        '(statement (textContent  \\$[table] $b \\nwo[(])rd$a )) ' +
         '(statement (constant (fieldStmt $[ (fieldLevel field) ]))) ' +
         '<EOF>)',
     );
@@ -40,7 +40,7 @@ describe('TemplateParser', () => {
         '(expression (property image))) ' +
         '(orCondition | (condition ' +
         '(expression (property descriptor))))) ))) (andCondition & (condition (expression (type string)))))) ) ] ' +
-        '(statement (text code)) $[ table . end ]))) <EOF>)',
+        '(statement (textContent code)) $[ table . end ]))) <EOF>)',
     );
   });
 
@@ -69,7 +69,7 @@ describe('TemplateParser', () => {
       ),
     );
     const root = parser.template();
-    expect(root.toStringTree(parser)).toContain('fieldReplaceStmt');
+    expect(root.toStringTree(parser)).toContain('replaceStmt');
   });
 
   it('parse migration template file', async () => {

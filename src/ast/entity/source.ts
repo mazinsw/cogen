@@ -1,4 +1,5 @@
 import { Block } from '@/ast/entity/block';
+import { DataSource } from '@/ast/entity/data-source';
 import { Field } from '@/ast/entity/field';
 import { Table } from '@/ast/entity/table';
 import { Configuration } from '@/util/configuration';
@@ -12,6 +13,8 @@ export class SourceContext {
   table: Table;
   field: Field;
   output: OutputWriter;
+  config: Configuration;
+  data: DataSource;
   index: { table: number; field: number };
 }
 

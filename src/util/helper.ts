@@ -21,46 +21,42 @@ export function parseTemplate(input: string): TemplateParser {
 export function resolveSlashs(cmm: string): string {
   let comment = '';
   for (let i = 0; i < cmm.length; i++) {
-    switch (cmm.charAt(i)) {
+    switch (cmm[i]) {
       case '\\':
         if (i + 1 >= cmm.length) break;
         i++;
-        if (cmm.charAt(i) == 'n') comment += '\n';
-        else if (cmm.charAt(i) == 't') comment += '\t';
-        else if (cmm.charAt(i) == 'r') comment += '\r';
-        else comment += cmm.charAt(i);
+        if (cmm[i] == 'n') comment += '\n';
+        else if (cmm[i] == 't') comment += '\t';
+        else if (cmm[i] == 'r') comment += '\r';
+        else comment += cmm[i];
         break;
       default:
-        comment += cmm.charAt(i);
+        comment += cmm[i];
         break;
     }
   }
   return comment;
 }
 
-export function recase(
-  wordcase: string,
-  input: string | undefined,
-  upperDb?: string,
-) {
-  let entry = input || '';
+export function recase(wordcase: string, input: string, upperDb?: string) {
+  let entry = input;
   let result = entry;
   if (canUpper(entry, upperDb)) {
     entry = entry.toLocaleUpperCase();
   }
   if (
-    isLowerCase(wordcase.charAt(0)) &&
+    isLowerCase(wordcase[0]) &&
     wordcase.length > 1 &&
-    isUpperCase(wordcase.charAt(1))
+    isUpperCase(wordcase[1])
   )
     result = camelCase(entry);
-  else if (isLowerCase(wordcase.charAt(0))) result = result.toLowerCase();
-  else if (wordcase.length > 1 && isUpperCase(wordcase.charAt(1)))
+  else if (isLowerCase(wordcase[0])) result = result.toLowerCase();
+  else if (wordcase.length > 1 && isUpperCase(wordcase[1]))
     result = result.toLocaleUpperCase();
   else if (
     wordcase.length > 1 &&
-    isUpperCase(wordcase.charAt(0)) &&
-    isLowerCase(wordcase.charAt(1))
+    isUpperCase(wordcase[0]) &&
+    isLowerCase(wordcase[1])
   )
     result = result.substring(0, 1).toLocaleUpperCase() + result.substring(1);
   else result = entry;
@@ -85,12 +81,27 @@ export function isUpperCase(entry: string): boolean {
 export function camelCase(titleCase: string): string {
   let camelCase = '';
   for (let i = 0; i < titleCase.length; i++) {
-    if (isUpperCase(titleCase.charAt(i))) {
-      camelCase += titleCase.charAt(i).toLocaleLowerCase();
+    if (isUpperCase(titleCase[i])) {
+      camelCase += titleCase[i].toLocaleLowerCase();
     } else {
       camelCase += titleCase.substring(i);
       break;
     }
   }
   return camelCase;
+}
+
+export function firstLetters(typeName: string) {
+  let prefix = '';
+  let lastIsUpperCase = false;
+  for (let i = 0; i < typeName.length; i++) {
+    const ch = typeName[i];
+    if (isUpperCase(ch) && !lastIsUpperCase) {
+      prefix += ch.toLocaleLowerCase();
+      lastIsUpperCase = true;
+    } else if (isLowerCase(ch)) {
+      lastIsUpperCase = false;
+    }
+  }
+  return prefix;
 }

@@ -5,11 +5,17 @@ import { Field } from '@/ast/entity/field';
 import { ForeignKey } from '@/ast/entity/foreign-key';
 import { PrimaryKey } from '@/ast/entity/primary-key';
 import { UniqueKey } from '@/ast/entity/unique-key';
+import { Configuration } from '@/util/configuration';
+import { normalize } from '@/util/normalize';
+import { despluralize } from '@/util/plural';
 
 export class Table extends CommentedNode {
   private fields: Field[];
   private constraints: Constraint[];
   private indexes: Index[];
+  private normalizedName?: string;
+  private normalizedDefault?: string;
+  private normalizedAndDespluralizedName?: string;
 
   constructor(name: string) {
     super(name);
@@ -38,6 +44,37 @@ export class Table extends CommentedNode {
 
   public getIndexes() {
     return this.indexes;
+  }
+
+  public getNormalizedName(config: Configuration) {
+    if (this.normalizedName) {
+      return this.normalizedName;
+    }
+    const name = normalize(this.getName(), config.getDictionary());
+    const parts = name.split('.');
+    this.normalizedName = parts[parts.length - 1];
+    return this.normalizedName;
+  }
+
+  public getNormalizedDefault() {
+    if (this.normalizedDefault) {
+      return this.normalizedDefault;
+    }
+    const name = normalize(this.getName());
+    const parts = name.split('.');
+    this.normalizedDefault = parts[parts.length - 1];
+    return this.normalizedDefault;
+  }
+
+  public getNormalizedAndDespluralizedName(config: Configuration) {
+    if (this.normalizedAndDespluralizedName) {
+      return this.normalizedAndDespluralizedName;
+    }
+    this.normalizedAndDespluralizedName = despluralize(
+      this.getNormalizedName(config),
+      config.getDictionary(),
+    );
+    return this.normalizedAndDespluralizedName;
   }
 
   public addIndex(index: Index) {

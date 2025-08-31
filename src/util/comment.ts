@@ -6,16 +6,18 @@ export class Comment {
   }
 
   public static extract<T>(
-    field: string,
+    field: string | undefined,
     values: Map<T, string[]>,
     toKey: (entry: string) => T,
-  ): string | null {
+  ): string {
     let comment = '';
     let cmm = field;
     const cmds: string[] = [];
     let state = 0;
     let offset = -1;
-    if (cmm == null) return null;
+    if (!cmm) {
+      return '';
+    }
     cmm = resolveSlashs(cmm);
     for (let i = cmm.length - 1; i >= 0; i--) {
       switch (cmm.charAt(i)) {
