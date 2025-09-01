@@ -119,6 +119,8 @@ import { ForeignElseEachStmtContext } from "./TemplateParser";
 import { ForeignElseEndStmtContext } from "./TemplateParser";
 import { ForeignElseStmtContext } from "./TemplateParser";
 import { ForeignElseCondEndStmtContext } from "./TemplateParser";
+import { CommentEachStmtContext } from "./TemplateParser";
+import { OptionEachStmtContext } from "./TemplateParser";
 import { ConstantContext } from "./TemplateParser";
 import { ReplaceStmtContext } from "./TemplateParser";
 import { TableStmtContext } from "./TemplateParser";
@@ -127,10 +129,8 @@ import { FieldStmtContext } from "./TemplateParser";
 import { FieldPropsContext } from "./TemplateParser";
 import { ConstraintStmtContext } from "./TemplateParser";
 import { AllLevelsContext } from "./TemplateParser";
-import { TableConditionContext } from "./TemplateParser";
-import { FieldConditionContext } from "./TemplateParser";
-import { IndexConditionContext } from "./TemplateParser";
-import { ConstraintConditionContext } from "./TemplateParser";
+import { EachConditionContext } from "./TemplateParser";
+import { TestConditionContext } from "./TemplateParser";
 import { ConditionContext } from "./TemplateParser";
 import { AnyConditionContext } from "./TemplateParser";
 import { PriorityConditionContext } from "./TemplateParser";
@@ -1432,6 +1432,28 @@ export interface TemplateParserListener extends ParseTreeListener {
 	exitForeignElseCondEndStmt?: (ctx: ForeignElseCondEndStmtContext) => void;
 
 	/**
+	 * Enter a parse tree produced by `TemplateParser.commentEachStmt`.
+	 * @param ctx the parse tree
+	 */
+	enterCommentEachStmt?: (ctx: CommentEachStmtContext) => void;
+	/**
+	 * Exit a parse tree produced by `TemplateParser.commentEachStmt`.
+	 * @param ctx the parse tree
+	 */
+	exitCommentEachStmt?: (ctx: CommentEachStmtContext) => void;
+
+	/**
+	 * Enter a parse tree produced by `TemplateParser.optionEachStmt`.
+	 * @param ctx the parse tree
+	 */
+	enterOptionEachStmt?: (ctx: OptionEachStmtContext) => void;
+	/**
+	 * Exit a parse tree produced by `TemplateParser.optionEachStmt`.
+	 * @param ctx the parse tree
+	 */
+	exitOptionEachStmt?: (ctx: OptionEachStmtContext) => void;
+
+	/**
 	 * Enter a parse tree produced by `TemplateParser.constant`.
 	 * @param ctx the parse tree
 	 */
@@ -1520,48 +1542,26 @@ export interface TemplateParserListener extends ParseTreeListener {
 	exitAllLevels?: (ctx: AllLevelsContext) => void;
 
 	/**
-	 * Enter a parse tree produced by `TemplateParser.tableCondition`.
+	 * Enter a parse tree produced by `TemplateParser.eachCondition`.
 	 * @param ctx the parse tree
 	 */
-	enterTableCondition?: (ctx: TableConditionContext) => void;
+	enterEachCondition?: (ctx: EachConditionContext) => void;
 	/**
-	 * Exit a parse tree produced by `TemplateParser.tableCondition`.
+	 * Exit a parse tree produced by `TemplateParser.eachCondition`.
 	 * @param ctx the parse tree
 	 */
-	exitTableCondition?: (ctx: TableConditionContext) => void;
+	exitEachCondition?: (ctx: EachConditionContext) => void;
 
 	/**
-	 * Enter a parse tree produced by `TemplateParser.fieldCondition`.
+	 * Enter a parse tree produced by `TemplateParser.testCondition`.
 	 * @param ctx the parse tree
 	 */
-	enterFieldCondition?: (ctx: FieldConditionContext) => void;
+	enterTestCondition?: (ctx: TestConditionContext) => void;
 	/**
-	 * Exit a parse tree produced by `TemplateParser.fieldCondition`.
+	 * Exit a parse tree produced by `TemplateParser.testCondition`.
 	 * @param ctx the parse tree
 	 */
-	exitFieldCondition?: (ctx: FieldConditionContext) => void;
-
-	/**
-	 * Enter a parse tree produced by `TemplateParser.indexCondition`.
-	 * @param ctx the parse tree
-	 */
-	enterIndexCondition?: (ctx: IndexConditionContext) => void;
-	/**
-	 * Exit a parse tree produced by `TemplateParser.indexCondition`.
-	 * @param ctx the parse tree
-	 */
-	exitIndexCondition?: (ctx: IndexConditionContext) => void;
-
-	/**
-	 * Enter a parse tree produced by `TemplateParser.constraintCondition`.
-	 * @param ctx the parse tree
-	 */
-	enterConstraintCondition?: (ctx: ConstraintConditionContext) => void;
-	/**
-	 * Exit a parse tree produced by `TemplateParser.constraintCondition`.
-	 * @param ctx the parse tree
-	 */
-	exitConstraintCondition?: (ctx: ConstraintConditionContext) => void;
+	exitTestCondition?: (ctx: TestConditionContext) => void;
 
 	/**
 	 * Enter a parse tree produced by `TemplateParser.condition`.

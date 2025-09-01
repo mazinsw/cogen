@@ -19,20 +19,26 @@ export enum SourceType {
   CONSTRAINT,
   REFERENCE,
   PRIMARY,
+  OPTION,
+  COMMENT,
 }
 
 export class SourceContext {
   type: SourceType;
   table: Table;
   field: Field;
-  index: Index;
+  index?: Index;
+  option?: string;
+  comment?: string;
   output: OutputWriter;
   config: Configuration;
   data: DataSource;
   position: {
     table: number;
     field: number;
-    index: number;
+    index?: number;
+    option?: number;
+    comment?: number;
   };
 }
 

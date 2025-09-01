@@ -105,3 +105,34 @@ export function firstLetters(typeName: string) {
   }
   return prefix;
 }
+
+export function wrapText(text: string, maxChars: number): string[] {
+  const tokens = text.split(/(\s+)/); // keep space as tokens
+  const lines: string[] = [];
+  let currentLine = '';
+
+  for (let token of tokens) {
+    while (token.length > 0) {
+      let freeWidth = maxChars - currentLine.length;
+      if (
+        currentLine.trim().length > 0 &&
+        freeWidth < token.length &&
+        token.length <= maxChars
+      ) {
+        lines.push(currentLine.trim());
+        currentLine = '';
+      }
+      if (currentLine.length === 0) {
+        token = token.trim();
+      }
+      freeWidth = maxChars - currentLine.length;
+      token = currentLine + token;
+      currentLine = token.slice(0, maxChars);
+      token = token.slice(maxChars);
+    }
+  }
+  if (currentLine.trim().length > 0) {
+    lines.push(currentLine.trim());
+  }
+  return lines;
+}

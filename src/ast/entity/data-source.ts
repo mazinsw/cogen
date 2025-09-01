@@ -5,7 +5,7 @@ import { ASTBuilder } from '@/ast/sql/ast-builder';
 import { Configuration } from '@/util/configuration';
 
 export class DataSource extends Source {
-  private tables: Table[];
+  public tables: Table[];
 
   constructor(configuration: Configuration) {
     super(configuration);
@@ -37,16 +37,24 @@ export class DataSource extends Source {
     return this.tables;
   }
 
-  public findTable(name: string): Table | null {
+  public findTableIndex(name: string): number {
     if (name == null) {
-      return null;
+      return -1;
     }
     const nameLC = name.toLocaleLowerCase();
-    for (const table of this.getTables()) {
+    for (const [index, table] of this.getTables().entries()) {
       if (table.getName().toLocaleLowerCase() === nameLC) {
-        return table;
+        return index;
       }
     }
-    return null;
+    return -1;
+  }
+
+  public findTable(name: string): Table | null {
+    const index = this.findTableIndex(name);
+    if (index < 0) {
+      return null;
+    }
+    return this.tables[index];
   }
 }

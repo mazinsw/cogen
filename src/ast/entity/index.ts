@@ -2,7 +2,7 @@ import { NamedNode } from '@/ast/entity/named-node';
 import { OrderField } from '@/ast/entity/order-field';
 
 export class Index extends NamedNode {
-  constructor(private fields: OrderField[] = []) {
+  constructor(public fields: OrderField[] = []) {
     super(null);
   }
 

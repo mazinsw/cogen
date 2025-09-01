@@ -1,45 +1,63 @@
 import { Block } from '@/ast/entity/block';
+import { CommentEach } from '@/ast/entity/comment-each';
 import { Condition, Expression, Operator } from '@/ast/entity/condition';
 import { ConditionBlock } from '@/ast/entity/condition-block';
 import { Constant } from '@/ast/entity/constant';
 import { ConstraintConstant } from '@/ast/entity/constraint-constant';
+import { ConstraintEach } from '@/ast/entity/constraint-each';
 import { DescriptorConstant } from '@/ast/entity/descriptor-constant';
 import { FieldConstant } from '@/ast/entity/field-constant';
 import { FieldEach } from '@/ast/entity/field-each';
 import { ForeignConstant } from '@/ast/entity/foreign-constant';
+import { ForeignEach } from '@/ast/entity/foreign-each';
 import { ImageConstant } from '@/ast/entity/image-constant';
 import { IndexConstant } from '@/ast/entity/index-constant';
+import { IndexEach } from '@/ast/entity/index-each';
 import { InheritedConstant } from '@/ast/entity/inherited-constant';
 import { Node } from '@/ast/entity/node';
 import { OptionConstant } from '@/ast/entity/option-constant';
+import { OptionEach } from '@/ast/entity/option-each';
 import { PrimaryConstant } from '@/ast/entity/primary-constant';
+import { PrimaryEach } from '@/ast/entity/primary-each';
 import { ReferenceConstant } from '@/ast/entity/reference-constant';
+import { ReferenceEach } from '@/ast/entity/reference-each';
 import { ReplaceCommand } from '@/ast/entity/replace-command';
 import { StringValue } from '@/ast/entity/string-value';
 import { TableConstant } from '@/ast/entity/table-constant';
+import { TableEach } from '@/ast/entity/table-each';
 import { TemplateSource } from '@/ast/entity/templace-source';
 import { UniqueConstant } from '@/ast/entity/unique-constant';
+import { UniqueEach } from '@/ast/entity/unique-each';
 import { ListErrorListener } from '@/ast/list-error-listener';
 import { Stack } from '@/data/struct/stack';
 import { TemplateLexer } from '@/grammar/TemplateLexer';
 import {
   AndConditionContext,
+  CommentEachStmtContext,
+  ConstraintEachStmtContext,
   ConstraintLevelContext,
   ConstraintStmtContext,
+  EachConditionContext,
   ExpressionContext,
-  FieldConditionContext,
   FieldEachStmtContext,
   FieldLevelContext,
   FieldStmtContext,
+  ForeignEachStmtContext,
+  IndexEachStmtContext,
+  OptionEachStmtContext,
   OrConditionContext,
+  PrimaryEachStmtContext,
   PriorityConditionContext,
+  ReferenceEachStmtContext,
   RegexContext,
   ReplaceStmtContext,
+  TableEachStmtContext,
   TableLevelContext,
   TableStmtContext,
   TemplateContext,
   TemplateParser,
   TextContentContext,
+  UniqueEachStmtContext,
 } from '@/grammar/TemplateParser';
 import { TemplateParserListener } from '@/grammar/TemplateParserListener';
 import { CharStream, CharStreams, CommonTokenStream, Token } from 'antlr4ts';
@@ -331,6 +349,17 @@ export class ASTBuilder implements TemplateParserListener {
     block.addStatement(command);
   }
 
+  enterTableEachStmt(_: TableEachStmtContext) {
+    const block = this.stack.peek() as Block;
+    const loop = new TableEach();
+    block.addStatement(loop);
+    this.stack.push(loop);
+  }
+
+  exitTableEachStmt(_: TableEachStmtContext) {
+    this.stack.pop();
+  }
+
   enterFieldEachStmt(_: FieldEachStmtContext) {
     const block = this.stack.peek() as Block;
     const loop = new FieldEach();
@@ -342,14 +371,102 @@ export class ASTBuilder implements TemplateParserListener {
     this.stack.pop();
   }
 
-  enterFieldCondition(_: FieldConditionContext) {
+  enterConstraintEachStmt(_: ConstraintEachStmtContext) {
+    const block = this.stack.peek() as Block;
+    const loop = new ConstraintEach();
+    block.addStatement(loop);
+    this.stack.push(loop);
+  }
+
+  exitConstraintEachStmt(_: ConstraintEachStmtContext) {
+    this.stack.pop();
+  }
+
+  enterIndexEachStmt(_: IndexEachStmtContext) {
+    const block = this.stack.peek() as Block;
+    const loop = new IndexEach();
+    block.addStatement(loop);
+    this.stack.push(loop);
+  }
+
+  exitIndexEachStmt(_: IndexEachStmtContext) {
+    this.stack.pop();
+  }
+
+  enterUniqueEachStmt(_: UniqueEachStmtContext) {
+    const block = this.stack.peek() as Block;
+    const loop = new UniqueEach();
+    block.addStatement(loop);
+    this.stack.push(loop);
+  }
+
+  exitUniqueEachStmt(_: UniqueEachStmtContext) {
+    this.stack.pop();
+  }
+
+  enterPrimaryEachStmt(_: PrimaryEachStmtContext) {
+    const block = this.stack.peek() as Block;
+    const loop = new PrimaryEach();
+    block.addStatement(loop);
+    this.stack.push(loop);
+  }
+
+  exitPrimaryEachStmt(_: PrimaryEachStmtContext) {
+    this.stack.pop();
+  }
+
+  enterForeignEachStmt(_: ForeignEachStmtContext) {
+    const block = this.stack.peek() as Block;
+    const loop = new ForeignEach();
+    block.addStatement(loop);
+    this.stack.push(loop);
+  }
+
+  exitForeignEachStmt(_: ForeignEachStmtContext) {
+    this.stack.pop();
+  }
+
+  enterReferenceEachStmt(_: ReferenceEachStmtContext) {
+    const block = this.stack.peek() as Block;
+    const loop = new ReferenceEach();
+    block.addStatement(loop);
+    this.stack.push(loop);
+  }
+
+  exitReferenceEachStmt(_: ReferenceEachStmtContext) {
+    this.stack.pop();
+  }
+
+  enterOptionEachStmt(_: OptionEachStmtContext) {
+    const block = this.stack.peek() as Block;
+    const loop = new OptionEach();
+    block.addStatement(loop);
+    this.stack.push(loop);
+  }
+
+  exitOptionEachStmt(_: OptionEachStmtContext) {
+    this.stack.pop();
+  }
+
+  enterCommentEachStmt(_: CommentEachStmtContext) {
+    const block = this.stack.peek() as Block;
+    const loop = new CommentEach();
+    block.addStatement(loop);
+    this.stack.push(loop);
+  }
+
+  exitCommentEachStmt(_: CommentEachStmtContext) {
+    this.stack.pop();
+  }
+
+  enterEachCondition(_: EachConditionContext) {
     const conditionBlock = this.stack.peek() as ConditionBlock;
     const condition = new Condition();
     conditionBlock.condition = condition;
     this.stack.push(condition);
   }
 
-  exitFieldCondition(_: FieldConditionContext) {
+  exitEachCondition(_: EachConditionContext) {
     this.stack.pop();
   }
 

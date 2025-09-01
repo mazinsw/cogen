@@ -1,10 +1,13 @@
 import { Block } from '@/ast/entity/block';
 import { Condition } from '@/ast/entity/condition';
+import { SourceContext } from '@/ast/entity/source';
 
-export class ConditionBlock extends Block {
+export abstract class ConditionBlock extends Block {
   public condition?: Condition;
 
-  constructor() {
-    super();
-  }
+  public abstract buildContext(
+    context: SourceContext,
+    position?: number,
+    runPosition?: number,
+  ): SourceContext;
 }

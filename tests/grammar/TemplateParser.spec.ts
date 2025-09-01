@@ -35,7 +35,7 @@ describe('TemplateParser', () => {
     const root = parser.template();
     expect(root.toStringTree(parser)).toBe(
       '(template ' +
-        '(statement (block (tableIfStmt $[ table . if ( (tableCondition (condition (anyCondition ' +
+        '(statement (block (tableIfStmt $[ table . if ( (testCondition (condition (anyCondition ' +
         '(priorityCondition ( (condition (anyCondition ' +
         '(expression (property image))) ' +
         '(orCondition | (condition ' +

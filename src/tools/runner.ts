@@ -1,4 +1,5 @@
 import { DataSource } from '@/ast/entity/data-source';
+import { SourceType } from '@/ast/entity/source';
 import { TemplateSource } from '@/ast/entity/templace-source';
 import { Configuration } from '@/util/configuration';
 import { FileEntry, readDirRecursive } from '@/util/file';
@@ -89,17 +90,15 @@ export class Runner {
           if (filenameTemplateSource.getStatements().length > 0) {
             this.contents = '';
             filenameTemplateSource.execute({
-              type: undefined,
+              type: SourceType.TABLE,
               table,
               field,
-              index: undefined,
               output: this,
               data: this.dataSource,
               config: this.configuration,
               position: {
                 table: tableIndex,
                 field: pathFieldIndex,
-                index: undefined,
               },
             });
             destFile = this.contents;
@@ -121,23 +120,19 @@ export class Runner {
             await fs.promises.mkdir(destFile, { recursive: true });
             continue;
           }
-          await fs.promises.mkdir(path.dirname(destFile), {
-            recursive: true,
-          });
+          await fs.promises.mkdir(path.dirname(destFile), { recursive: true });
           fieldIndex++;
           this.contents = '';
           contentTemplateSource.execute({
-            type: undefined,
+            type: SourceType.TABLE,
             table,
             field,
-            index: undefined,
             output: this,
             data: this.dataSource,
             config: this.configuration,
             position: {
               table: tableIndex,
               field: fieldIndex,
-              index: undefined,
             },
           });
           await fs.promises.writeFile(

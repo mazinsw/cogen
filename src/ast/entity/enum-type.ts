@@ -1,7 +1,7 @@
 import { DataType } from '@/ast/entity/data-type';
 
 export class EnumType extends DataType {
-  private elements: string[];
+  public elements: string[];
 
   constructor(type: number) {
     super(type);
@@ -17,8 +17,8 @@ export class EnumType extends DataType {
   }
 
   public isBoolean(): boolean {
-    if (this.getType() != DataType.ENUM || this.getElements().length != 2)
+    if (this.getType() != DataType.ENUM || this.elements.length != 2)
       return false;
-    return this.getElements().includes('Y') && this.getElements().includes('N');
+    return this.elements.includes('Y') && this.elements.includes('N');
   }
 }

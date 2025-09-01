@@ -1,22 +1,22 @@
 import { LoopBlock } from '@/ast/entity/loop-block';
 import { SourceContext, SourceType } from '@/ast/entity/source';
 
-export class FieldEach extends LoopBlock {
+export class TableEach extends LoopBlock {
   public buildContext(
     context: SourceContext,
     position?: number,
     runPosition?: number,
   ): SourceContext {
-    const field = context.table.fields[position];
+    const table = context.data.tables[position];
     return {
       ...context,
-      field,
-      type: SourceType.FIELD,
-      position: { ...context.position, field: runPosition },
+      table,
+      type: SourceType.TABLE,
+      position: { ...context.position, table: runPosition },
     };
   }
 
   public getLength(context: SourceContext): number {
-    return context.table.fields.length;
+    return context.data.tables.length;
   }
 }
