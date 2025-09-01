@@ -351,6 +351,8 @@ property:
   | K_NULL
   | K_OPTIONAL
   | K_REQUIRED
+  | K_NOT_NULL
+  | K_NON_NULL
   | K_UNSIGNED
   | K_DEFAULT
   | K_INFO
@@ -364,10 +366,13 @@ property:
   | K_FULLTEXT
   | K_RADIO
   | K_MASKED
+  | K_PASSWORD
   | K_ARRAY
   | K_IMAGE
   | K_OPTION
   | K_FEW_FIELDS
+  | K_MANY
+  | K_SINGLE
   | K_FIRST
   | K_NON_FIRST
   ;

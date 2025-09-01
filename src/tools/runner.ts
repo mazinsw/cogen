@@ -89,12 +89,18 @@ export class Runner {
           if (filenameTemplateSource.getStatements().length > 0) {
             this.contents = '';
             filenameTemplateSource.execute({
+              type: undefined,
               table,
               field,
+              index: undefined,
               output: this,
               data: this.dataSource,
               config: this.configuration,
-              index: { table: tableIndex, field: pathFieldIndex },
+              position: {
+                table: tableIndex,
+                field: pathFieldIndex,
+                index: undefined,
+              },
             });
             destFile = this.contents;
             destFile = destFile.replaceAll('\\', path.sep);
@@ -121,12 +127,18 @@ export class Runner {
           fieldIndex++;
           this.contents = '';
           contentTemplateSource.execute({
+            type: undefined,
             table,
             field,
+            index: undefined,
             output: this,
             data: this.dataSource,
             config: this.configuration,
-            index: { table: tableIndex, field: fieldIndex },
+            position: {
+              table: tableIndex,
+              field: fieldIndex,
+              index: undefined,
+            },
           });
           await fs.promises.writeFile(
             destFile,

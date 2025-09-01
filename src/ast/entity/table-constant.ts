@@ -30,7 +30,7 @@ export class TableConstant extends Constant {
           break;
         case Constant.Property.ORDER:
           const digits = `${context.data.getTables().length}`.length;
-          text = `${context.index.table}`.padStart(digits, '0');
+          text = `${context.position.table}`.padStart(digits, '0');
           break;
         case Constant.Property.INHERITED:
           text = context.table.getAttribute(Table.Attribute.INHERITED, 0);

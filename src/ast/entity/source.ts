@@ -1,3 +1,4 @@
+import { Index } from '@/ast/entity';
 import { Block } from '@/ast/entity/block';
 import { DataSource } from '@/ast/entity/data-source';
 import { Field } from '@/ast/entity/field';
@@ -9,13 +10,30 @@ export interface OutputWriter {
   appendContents(text: string): void;
 }
 
+export enum SourceType {
+  TABLE,
+  FIELD,
+  UNIQUE,
+  INDEX,
+  FOREIGN,
+  CONSTRAINT,
+  REFERENCE,
+  PRIMARY,
+}
+
 export class SourceContext {
+  type: SourceType;
   table: Table;
   field: Field;
+  index: Index;
   output: OutputWriter;
   config: Configuration;
   data: DataSource;
-  index: { table: number; field: number };
+  position: {
+    table: number;
+    field: number;
+    index: number;
+  };
 }
 
 export abstract class Source extends Block {

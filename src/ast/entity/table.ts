@@ -10,9 +10,9 @@ import { normalize } from '@/util/normalize';
 import { despluralize } from '@/util/plural';
 
 export class Table extends CommentedNode {
-  private fields: Field[];
-  private constraints: Constraint[];
-  private indexes: Index[];
+  public fields: Field[];
+  public constraints: Constraint[];
+  public indexes: Index[];
   private normalizedName?: string;
   private normalizedDefault?: string;
   private normalizedAndDespluralizedName?: string;
@@ -31,10 +31,6 @@ export class Table extends CommentedNode {
   public addField(field: Field) {
     this.fields.push(field);
     field.prepare();
-  }
-
-  public getConstraints() {
-    return this.constraints;
   }
 
   public addConstraint(constraint: Constraint) {
@@ -104,22 +100,6 @@ export class Table extends CommentedNode {
     return foreign?.getTableName() || null;
   }
 
-  public isUnique(field: Field): boolean {
-    return this.getUniqueIndex(field) != null;
-  }
-
-  public getUniqueIndex(field: Field): Index | null {
-    const fieldNameLC = field.getName().toLocaleLowerCase();
-    for (const constraint of this.constraints) {
-      if (!(constraint instanceof UniqueKey)) continue;
-      for (const oField of constraint.getFields()) {
-        if (oField.getName().toLocaleLowerCase() === fieldNameLC)
-          return constraint;
-      }
-    }
-    return null;
-  }
-
   public findIndex(field: Field): Index | null {
     const fieldNameLC = field.getName().toLocaleLowerCase();
     for (const index of this.indexes) {
@@ -141,25 +121,18 @@ export class Table extends CommentedNode {
     return null;
   }
 
-  public getUniqueIndexCount() {
-    let count = 0;
-    for (const constraint of this.constraints) {
-      if (constraint instanceof PrimaryKey) {
-        continue;
-      }
-      if (constraint instanceof UniqueKey) {
-        count++;
-      }
-    }
-    return count;
-  }
-
   public getConstraintFields(constraint?: Constraint): Field[] {
     const list: Field[] = [];
-    if (!constraint) return list;
+    if (!constraint) {
+      return list;
+    }
     for (const orderField of constraint.getFields()) {
       const field = this.find(orderField.getName());
-      if (!field) throw new Error(`${orderField.getName()} ${this.getName()}`);
+      if (!field) {
+        throw new Error(
+          `Field ${orderField.getName()} not found in table ${this.getName()}`,
+        );
+      }
       list.push(field);
     }
     return list;
@@ -167,26 +140,53 @@ export class Table extends CommentedNode {
 
   public getUniqueKeys(skipPk?: boolean): UniqueKey[] {
     const list: UniqueKey[] = [];
-    for (const constraint of this.getConstraints()) {
-      if (!(constraint instanceof UniqueKey)) continue;
-      if (skipPk && constraint instanceof PrimaryKey) continue;
+    for (const constraint of this.constraints) {
+      if (!(constraint instanceof UniqueKey)) {
+        continue;
+      }
+      if (skipPk && constraint instanceof PrimaryKey) {
+        continue;
+      }
       list.push(constraint);
     }
     return list;
   }
 
+  public getUniqueIndex(field: Field): Index | null {
+    const fieldNameLC = field.getName().toLocaleLowerCase();
+    for (const constraint of this.constraints) {
+      if (!(constraint instanceof UniqueKey)) {
+        continue;
+      }
+      for (const oField of constraint.getFields()) {
+        if (oField.getName().toLocaleLowerCase() === fieldNameLC) {
+          return constraint;
+        }
+      }
+    }
+    return null;
+  }
+
+  public isUnique(field: Field): boolean {
+    return !!this.getUniqueIndex(field);
+  }
+
   public getForeignKeys(): ForeignKey[] {
     const list: ForeignKey[] = [];
-    for (const constraint of this.getConstraints()) {
-      if (!(constraint instanceof ForeignKey)) continue;
+    for (const constraint of this.constraints) {
+      if (!(constraint instanceof ForeignKey)) {
+        continue;
+      }
       list.push(constraint);
     }
     return list;
   }
 
   public getPrimaryKey(): PrimaryKey | null {
-    for (const constraint of this.getConstraints()) {
-      if (!(constraint instanceof PrimaryKey)) continue;
+    for (const constraint of this.constraints) {
+      if (!(constraint instanceof PrimaryKey)) {
+        continue;
+      }
       return constraint;
     }
     return null;
@@ -218,7 +218,7 @@ export class Table extends CommentedNode {
       }
     }
     if (descField != null) return descField;
-    for (const constraint of this.getConstraints()) {
+    for (const constraint of this.constraints) {
       if (constraint instanceof UniqueKey) {
         if (constraint.getFields().length == 1) {
           const field = this.find(constraint.getFields()[0].getName());

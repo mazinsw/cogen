@@ -1,8 +1,11 @@
 import { Block } from '@/ast/entity/block';
+import { Condition, Expression, Operator } from '@/ast/entity/condition';
+import { ConditionBlock } from '@/ast/entity/condition-block';
 import { Constant } from '@/ast/entity/constant';
 import { ConstraintConstant } from '@/ast/entity/constraint-constant';
 import { DescriptorConstant } from '@/ast/entity/descriptor-constant';
 import { FieldConstant } from '@/ast/entity/field-constant';
+import { FieldEach } from '@/ast/entity/field-each';
 import { ForeignConstant } from '@/ast/entity/foreign-constant';
 import { ImageConstant } from '@/ast/entity/image-constant';
 import { IndexConstant } from '@/ast/entity/index-constant';
@@ -20,10 +23,16 @@ import { ListErrorListener } from '@/ast/list-error-listener';
 import { Stack } from '@/data/struct/stack';
 import { TemplateLexer } from '@/grammar/TemplateLexer';
 import {
+  AndConditionContext,
   ConstraintLevelContext,
   ConstraintStmtContext,
+  ExpressionContext,
+  FieldConditionContext,
+  FieldEachStmtContext,
   FieldLevelContext,
   FieldStmtContext,
+  OrConditionContext,
+  PriorityConditionContext,
   RegexContext,
   ReplaceStmtContext,
   TableLevelContext,
@@ -320,5 +329,182 @@ export class ASTBuilder implements TemplateParserListener {
       ctx.tryGetRuleContext(1, RegexContext)?.text,
     );
     block.addStatement(command);
+  }
+
+  enterFieldEachStmt(_: FieldEachStmtContext) {
+    const block = this.stack.peek() as Block;
+    const loop = new FieldEach();
+    block.addStatement(loop);
+    this.stack.push(loop);
+  }
+
+  exitFieldEachStmt(_: FieldEachStmtContext) {
+    this.stack.pop();
+  }
+
+  enterFieldCondition(_: FieldConditionContext) {
+    const conditionBlock = this.stack.peek() as ConditionBlock;
+    const condition = new Condition();
+    conditionBlock.condition = condition;
+    this.stack.push(condition);
+  }
+
+  exitFieldCondition(_: FieldConditionContext) {
+    this.stack.pop();
+  }
+
+  enterPriorityCondition(_: PriorityConditionContext) {
+    const condition = this.stack.peek() as Condition;
+    const priorityCondition = new Condition();
+    condition.left = priorityCondition;
+    this.stack.push(priorityCondition);
+  }
+
+  exitPriorityCondition(_: PriorityConditionContext) {
+    this.stack.pop();
+  }
+
+  enterAndCondition(_: AndConditionContext) {
+    const condition = this.stack.peek() as Condition;
+    condition.operator = Operator.AND;
+    const andCondition = new Condition();
+    condition.right = andCondition;
+    this.stack.push(andCondition);
+  }
+
+  exitAndCondition(_: AndConditionContext) {
+    this.stack.pop();
+  }
+
+  enterOrCondition(_: OrConditionContext) {
+    const condition = this.stack.peek() as Condition;
+    condition.operator = Operator.OR;
+    const orCondition = new Condition();
+    condition.right = orCondition;
+    this.stack.push(orCondition);
+  }
+
+  exitOrCondition(_: OrConditionContext) {
+    this.stack.pop();
+  }
+
+  enterExpression(ctx: ExpressionContext) {
+    const condition = this.stack.peek() as Condition;
+    const attribute = ctx.attribute();
+    if (attribute) {
+      switch (true) {
+        case !!attribute.K_COMMENT():
+          return (condition.expression = Expression.ATTRIBUTE_COMMENT);
+        case !!attribute.K_INHERITED():
+          return (condition.expression = Expression.ATTRIBUTE_INHERITED);
+        case !!attribute.K_PACKAGE():
+          return (condition.expression = Expression.ATTRIBUTE_PACKAGE);
+        default: // K_PATH
+          return (condition.expression = Expression.ATTRIBUTE_PATH);
+      }
+    }
+    const property = ctx.property();
+    if (property) {
+      switch (true) {
+        case !!property.K_ALL():
+          return (condition.expression = Expression.PROPERTY_ALL);
+        case !!property.K_REFERENCE():
+          return (condition.expression = Expression.PROPERTY_REFERENCE);
+        case !!property.K_PRIMARY():
+          return (condition.expression = Expression.PROPERTY_PRIMARY);
+        case !!property.K_REPEATED():
+          return (condition.expression = Expression.PROPERTY_REPEATED);
+        case !!property.K_NULL():
+          return (condition.expression = Expression.PROPERTY_NULL);
+        case !!property.K_OPTIONAL():
+          return (condition.expression = Expression.PROPERTY_OPTIONAL);
+        case !!property.K_REQUIRED():
+        case !!property.K_NOT_NULL():
+        case !!property.K_NON_NULL():
+          return (condition.expression = Expression.PROPERTY_REQUIRED);
+        case !!property.K_UNSIGNED():
+          return (condition.expression = Expression.PROPERTY_UNSIGNED);
+        case !!property.K_DEFAULT():
+          return (condition.expression = Expression.PROPERTY_DEFAULT);
+        case !!property.K_INFO():
+          return (condition.expression = Expression.PROPERTY_INFO);
+        case !!property.K_DESCRIPTOR():
+          return (condition.expression = Expression.PROPERTY_DESCRIPTOR);
+        case !!property.K_SEARCHABLE():
+          return (condition.expression = Expression.PROPERTY_SEARCHABLE);
+        case !!property.K_DESCRIPTION():
+          return (condition.expression = Expression.ATTRIBUTE_COMMENT);
+        case !!property.K_INDEX():
+          return (condition.expression = Expression.PROPERTY_INDEX);
+        case !!property.K_CONSTRAINT():
+          return (condition.expression = Expression.PROPERTY_CONSTRAINT);
+        case !!property.K_FOREIGN():
+          return (condition.expression = Expression.PROPERTY_FOREIGN);
+        case !!property.K_UNIQUE():
+          return (condition.expression = Expression.PROPERTY_UNIQUE);
+        case !!property.K_FULLTEXT():
+          return (condition.expression = Expression.PROPERTY_FULLTEXT);
+        case !!property.K_RADIO():
+          return (condition.expression = Expression.PROPERTY_RADIO);
+        case !!property.K_MASKED():
+          return (condition.expression = Expression.PROPERTY_MASKED);
+        case !!property.K_PASSWORD():
+          return (condition.expression = Expression.PROPERTY_PASSWORD);
+        case !!property.K_ARRAY():
+          return (condition.expression = Expression.PROPERTY_ARRAY);
+        case !!property.K_IMAGE():
+          return (condition.expression = Expression.PROPERTY_IMAGE);
+        case !!property.K_OPTION():
+          return (condition.expression = Expression.PROPERTY_OPTION);
+        case !!property.K_FEW_FIELDS():
+          return (condition.expression = Expression.PROPERTY_FEW_FIELDS);
+        case !!property.K_MANY():
+          return (condition.expression = Expression.PROPERTY_MANY);
+        case !!property.K_SINGLE():
+          return (condition.expression = Expression.PROPERTY_SINGLE);
+        case !!property.K_FIRST():
+          return (condition.expression = Expression.PROPERTY_FIRST);
+        default: // K_NON_FIRST
+          return (condition.expression = Expression.PROPERTY_NON_FIRST);
+      }
+    }
+
+    const type = ctx.type()!;
+    switch (true) {
+      case !!type.K_INTEGER():
+        return (condition.expression = Expression.TYPE_INTEGER);
+      case !!type.K_TINYINT():
+        return (condition.expression = Expression.TYPE_TINYINT);
+      case !!type.K_BIGINT():
+        return (condition.expression = Expression.TYPE_BIGINT);
+      case !!type.K_STRING():
+        return (condition.expression = Expression.TYPE_STRING);
+      case !!type.K_CHAR():
+        return (condition.expression = Expression.TYPE_CHAR);
+      case !!type.K_TEXT():
+        return (condition.expression = Expression.TYPE_TEXT);
+      case !!type.K_BOOLEAN():
+        return (condition.expression = Expression.TYPE_BOOLEAN);
+      case !!type.K_CURRENCY():
+        return (condition.expression = Expression.TYPE_CURRENCY);
+      case !!type.K_DOUBLE():
+        return (condition.expression = Expression.TYPE_DOUBLE);
+      case !!type.K_FLOAT():
+        return (condition.expression = Expression.TYPE_FLOAT);
+      case !!type.K_DATE():
+        return (condition.expression = Expression.TYPE_DATE);
+      case !!type.K_JSON():
+        return (condition.expression = Expression.TYPE_JSON);
+      case !!type.K_DATETIME():
+        return (condition.expression = Expression.TYPE_DATETIME);
+      case !!type.K_TIMESTAMP():
+        return (condition.expression = Expression.TYPE_TIMESTAMP);
+      case !!type.K_TIME():
+        return (condition.expression = Expression.TYPE_TIME);
+      case !!type.K_ENUM():
+        return (condition.expression = Expression.TYPE_ENUM);
+      default: // K_BLOB
+        return (condition.expression = Expression.TYPE_BLOB);
+    }
   }
 }

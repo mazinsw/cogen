@@ -1,7 +1,7 @@
 import { Node } from '@/ast/entity/node';
 
 export class NamedNode extends Node {
-  constructor(private name: string | null) {
+  constructor(public name: string | null) {
     super();
   }
 

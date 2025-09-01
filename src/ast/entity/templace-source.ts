@@ -1,4 +1,4 @@
-import { Source, SourceContext } from '@/ast/entity/source';
+import { Source } from '@/ast/entity/source';
 import { ASTBuilder } from '@/ast/template/ast-builder';
 import { Configuration } from '@/util/configuration';
 
@@ -21,11 +21,5 @@ export class TemplateSource extends Source {
       this.logger?.addMessage(error);
     }
     throw new Error('Failed to load or parse template source');
-  }
-
-  public execute(context: SourceContext) {
-    this.statements.forEach((statement) => {
-      statement.execute(context);
-    });
   }
 }
