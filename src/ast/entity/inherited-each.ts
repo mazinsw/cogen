@@ -1,7 +1,8 @@
 import { LoopBlock } from '@/ast/entity/loop-block';
 import { SourceContext, SourceType } from '@/ast/entity/source';
+import { Table } from '@/ast/entity/table';
 
-export class ReferenceEach extends LoopBlock {
+export class InheritedEach extends LoopBlock {
   private tablePosition: number;
 
   public buildContext(
@@ -10,15 +11,12 @@ export class ReferenceEach extends LoopBlock {
     runPosition: number,
   ): SourceContext {
     const table = context.data.tables[this.tablePosition];
-    const relativePosition = this.reverse
-      ? table.fields.length - position - 1
-      : position;
-    const field = table.fields[relativePosition];
+    const field = table.fields[position];
     return {
       ...context,
       table,
       field,
-      type: SourceType.FIELD,
+      type: SourceType.INHERITED,
       position: {
         ...context.position,
         field: runPosition,
@@ -28,11 +26,9 @@ export class ReferenceEach extends LoopBlock {
   }
 
   public getLength(context: SourceContext): number {
-    const referenceName =
-      context.type === SourceType.REFERENCE
-        ? context.table.name
-        : context.table.getReference(context.field.name);
-    this.tablePosition = context.data.findTableIndex(referenceName);
+    this.tablePosition = context.data.findTableIndex(
+      context.table.getAttribute(Table.Attribute.INHERITED),
+    );
     const table = context.data.tables[this.tablePosition];
     return table?.fields.length ?? 0;
   }

@@ -7,8 +7,8 @@ export class UniqueEach extends LoopBlock {
 
   public buildContext(
     context: SourceContext,
-    position?: number,
-    runPosition?: number,
+    position: number,
+    runPosition: number,
   ): SourceContext {
     const orderField = this.unique.fields[position];
     const field = context.table.find(orderField.name);

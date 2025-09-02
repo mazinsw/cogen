@@ -1,24 +1,19 @@
 import { SourceContext, SourceType } from '@/ast/entity/source';
-import { TableConstant } from '@/ast/entity/table-constant';
+import { TestConditionBlock } from '@/ast/entity/test-condition-block';
 
-export class ReferenceConstant extends TableConstant {
-  public execute(context: SourceContext): void {
+export class ReferenceConditionBlock extends TestConditionBlock {
+  public buildTestContext(context: SourceContext): SourceContext {
     const referenceName =
       context.type === SourceType.REFERENCE
         ? context.table.name
         : context.table.getReference(context.field.name);
     const tablePosition = context.data.findTableIndex(referenceName);
-    if (tablePosition < 0) {
-      throw new Error(
-        `Referenced table ${referenceName} not found for field ${context.field.name} at table ${context.table.name}`,
-      );
-    }
     const table = context.data.tables[tablePosition];
-    super.execute({
+    return {
       ...context,
       type: SourceType.REFERENCE,
       table,
       position: { ...context.position, table: tablePosition },
-    });
+    };
   }
 }

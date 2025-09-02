@@ -8,7 +8,7 @@ import { unixTransform } from '@/util/unix';
 
 export class TableConstant extends Constant {
   public execute(context: SourceContext): void {
-    let text = context.table.getName();
+    let text = context.table.name;
     let firstAttribute = Table.Attribute.NAMES;
     for (const property of this.properties) {
       switch (property) {

@@ -1,3 +1,3 @@
-import { Constant } from '@/ast/entity/constant';
+import { FieldConstant } from '@/ast/entity/field-constant';
 
-export class ForeignConstant extends Constant {}
+export class ForeignConstant extends FieldConstant {}

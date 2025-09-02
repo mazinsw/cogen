@@ -80,7 +80,7 @@ export class Table extends CommentedNode {
   public find(name: string): Field | null {
     const nameLC = name.toLocaleLowerCase();
     for (const field of this.fields) {
-      if (field.getName().toLocaleLowerCase() === nameLC) return field;
+      if (field.name.toLocaleLowerCase() === nameLC) return field;
     }
     return null;
   }
@@ -101,7 +101,7 @@ export class Table extends CommentedNode {
   }
 
   public findIndex(field: Field): Index | null {
-    const fieldNameLC = field.getName().toLocaleLowerCase();
+    const fieldNameLC = field.name.toLocaleLowerCase();
     for (const index of this.indexes) {
       for (const oField of index.getFields()) {
         if (oField.getName().toLocaleLowerCase() === fieldNameLC) return index;
@@ -153,7 +153,7 @@ export class Table extends CommentedNode {
   }
 
   public getUniqueIndex(field: Field): Index | null {
-    const fieldNameLC = field.getName().toLocaleLowerCase();
+    const fieldNameLC = field.name.toLocaleLowerCase();
     for (const constraint of this.constraints) {
       if (!(constraint instanceof UniqueKey)) {
         continue;
@@ -195,7 +195,7 @@ export class Table extends CommentedNode {
   public isPrimaryKeyField(field: Field): boolean {
     const primaryKey = this.getPrimaryKey();
     if (primaryKey == null) return false;
-    return primaryKey.exists(field.getName());
+    return primaryKey.exists(field.name);
   }
 
   public getPrimary(): Field | null {

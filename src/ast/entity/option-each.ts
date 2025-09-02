@@ -5,8 +5,8 @@ import { SourceContext, SourceType } from '@/ast/entity/source';
 export class OptionEach extends LoopBlock {
   public buildContext(
     context: SourceContext,
-    position?: number,
-    runPosition?: number,
+    position: number,
+    runPosition: number,
   ): SourceContext {
     const option = (context.field.getType() as EnumType).elements[position];
     return {

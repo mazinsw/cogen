@@ -14,7 +14,7 @@ export class BooleanValue extends Value {
     );
   }
 
-  public toString(): String {
+  public toString(): string {
     return this.value ? 'true' : 'false';
   }
 }

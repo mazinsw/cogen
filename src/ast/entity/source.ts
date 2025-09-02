@@ -18,8 +18,10 @@ export enum SourceType {
   FOREIGN,
   CONSTRAINT,
   REFERENCE,
+  INHERITED,
   PRIMARY,
   OPTION,
+  IMAGE,
   COMMENT,
 }
 

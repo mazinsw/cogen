@@ -38,12 +38,12 @@ export class DataSource extends Source {
   }
 
   public findTableIndex(name: string): number {
-    if (name == null) {
+    if (!name) {
       return -1;
     }
     const nameLC = name.toLocaleLowerCase();
     for (const [index, table] of this.getTables().entries()) {
-      if (table.getName().toLocaleLowerCase() === nameLC) {
+      if (table.name.toLocaleLowerCase() === nameLC) {
         return index;
       }
     }

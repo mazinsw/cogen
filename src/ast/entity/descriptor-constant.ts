@@ -1,3 +1,16 @@
-import { Constant } from '@/ast/entity/constant';
+import { FieldConstant } from '@/ast/entity/field-constant';
+import { SourceContext } from '@/ast/entity/source';
 
-export class DescriptorConstant extends Constant {}
+export class DescriptorConstant extends FieldConstant {
+  public execute(context: SourceContext): void {
+    const field = context.table.getDescriptor();
+    super.execute({
+      ...context,
+      field,
+      position: {
+        ...context.position,
+        field: context.table.fields.indexOf(field),
+      },
+    });
+  }
+}

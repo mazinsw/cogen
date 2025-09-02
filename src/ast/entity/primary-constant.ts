@@ -1,3 +1,20 @@
-import { Constant } from '@/ast/entity/constant';
+import { FieldConstant } from '@/ast/entity/field-constant';
+import { SourceContext, SourceType } from '@/ast/entity/source';
 
-export class PrimaryConstant extends Constant {}
+export class PrimaryConstant extends FieldConstant {
+  public execute(context: SourceContext): void {
+    const index = context.table.getPrimaryKey();
+    const field = context.table.getPrimary();
+    super.execute({
+      ...context,
+      field,
+      index,
+      type: SourceType.PRIMARY,
+      position: {
+        ...context.position,
+        field: context.table.fields.indexOf(field),
+        index: context.table.constraints.indexOf(index),
+      },
+    });
+  }
+}

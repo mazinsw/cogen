@@ -4,6 +4,12 @@ import { SourceContext } from '@/ast/entity/source';
 export abstract class LoopBlock extends ConditionBlock {
   public reverse?: boolean;
 
+  public abstract buildContext(
+    context: SourceContext,
+    position: number,
+    runPosition: number,
+  ): SourceContext;
+
   public execute(context: SourceContext): void {
     let runIndex = 0;
     const length = this.getLength(context);

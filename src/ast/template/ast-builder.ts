@@ -1,31 +1,54 @@
 import { Block } from '@/ast/entity/block';
 import { CommentEach } from '@/ast/entity/comment-each';
-import { Condition, Expression, Operator } from '@/ast/entity/condition';
 import { ConditionBlock } from '@/ast/entity/condition-block';
 import { Constant } from '@/ast/entity/constant';
+import { ConstraintConditionBlock } from '@/ast/entity/constraint-condition-block';
 import { ConstraintConstant } from '@/ast/entity/constraint-constant';
 import { ConstraintEach } from '@/ast/entity/constraint-each';
+import { DescriptionEach } from '@/ast/entity/description-each';
+import { DescriptorConditionBlock } from '@/ast/entity/descriptor-condition-block';
 import { DescriptorConstant } from '@/ast/entity/descriptor-constant';
+import {
+  Expression,
+  ExpressionCondition,
+  Operator,
+} from '@/ast/entity/expression-condition';
+import { FieldConditionBlock } from '@/ast/entity/field-condition-block';
 import { FieldConstant } from '@/ast/entity/field-constant';
+import { FieldContainsCondition } from '@/ast/entity/field-contains-condition';
 import { FieldEach } from '@/ast/entity/field-each';
+import { FieldMatchCondition } from '@/ast/entity/field-match-condition';
+import { ForeignConditionBlock } from '@/ast/entity/foreign-condition-block';
 import { ForeignConstant } from '@/ast/entity/foreign-constant';
 import { ForeignEach } from '@/ast/entity/foreign-each';
 import { ImageConstant } from '@/ast/entity/image-constant';
+import { IndexConditionBlock } from '@/ast/entity/index-condition-block';
 import { IndexConstant } from '@/ast/entity/index-constant';
 import { IndexEach } from '@/ast/entity/index-each';
+import { InheritedConditionBlock } from '@/ast/entity/inherited-condition-block';
 import { InheritedConstant } from '@/ast/entity/inherited-constant';
+import { InheritedEach } from '@/ast/entity/inherited-each';
 import { Node } from '@/ast/entity/node';
 import { OptionConstant } from '@/ast/entity/option-constant';
 import { OptionEach } from '@/ast/entity/option-each';
+import { PrimaryConditionBlock } from '@/ast/entity/primary-condition-block';
 import { PrimaryConstant } from '@/ast/entity/primary-constant';
 import { PrimaryEach } from '@/ast/entity/primary-each';
+import { ReferenceConditionBlock } from '@/ast/entity/reference-condition-block';
 import { ReferenceConstant } from '@/ast/entity/reference-constant';
 import { ReferenceEach } from '@/ast/entity/reference-each';
 import { ReplaceCommand } from '@/ast/entity/replace-command';
 import { StringValue } from '@/ast/entity/string-value';
+import { TableConditionBlock } from '@/ast/entity/table-condition-block';
 import { TableConstant } from '@/ast/entity/table-constant';
+import { TableContainsCondition } from '@/ast/entity/table-contains-condition';
 import { TableEach } from '@/ast/entity/table-each';
+import { TableExistsCondition } from '@/ast/entity/table-exists-condition';
+import { TableFindsCondition } from '@/ast/entity/table-finds-condition';
+import { TableMatchCondition } from '@/ast/entity/table-match-condition';
 import { TemplateSource } from '@/ast/entity/templace-source';
+import { TestConditionBlock } from '@/ast/entity/test-condition-block';
+import { UniqueConditionBlock } from '@/ast/entity/unique-condition-block';
 import { UniqueConstant } from '@/ast/entity/unique-constant';
 import { UniqueEach } from '@/ast/entity/unique-each';
 import { ListErrorListener } from '@/ast/list-error-listener';
@@ -35,29 +58,107 @@ import {
   AndConditionContext,
   CommentEachStmtContext,
   ConstraintEachStmtContext,
+  ConstraintElseEachStmtContext,
+  ConstraintElseEndStmtContext,
+  ConstraintElseIfStmtContext,
+  ConstraintIfStmtContext,
   ConstraintLevelContext,
   ConstraintStmtContext,
+  DescriptionEachStmtContext,
+  DescriptorContainsStmtContext,
+  DescriptorElseContainsStmtContext,
+  DescriptorElseEndStmtContext,
+  DescriptorElseIfStmtContext,
+  DescriptorElseMatchStmtContext,
+  DescriptorIfStmtContext,
+  DescriptorMatchStmtContext,
   EachConditionContext,
   ExpressionContext,
+  FieldContainsStmtContext,
   FieldEachStmtContext,
+  FieldElseContainsStmtContext,
+  FieldElseEachStmtContext,
+  FieldElseEndStmtContext,
+  FieldElseIfStmtContext,
+  FieldElseMatchStmtContext,
+  FieldElseReverseEachStmtContext,
+  FieldIfStmtContext,
   FieldLevelContext,
+  FieldMatchStmtContext,
+  FieldReverseEachStmtContext,
   FieldStmtContext,
   ForeignEachStmtContext,
+  ForeignElseEachStmtContext,
+  ForeignElseEndStmtContext,
+  ForeignElseIfStmtContext,
+  ForeignIfStmtContext,
   IndexEachStmtContext,
+  IndexElseEachStmtContext,
+  IndexElseEndStmtContext,
+  IndexElseIfStmtContext,
+  IndexIfStmtContext,
+  InheritedContainsStmtContext,
+  InheritedEachStmtContext,
+  InheritedElseContainsStmtContext,
+  InheritedElseEachStmtContext,
+  InheritedElseEndStmtContext,
+  InheritedElseExistsStmtContext,
+  InheritedElseFindsStmtContext,
+  InheritedElseIfStmtContext,
+  InheritedElseMatchStmtContext,
+  InheritedExistsStmtContext,
+  InheritedFindsStmtContext,
+  InheritedIfStmtContext,
+  InheritedMatchStmtContext,
   OptionEachStmtContext,
   OrConditionContext,
   PrimaryEachStmtContext,
+  PrimaryElseEachStmtContext,
+  PrimaryElseEndStmtContext,
+  PrimaryElseIfStmtContext,
+  PrimaryIfStmtContext,
   PriorityConditionContext,
+  ReferenceContainsStmtContext,
   ReferenceEachStmtContext,
+  ReferenceElseContainsStmtContext,
+  ReferenceElseEachStmtContext,
+  ReferenceElseEndStmtContext,
+  ReferenceElseExistsStmtContext,
+  ReferenceElseFindsStmtContext,
+  ReferenceElseIfStmtContext,
+  ReferenceElseMatchStmtContext,
+  ReferenceElseReverseEachStmtContext,
+  ReferenceExistsStmtContext,
+  ReferenceFindsStmtContext,
+  ReferenceIfStmtContext,
+  ReferenceMatchStmtContext,
+  ReferenceReverseEachStmtContext,
   RegexContext,
   ReplaceStmtContext,
+  TableContainsStmtContext,
   TableEachStmtContext,
+  TableElseContainsStmtContext,
+  TableElseEachStmtContext,
+  TableElseEndStmtContext,
+  TableElseExistsStmtContext,
+  TableElseFindsStmtContext,
+  TableElseIfStmtContext,
+  TableElseMatchStmtContext,
+  TableExistsStmtContext,
+  TableFindsStmtContext,
+  TableIfStmtContext,
   TableLevelContext,
+  TableMatchStmtContext,
   TableStmtContext,
   TemplateContext,
   TemplateParser,
+  TestConditionContext,
   TextContentContext,
   UniqueEachStmtContext,
+  UniqueElseEachStmtContext,
+  UniqueElseEndStmtContext,
+  UniqueElseIfStmtContext,
+  UniqueIfStmtContext,
 } from '@/grammar/TemplateParser';
 import { TemplateParserListener } from '@/grammar/TemplateParserListener';
 import { CharStream, CharStreams, CommonTokenStream, Token } from 'antlr4ts';
@@ -163,7 +264,10 @@ export class ASTBuilder implements TemplateParserListener {
 
   exitTextContent(ctx: TextContentContext) {
     const block = this.stack.peek() as Block;
-    block.addStatement(new StringValue(ctx.text));
+    const text = ctx.text.replace(/^\r?\n/, '');
+    if (text) {
+      block.addStatement(new StringValue(text));
+    }
   }
 
   exitTableStmt(ctx: TableStmtContext) {
@@ -206,6 +310,9 @@ export class ASTBuilder implements TemplateParserListener {
           break;
         case !!prop.tableProp().K_PATH():
           constant.addProperty(Constant.Property.PATH);
+          break;
+        case !!prop.tableProp().K_ORDER():
+          constant.addProperty(Constant.Property.ORDER);
           break;
         case !!prop.tableProp().K_STYLE():
           constant.addProperty(Constant.Property.STYLE);
@@ -349,14 +456,38 @@ export class ASTBuilder implements TemplateParserListener {
     block.addStatement(command);
   }
 
-  enterTableEachStmt(_: TableEachStmtContext) {
+  enterFieldIfStmt(_: FieldIfStmtContext) {
     const block = this.stack.peek() as Block;
-    const loop = new TableEach();
-    block.addStatement(loop);
-    this.stack.push(loop);
+    const conditionBlock = new FieldConditionBlock();
+    block.addStatement(conditionBlock);
+    this.stack.push(conditionBlock);
   }
 
-  exitTableEachStmt(_: TableEachStmtContext) {
+  exitFieldIfStmt(_: FieldIfStmtContext) {
+    this.stack.pop();
+  }
+
+  enterFieldMatchStmt(ctx: FieldMatchStmtContext) {
+    const block = this.stack.peek() as Block;
+    const conditionBlock = new FieldConditionBlock();
+    conditionBlock.condition = new FieldMatchCondition(ctx.regex().text);
+    block.addStatement(conditionBlock);
+    this.stack.push(conditionBlock);
+  }
+
+  exitFieldMatchStmt(_: FieldMatchStmtContext) {
+    this.stack.pop();
+  }
+
+  enterFieldContainsStmt(ctx: FieldContainsStmtContext) {
+    const block = this.stack.peek() as Block;
+    const conditionBlock = new FieldConditionBlock();
+    conditionBlock.condition = new FieldContainsCondition(ctx.word().text);
+    block.addStatement(conditionBlock);
+    this.stack.push(conditionBlock);
+  }
+
+  exitFieldContainsStmt(_: FieldContainsStmtContext) {
     this.stack.pop();
   }
 
@@ -371,6 +502,528 @@ export class ASTBuilder implements TemplateParserListener {
     this.stack.pop();
   }
 
+  enterFieldReverseEachStmt(_: FieldReverseEachStmtContext) {
+    const block = this.stack.peek() as Block;
+    const loop = new FieldEach();
+    loop.reverse = true;
+    block.addStatement(loop);
+    this.stack.push(loop);
+  }
+
+  exitFieldReverseEachStmt(_: FieldReverseEachStmtContext) {
+    this.stack.pop();
+  }
+
+  enterFieldElseIfStmt(_: FieldElseIfStmtContext) {
+    const testConditionBlock = this.stack.pop() as TestConditionBlock;
+    const conditionBlock = new FieldConditionBlock();
+    testConditionBlock.elseCondition = conditionBlock;
+    this.stack.push(conditionBlock);
+  }
+
+  enterFieldElseMatchStmt(ctx: FieldElseMatchStmtContext) {
+    const testConditionBlock = this.stack.pop() as TestConditionBlock;
+    const conditionBlock = new FieldConditionBlock();
+    conditionBlock.condition = new FieldMatchCondition(ctx.regex().text);
+    testConditionBlock.elseCondition = conditionBlock;
+    this.stack.push(conditionBlock);
+  }
+
+  enterFieldElseContainsStmt(ctx: FieldElseContainsStmtContext) {
+    const testConditionBlock = this.stack.pop() as TestConditionBlock;
+    const conditionBlock = new FieldConditionBlock();
+    conditionBlock.condition = new FieldContainsCondition(ctx.word().text);
+    testConditionBlock.elseCondition = conditionBlock;
+    this.stack.push(conditionBlock);
+  }
+
+  enterFieldElseEachStmt(_: FieldElseEachStmtContext) {
+    const testConditionBlock = this.stack.pop() as TestConditionBlock;
+    const loop = new FieldEach();
+    testConditionBlock.elseCondition = loop;
+    this.stack.push(loop);
+  }
+
+  enterFieldElseReverseEachStmt(_: FieldElseReverseEachStmtContext) {
+    const testConditionBlock = this.stack.pop() as TestConditionBlock;
+    const loop = new FieldEach();
+    loop.reverse = true;
+    testConditionBlock.elseCondition = loop;
+    this.stack.push(loop);
+  }
+
+  enterFieldElseEndStmt(_: FieldElseEndStmtContext) {
+    const testConditionBlock = this.stack.pop() as TestConditionBlock;
+    const conditionBlock = new FieldConditionBlock();
+    testConditionBlock.elseCondition = conditionBlock;
+    this.stack.push(conditionBlock);
+  }
+
+  enterDescriptorIfStmt(_: DescriptorIfStmtContext) {
+    const block = this.stack.peek() as Block;
+    const conditionBlock = new DescriptorConditionBlock();
+    block.addStatement(conditionBlock);
+    this.stack.push(conditionBlock);
+  }
+
+  exitDescriptorIfStmt(_: DescriptorIfStmtContext) {
+    this.stack.pop();
+  }
+
+  enterDescriptorMatchStmt(ctx: DescriptorMatchStmtContext) {
+    const block = this.stack.peek() as Block;
+    const conditionBlock = new DescriptorConditionBlock();
+    conditionBlock.condition = new FieldMatchCondition(ctx.regex().text);
+    block.addStatement(conditionBlock);
+    this.stack.push(conditionBlock);
+  }
+
+  exitDescriptorMatchStmt(_: DescriptorMatchStmtContext) {
+    this.stack.pop();
+  }
+
+  enterDescriptorContainsStmt(ctx: DescriptorContainsStmtContext) {
+    const block = this.stack.peek() as Block;
+    const conditionBlock = new DescriptorConditionBlock();
+    conditionBlock.condition = new FieldContainsCondition(ctx.word().text);
+    block.addStatement(conditionBlock);
+    this.stack.push(conditionBlock);
+  }
+
+  exitDescriptorContainsStmt(_: DescriptorContainsStmtContext) {
+    this.stack.pop();
+  }
+
+  enterDescriptorElseIfStmt(_: DescriptorElseIfStmtContext) {
+    const testConditionBlock = this.stack.pop() as TestConditionBlock;
+    const conditionBlock = new DescriptorConditionBlock();
+    testConditionBlock.elseCondition = conditionBlock;
+    this.stack.push(conditionBlock);
+  }
+
+  enterDescriptorElseMatchStmt(ctx: DescriptorElseMatchStmtContext) {
+    const testConditionBlock = this.stack.pop() as TestConditionBlock;
+    const conditionBlock = new DescriptorConditionBlock();
+    conditionBlock.condition = new FieldMatchCondition(ctx.regex().text);
+    testConditionBlock.elseCondition = conditionBlock;
+    this.stack.push(conditionBlock);
+  }
+
+  enterDescriptorElseContainsStmt(ctx: DescriptorElseContainsStmtContext) {
+    const testConditionBlock = this.stack.pop() as TestConditionBlock;
+    const conditionBlock = new DescriptorConditionBlock();
+    conditionBlock.condition = new FieldContainsCondition(ctx.word().text);
+    testConditionBlock.elseCondition = conditionBlock;
+    this.stack.push(conditionBlock);
+  }
+
+  enterDescriptorElseEndStmt(_: DescriptorElseEndStmtContext) {
+    const testConditionBlock = this.stack.pop() as TestConditionBlock;
+    const conditionBlock = new DescriptorConditionBlock();
+    testConditionBlock.elseCondition = conditionBlock;
+    this.stack.push(conditionBlock);
+  }
+
+  enterReferenceIfStmt(_: ReferenceIfStmtContext) {
+    const block = this.stack.peek() as Block;
+    const conditionBlock = new ReferenceConditionBlock();
+    block.addStatement(conditionBlock);
+    this.stack.push(conditionBlock);
+  }
+
+  exitReferenceIfStmt(_: ReferenceIfStmtContext) {
+    this.stack.pop();
+  }
+
+  enterReferenceExistsStmt(_: ReferenceExistsStmtContext) {
+    const block = this.stack.peek() as Block;
+    const conditionBlock = new ReferenceConditionBlock();
+    conditionBlock.condition = new TableExistsCondition();
+    block.addStatement(conditionBlock);
+    this.stack.push(conditionBlock);
+  }
+
+  exitReferenceExistsStmt(_: ReferenceExistsStmtContext) {
+    this.stack.pop();
+  }
+
+  enterReferenceFindsStmt(ctx: ReferenceFindsStmtContext) {
+    const block = this.stack.peek() as Block;
+    const conditionBlock = new ReferenceConditionBlock();
+    conditionBlock.condition = new TableFindsCondition(ctx.regex().text);
+    block.addStatement(conditionBlock);
+    this.stack.push(conditionBlock);
+  }
+
+  exitReferenceFindsStmt(_: ReferenceFindsStmtContext) {
+    this.stack.pop();
+  }
+
+  enterReferenceMatchStmt(ctx: ReferenceMatchStmtContext) {
+    const block = this.stack.peek() as Block;
+    const conditionBlock = new ReferenceConditionBlock();
+    conditionBlock.condition = new TableMatchCondition(ctx.regex().text);
+    block.addStatement(conditionBlock);
+    this.stack.push(conditionBlock);
+  }
+
+  exitReferenceMatchStmt(_: ReferenceMatchStmtContext) {
+    this.stack.pop();
+  }
+
+  enterReferenceContainsStmt(ctx: ReferenceContainsStmtContext) {
+    const block = this.stack.peek() as Block;
+    const conditionBlock = new ReferenceConditionBlock();
+    conditionBlock.condition = new TableContainsCondition(ctx.word().text);
+    block.addStatement(conditionBlock);
+    this.stack.push(conditionBlock);
+  }
+
+  exitReferenceContainsStmt(_: ReferenceContainsStmtContext) {
+    this.stack.pop();
+  }
+
+  enterReferenceEachStmt(_: ReferenceEachStmtContext) {
+    const block = this.stack.peek() as Block;
+    const loop = new ReferenceEach();
+    block.addStatement(loop);
+    this.stack.push(loop);
+  }
+
+  exitReferenceEachStmt(_: ReferenceEachStmtContext) {
+    this.stack.pop();
+  }
+
+  enterReferenceReverseEachStmt(_: ReferenceReverseEachStmtContext) {
+    const block = this.stack.peek() as Block;
+    const loop = new ReferenceEach();
+    loop.reverse = true;
+    block.addStatement(loop);
+    this.stack.push(loop);
+  }
+
+  exitReferenceReverseEachStmt(_: ReferenceReverseEachStmtContext) {
+    this.stack.pop();
+  }
+
+  enterReferenceElseIfStmt(_: ReferenceElseIfStmtContext) {
+    const testConditionBlock = this.stack.pop() as TestConditionBlock;
+    const conditionBlock = new ReferenceConditionBlock();
+    testConditionBlock.elseCondition = conditionBlock;
+    this.stack.push(conditionBlock);
+  }
+
+  enterReferenceElseExistsStmt(_: ReferenceElseExistsStmtContext) {
+    const testConditionBlock = this.stack.pop() as TestConditionBlock;
+    const conditionBlock = new ReferenceConditionBlock();
+    conditionBlock.condition = new TableExistsCondition();
+    testConditionBlock.elseCondition = conditionBlock;
+    this.stack.push(conditionBlock);
+  }
+
+  enterReferenceElseFindsStmt(ctx: ReferenceElseFindsStmtContext) {
+    const testConditionBlock = this.stack.pop() as TestConditionBlock;
+    const conditionBlock = new ReferenceConditionBlock();
+    conditionBlock.condition = new TableFindsCondition(ctx.regex().text);
+    testConditionBlock.elseCondition = conditionBlock;
+    this.stack.push(conditionBlock);
+  }
+
+  enterReferenceElseMatchStmt(ctx: ReferenceElseMatchStmtContext) {
+    const testConditionBlock = this.stack.pop() as TestConditionBlock;
+    const conditionBlock = new ReferenceConditionBlock();
+    conditionBlock.condition = new TableMatchCondition(ctx.regex().text);
+    testConditionBlock.elseCondition = conditionBlock;
+    this.stack.push(conditionBlock);
+  }
+
+  enterReferenceElseContainsStmt(ctx: ReferenceElseContainsStmtContext) {
+    const testConditionBlock = this.stack.pop() as TestConditionBlock;
+    const conditionBlock = new ReferenceConditionBlock();
+    conditionBlock.condition = new TableContainsCondition(ctx.word().text);
+    testConditionBlock.elseCondition = conditionBlock;
+    this.stack.push(conditionBlock);
+  }
+
+  enterReferenceElseEachStmt(_: ReferenceElseEachStmtContext) {
+    const testConditionBlock = this.stack.pop() as TestConditionBlock;
+    const loop = new ReferenceEach();
+    testConditionBlock.elseCondition = loop;
+    this.stack.push(loop);
+  }
+
+  enterReferenceElseReverseEachStmt(_: ReferenceElseReverseEachStmtContext) {
+    const testConditionBlock = this.stack.pop() as TestConditionBlock;
+    const loop = new ReferenceEach();
+    loop.reverse = true;
+    testConditionBlock.elseCondition = loop;
+    this.stack.push(loop);
+  }
+
+  enterReferenceElseEndStmt(_: ReferenceElseEndStmtContext) {
+    const testConditionBlock = this.stack.pop() as TestConditionBlock;
+    const conditionBlock = new ReferenceConditionBlock();
+    testConditionBlock.elseCondition = conditionBlock;
+    this.stack.push(conditionBlock);
+  }
+
+  enterTableIfStmt(_: TableIfStmtContext) {
+    const block = this.stack.peek() as Block;
+    const conditionBlock = new TableConditionBlock();
+    block.addStatement(conditionBlock);
+    this.stack.push(conditionBlock);
+  }
+
+  exitTableIfStmt(_: TableIfStmtContext) {
+    this.stack.pop();
+  }
+
+  enterTableExistsStmt(_: TableExistsStmtContext) {
+    const block = this.stack.peek() as Block;
+    const conditionBlock = new TableConditionBlock();
+    conditionBlock.condition = new TableExistsCondition();
+    block.addStatement(conditionBlock);
+    this.stack.push(conditionBlock);
+  }
+
+  exitTableExistsStmt(_: TableExistsStmtContext) {
+    this.stack.pop();
+  }
+
+  enterTableFindsStmt(ctx: TableFindsStmtContext) {
+    const block = this.stack.peek() as Block;
+    const conditionBlock = new TableConditionBlock();
+    conditionBlock.condition = new TableFindsCondition(ctx.regex().text);
+    block.addStatement(conditionBlock);
+    this.stack.push(conditionBlock);
+  }
+
+  exitTableFindsStmt(_: TableFindsStmtContext) {
+    this.stack.pop();
+  }
+
+  enterTableMatchStmt(ctx: TableMatchStmtContext) {
+    const block = this.stack.peek() as Block;
+    const conditionBlock = new TableConditionBlock();
+    conditionBlock.condition = new TableMatchCondition(ctx.regex().text);
+    block.addStatement(conditionBlock);
+    this.stack.push(conditionBlock);
+  }
+
+  exitTableMatchStmt(_: TableMatchStmtContext) {
+    this.stack.pop();
+  }
+
+  enterTableContainsStmt(ctx: TableContainsStmtContext) {
+    const block = this.stack.peek() as Block;
+    const conditionBlock = new TableConditionBlock();
+    conditionBlock.condition = new TableContainsCondition(ctx.word().text);
+    block.addStatement(conditionBlock);
+    this.stack.push(conditionBlock);
+  }
+
+  exitTableContainsStmt(_: TableContainsStmtContext) {
+    this.stack.pop();
+  }
+
+  enterTableEachStmt(_: TableEachStmtContext) {
+    const block = this.stack.peek() as Block;
+    const loop = new TableEach();
+    block.addStatement(loop);
+    this.stack.push(loop);
+  }
+
+  exitTableEachStmt(_: TableEachStmtContext) {
+    this.stack.pop();
+  }
+
+  enterTableElseIfStmt(_: TableElseIfStmtContext) {
+    const testConditionBlock = this.stack.pop() as TestConditionBlock;
+    const conditionBlock = new TableConditionBlock();
+    testConditionBlock.elseCondition = conditionBlock;
+    this.stack.push(conditionBlock);
+  }
+
+  enterTableElseExistsStmt(_: TableElseExistsStmtContext) {
+    const testConditionBlock = this.stack.pop() as TestConditionBlock;
+    const conditionBlock = new TableConditionBlock();
+    conditionBlock.condition = new TableExistsCondition();
+    testConditionBlock.elseCondition = conditionBlock;
+    this.stack.push(conditionBlock);
+  }
+
+  enterTableElseFindsStmt(ctx: TableElseFindsStmtContext) {
+    const testConditionBlock = this.stack.pop() as TestConditionBlock;
+    const conditionBlock = new TableConditionBlock();
+    conditionBlock.condition = new TableFindsCondition(ctx.regex().text);
+    testConditionBlock.elseCondition = conditionBlock;
+    this.stack.push(conditionBlock);
+  }
+
+  enterTableElseMatchStmt(ctx: TableElseMatchStmtContext) {
+    const testConditionBlock = this.stack.pop() as TestConditionBlock;
+    const conditionBlock = new TableConditionBlock();
+    conditionBlock.condition = new TableMatchCondition(ctx.regex().text);
+    testConditionBlock.elseCondition = conditionBlock;
+    this.stack.push(conditionBlock);
+  }
+
+  enterTableElseContainsStmt(ctx: TableElseContainsStmtContext) {
+    const testConditionBlock = this.stack.pop() as TestConditionBlock;
+    const conditionBlock = new TableConditionBlock();
+    conditionBlock.condition = new TableContainsCondition(ctx.word().text);
+    testConditionBlock.elseCondition = conditionBlock;
+    this.stack.push(conditionBlock);
+  }
+
+  enterTableElseEachStmt(_: TableElseEachStmtContext) {
+    const testConditionBlock = this.stack.pop() as TestConditionBlock;
+    const loop = new TableEach();
+    testConditionBlock.elseCondition = loop;
+    this.stack.push(loop);
+  }
+
+  enterTableElseEndStmt(_: TableElseEndStmtContext) {
+    const testConditionBlock = this.stack.pop() as TestConditionBlock;
+    const conditionBlock = new TableConditionBlock();
+    testConditionBlock.elseCondition = conditionBlock;
+    this.stack.push(conditionBlock);
+  }
+
+  enterInheritedIfStmt(_: InheritedIfStmtContext) {
+    const block = this.stack.peek() as Block;
+    const conditionBlock = new InheritedConditionBlock();
+    block.addStatement(conditionBlock);
+    this.stack.push(conditionBlock);
+  }
+
+  exitInheritedIfStmt(_: InheritedIfStmtContext) {
+    this.stack.pop();
+  }
+
+  enterInheritedExistsStmt(_: InheritedExistsStmtContext) {
+    const block = this.stack.peek() as Block;
+    const conditionBlock = new InheritedConditionBlock();
+    conditionBlock.condition = new TableExistsCondition();
+    block.addStatement(conditionBlock);
+    this.stack.push(conditionBlock);
+  }
+
+  exitInheritedExistsStmt(_: InheritedExistsStmtContext) {
+    this.stack.pop();
+  }
+
+  enterInheritedFindsStmt(ctx: InheritedFindsStmtContext) {
+    const block = this.stack.peek() as Block;
+    const conditionBlock = new InheritedConditionBlock();
+    conditionBlock.condition = new TableFindsCondition(ctx.regex().text);
+    block.addStatement(conditionBlock);
+    this.stack.push(conditionBlock);
+  }
+
+  exitInheritedFindsStmt(_: InheritedFindsStmtContext) {
+    this.stack.pop();
+  }
+
+  enterInheritedMatchStmt(ctx: InheritedMatchStmtContext) {
+    const block = this.stack.peek() as Block;
+    const conditionBlock = new InheritedConditionBlock();
+    conditionBlock.condition = new TableMatchCondition(ctx.regex().text);
+    block.addStatement(conditionBlock);
+    this.stack.push(conditionBlock);
+  }
+
+  exitInheritedMatchStmt(_: InheritedMatchStmtContext) {
+    this.stack.pop();
+  }
+
+  enterInheritedContainsStmt(ctx: InheritedContainsStmtContext) {
+    const block = this.stack.peek() as Block;
+    const conditionBlock = new InheritedConditionBlock();
+    conditionBlock.condition = new TableContainsCondition(ctx.word().text);
+    block.addStatement(conditionBlock);
+    this.stack.push(conditionBlock);
+  }
+
+  exitInheritedContainsStmt(_: InheritedContainsStmtContext) {
+    this.stack.pop();
+  }
+
+  enterInheritedEachStmt(_: InheritedEachStmtContext) {
+    const block = this.stack.peek() as Block;
+    const loop = new InheritedEach();
+    block.addStatement(loop);
+    this.stack.push(loop);
+  }
+
+  exitInheritedEachStmt(_: InheritedEachStmtContext) {
+    this.stack.pop();
+  }
+
+  enterInheritedElseIfStmt(_: InheritedElseIfStmtContext) {
+    const testConditionBlock = this.stack.pop() as TestConditionBlock;
+    const conditionBlock = new InheritedConditionBlock();
+    testConditionBlock.elseCondition = conditionBlock;
+    this.stack.push(conditionBlock);
+  }
+
+  enterInheritedElseExistsStmt(_: InheritedElseExistsStmtContext) {
+    const testConditionBlock = this.stack.pop() as TestConditionBlock;
+    const conditionBlock = new InheritedConditionBlock();
+    conditionBlock.condition = new TableExistsCondition();
+    testConditionBlock.elseCondition = conditionBlock;
+    this.stack.push(conditionBlock);
+  }
+
+  enterInheritedElseFindsStmt(ctx: InheritedElseFindsStmtContext) {
+    const testConditionBlock = this.stack.pop() as TestConditionBlock;
+    const conditionBlock = new InheritedConditionBlock();
+    conditionBlock.condition = new TableFindsCondition(ctx.regex().text);
+    testConditionBlock.elseCondition = conditionBlock;
+    this.stack.push(conditionBlock);
+  }
+
+  enterInheritedElseMatchStmt(ctx: InheritedElseMatchStmtContext) {
+    const testConditionBlock = this.stack.pop() as TestConditionBlock;
+    const conditionBlock = new InheritedConditionBlock();
+    conditionBlock.condition = new TableMatchCondition(ctx.regex().text);
+    testConditionBlock.elseCondition = conditionBlock;
+    this.stack.push(conditionBlock);
+  }
+
+  enterInheritedElseContainsStmt(ctx: InheritedElseContainsStmtContext) {
+    const testConditionBlock = this.stack.pop() as TestConditionBlock;
+    const conditionBlock = new InheritedConditionBlock();
+    conditionBlock.condition = new TableContainsCondition(ctx.word().text);
+    testConditionBlock.elseCondition = conditionBlock;
+    this.stack.push(conditionBlock);
+  }
+
+  enterInheritedElseEachStmt(_: InheritedElseEachStmtContext) {
+    const testConditionBlock = this.stack.pop() as TestConditionBlock;
+    const loop = new InheritedEach();
+    testConditionBlock.elseCondition = loop;
+    this.stack.push(loop);
+  }
+
+  enterInheritedElseEndStmt(_: InheritedElseEndStmtContext) {
+    const testConditionBlock = this.stack.pop() as TestConditionBlock;
+    const conditionBlock = new InheritedConditionBlock();
+    testConditionBlock.elseCondition = conditionBlock;
+    this.stack.push(conditionBlock);
+  }
+
+  enterConstraintIfStmt(_: ConstraintIfStmtContext) {
+    const block = this.stack.peek() as Block;
+    const conditionBlock = new ConstraintConditionBlock();
+    block.addStatement(conditionBlock);
+    this.stack.push(conditionBlock);
+  }
+
+  exitConstraintIfStmt(_: ConstraintIfStmtContext) {
+    this.stack.pop();
+  }
+
   enterConstraintEachStmt(_: ConstraintEachStmtContext) {
     const block = this.stack.peek() as Block;
     const loop = new ConstraintEach();
@@ -379,6 +1032,38 @@ export class ASTBuilder implements TemplateParserListener {
   }
 
   exitConstraintEachStmt(_: ConstraintEachStmtContext) {
+    this.stack.pop();
+  }
+
+  enterConstraintElseIfStmt(_: ConstraintElseIfStmtContext) {
+    const testConditionBlock = this.stack.pop() as TestConditionBlock;
+    const conditionBlock = new ConstraintConditionBlock();
+    testConditionBlock.elseCondition = conditionBlock;
+    this.stack.push(conditionBlock);
+  }
+
+  enterConstraintElseEachStmt(_: ConstraintElseEachStmtContext) {
+    const testConditionBlock = this.stack.pop() as TestConditionBlock;
+    const loop = new ConstraintEach();
+    testConditionBlock.elseCondition = loop;
+    this.stack.push(loop);
+  }
+
+  enterConstraintElseEndStmt(_: ConstraintElseEndStmtContext) {
+    const testConditionBlock = this.stack.pop() as TestConditionBlock;
+    const conditionBlock = new ConstraintConditionBlock();
+    testConditionBlock.elseCondition = conditionBlock;
+    this.stack.push(conditionBlock);
+  }
+
+  enterIndexIfStmt(_: IndexIfStmtContext) {
+    const block = this.stack.peek() as Block;
+    const conditionBlock = new IndexConditionBlock();
+    block.addStatement(conditionBlock);
+    this.stack.push(conditionBlock);
+  }
+
+  exitIndexIfStmt(_: IndexIfStmtContext) {
     this.stack.pop();
   }
 
@@ -393,6 +1078,38 @@ export class ASTBuilder implements TemplateParserListener {
     this.stack.pop();
   }
 
+  enterIndexElseIfStmt(_: IndexElseIfStmtContext) {
+    const testConditionBlock = this.stack.pop() as TestConditionBlock;
+    const conditionBlock = new IndexConditionBlock();
+    testConditionBlock.elseCondition = conditionBlock;
+    this.stack.push(conditionBlock);
+  }
+
+  enterIndexElseEachStmt(_: IndexElseEachStmtContext) {
+    const testConditionBlock = this.stack.pop() as TestConditionBlock;
+    const loop = new IndexEach();
+    testConditionBlock.elseCondition = loop;
+    this.stack.push(loop);
+  }
+
+  enterIndexElseEndStmt(_: IndexElseEndStmtContext) {
+    const testConditionBlock = this.stack.pop() as TestConditionBlock;
+    const conditionBlock = new IndexConditionBlock();
+    testConditionBlock.elseCondition = conditionBlock;
+    this.stack.push(conditionBlock);
+  }
+
+  enterUniqueIfStmt(_: UniqueIfStmtContext) {
+    const block = this.stack.peek() as Block;
+    const conditionBlock = new UniqueConditionBlock();
+    block.addStatement(conditionBlock);
+    this.stack.push(conditionBlock);
+  }
+
+  exitUniqueIfStmt(_: UniqueIfStmtContext) {
+    this.stack.pop();
+  }
+
   enterUniqueEachStmt(_: UniqueEachStmtContext) {
     const block = this.stack.peek() as Block;
     const loop = new UniqueEach();
@@ -401,6 +1118,38 @@ export class ASTBuilder implements TemplateParserListener {
   }
 
   exitUniqueEachStmt(_: UniqueEachStmtContext) {
+    this.stack.pop();
+  }
+
+  enterUniqueElseIfStmt(_: UniqueElseIfStmtContext) {
+    const testConditionBlock = this.stack.pop() as TestConditionBlock;
+    const conditionBlock = new UniqueConditionBlock();
+    testConditionBlock.elseCondition = conditionBlock;
+    this.stack.push(conditionBlock);
+  }
+
+  enterUniqueElseEachStmt(_: UniqueElseEachStmtContext) {
+    const testConditionBlock = this.stack.pop() as TestConditionBlock;
+    const loop = new UniqueEach();
+    testConditionBlock.elseCondition = loop;
+    this.stack.push(loop);
+  }
+
+  enterUniqueElseEndStmt(_: UniqueElseEndStmtContext) {
+    const testConditionBlock = this.stack.pop() as TestConditionBlock;
+    const conditionBlock = new UniqueConditionBlock();
+    testConditionBlock.elseCondition = conditionBlock;
+    this.stack.push(conditionBlock);
+  }
+
+  enterPrimaryIfStmt(_: PrimaryIfStmtContext) {
+    const block = this.stack.peek() as Block;
+    const conditionBlock = new PrimaryConditionBlock();
+    block.addStatement(conditionBlock);
+    this.stack.push(conditionBlock);
+  }
+
+  exitPrimaryIfStmt(_: PrimaryIfStmtContext) {
     this.stack.pop();
   }
 
@@ -415,6 +1164,38 @@ export class ASTBuilder implements TemplateParserListener {
     this.stack.pop();
   }
 
+  enterPrimaryElseIfStmt(_: PrimaryElseIfStmtContext) {
+    const testConditionBlock = this.stack.pop() as TestConditionBlock;
+    const conditionBlock = new PrimaryConditionBlock();
+    testConditionBlock.elseCondition = conditionBlock;
+    this.stack.push(conditionBlock);
+  }
+
+  enterPrimaryElseEachStmt(_: PrimaryElseEachStmtContext) {
+    const testConditionBlock = this.stack.pop() as TestConditionBlock;
+    const loop = new PrimaryEach();
+    testConditionBlock.elseCondition = loop;
+    this.stack.push(loop);
+  }
+
+  enterPrimaryElseEndStmt(_: PrimaryElseEndStmtContext) {
+    const testConditionBlock = this.stack.pop() as TestConditionBlock;
+    const conditionBlock = new PrimaryConditionBlock();
+    testConditionBlock.elseCondition = conditionBlock;
+    this.stack.push(conditionBlock);
+  }
+
+  enterForeignIfStmt(_: ForeignIfStmtContext) {
+    const block = this.stack.peek() as Block;
+    const conditionBlock = new ForeignConditionBlock();
+    block.addStatement(conditionBlock);
+    this.stack.push(conditionBlock);
+  }
+
+  exitForeignIfStmt(_: ForeignIfStmtContext) {
+    this.stack.pop();
+  }
+
   enterForeignEachStmt(_: ForeignEachStmtContext) {
     const block = this.stack.peek() as Block;
     const loop = new ForeignEach();
@@ -426,15 +1207,25 @@ export class ASTBuilder implements TemplateParserListener {
     this.stack.pop();
   }
 
-  enterReferenceEachStmt(_: ReferenceEachStmtContext) {
-    const block = this.stack.peek() as Block;
-    const loop = new ReferenceEach();
-    block.addStatement(loop);
+  enterForeignElseIfStmt(_: ForeignElseIfStmtContext) {
+    const testConditionBlock = this.stack.pop() as TestConditionBlock;
+    const conditionBlock = new ForeignConditionBlock();
+    testConditionBlock.elseCondition = conditionBlock;
+    this.stack.push(conditionBlock);
+  }
+
+  enterForeignElseEachStmt(_: ForeignElseEachStmtContext) {
+    const testConditionBlock = this.stack.pop() as TestConditionBlock;
+    const loop = new ForeignEach();
+    testConditionBlock.elseCondition = loop;
     this.stack.push(loop);
   }
 
-  exitReferenceEachStmt(_: ReferenceEachStmtContext) {
-    this.stack.pop();
+  enterForeignElseEndStmt(_: ForeignElseEndStmtContext) {
+    const testConditionBlock = this.stack.pop() as TestConditionBlock;
+    const conditionBlock = new ForeignConditionBlock();
+    testConditionBlock.elseCondition = conditionBlock;
+    this.stack.push(conditionBlock);
   }
 
   enterOptionEachStmt(_: OptionEachStmtContext) {
@@ -459,9 +1250,20 @@ export class ASTBuilder implements TemplateParserListener {
     this.stack.pop();
   }
 
+  enterDescriptionEachStmt(_: DescriptionEachStmtContext) {
+    const block = this.stack.peek() as Block;
+    const loop = new DescriptionEach();
+    block.addStatement(loop);
+    this.stack.push(loop);
+  }
+
+  exitDescriptionEachStmt(_: DescriptionEachStmtContext) {
+    this.stack.pop();
+  }
+
   enterEachCondition(_: EachConditionContext) {
     const conditionBlock = this.stack.peek() as ConditionBlock;
-    const condition = new Condition();
+    const condition = new ExpressionCondition();
     conditionBlock.condition = condition;
     this.stack.push(condition);
   }
@@ -470,9 +1272,20 @@ export class ASTBuilder implements TemplateParserListener {
     this.stack.pop();
   }
 
+  enterTestCondition(_: TestConditionContext) {
+    const conditionBlock = this.stack.peek() as ConditionBlock;
+    const condition = new ExpressionCondition();
+    conditionBlock.condition = condition;
+    this.stack.push(condition);
+  }
+
+  exitTestCondition(_: TestConditionContext) {
+    this.stack.pop();
+  }
+
   enterPriorityCondition(_: PriorityConditionContext) {
-    const condition = this.stack.peek() as Condition;
-    const priorityCondition = new Condition();
+    const condition = this.stack.peek() as ExpressionCondition;
+    const priorityCondition = new ExpressionCondition();
     condition.left = priorityCondition;
     this.stack.push(priorityCondition);
   }
@@ -482,9 +1295,9 @@ export class ASTBuilder implements TemplateParserListener {
   }
 
   enterAndCondition(_: AndConditionContext) {
-    const condition = this.stack.peek() as Condition;
+    const condition = this.stack.peek() as ExpressionCondition;
     condition.operator = Operator.AND;
-    const andCondition = new Condition();
+    const andCondition = new ExpressionCondition();
     condition.right = andCondition;
     this.stack.push(andCondition);
   }
@@ -494,9 +1307,9 @@ export class ASTBuilder implements TemplateParserListener {
   }
 
   enterOrCondition(_: OrConditionContext) {
-    const condition = this.stack.peek() as Condition;
+    const condition = this.stack.peek() as ExpressionCondition;
     condition.operator = Operator.OR;
-    const orCondition = new Condition();
+    const orCondition = new ExpressionCondition();
     condition.right = orCondition;
     this.stack.push(orCondition);
   }
@@ -506,12 +1319,14 @@ export class ASTBuilder implements TemplateParserListener {
   }
 
   enterExpression(ctx: ExpressionContext) {
-    const condition = this.stack.peek() as Condition;
+    const condition = this.stack.peek() as ExpressionCondition;
     const attribute = ctx.attribute();
     if (attribute) {
       switch (true) {
         case !!attribute.K_COMMENT():
           return (condition.expression = Expression.ATTRIBUTE_COMMENT);
+        case !!attribute.K_DESCRIPTION():
+          return (condition.expression = Expression.ATTRIBUTE_DESCRIPTION);
         case !!attribute.K_INHERITED():
           return (condition.expression = Expression.ATTRIBUTE_INHERITED);
         case !!attribute.K_PACKAGE():
@@ -549,8 +1364,6 @@ export class ASTBuilder implements TemplateParserListener {
           return (condition.expression = Expression.PROPERTY_DESCRIPTOR);
         case !!property.K_SEARCHABLE():
           return (condition.expression = Expression.PROPERTY_SEARCHABLE);
-        case !!property.K_DESCRIPTION():
-          return (condition.expression = Expression.ATTRIBUTE_COMMENT);
         case !!property.K_INDEX():
           return (condition.expression = Expression.PROPERTY_INDEX);
         case !!property.K_CONSTRAINT():

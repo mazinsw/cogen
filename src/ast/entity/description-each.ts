@@ -2,7 +2,7 @@ import { LoopBlock } from '@/ast/entity/loop-block';
 import { SourceContext, SourceType } from '@/ast/entity/source';
 import { wrapText } from '@/util/helper';
 
-export class CommentEach extends LoopBlock {
+export class DescriptionEach extends LoopBlock {
   private comments: string[];
 
   public buildContext(
@@ -10,7 +10,7 @@ export class CommentEach extends LoopBlock {
     position: number,
     runPosition: number,
   ): SourceContext {
-    const comment = this.comments[position];
+    const comment = this.comments[position].replaceAll("'", "\\'");
     return {
       ...context,
       comment,
