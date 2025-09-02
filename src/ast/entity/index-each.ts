@@ -27,7 +27,9 @@ export class IndexEach extends LoopBlock {
   }
 
   public getLength(context: SourceContext): number {
-    this.index = context.field && context.table.findIndex(context.field);
+    this.index =
+      (context.type === SourceType.INDEX ? context.index : null) ||
+      (context.field && context.table.findIndex(context.field));
     return this.index?.fields.length || 0;
   }
 }

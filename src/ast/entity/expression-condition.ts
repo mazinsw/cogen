@@ -181,7 +181,7 @@ export class ExpressionCondition extends Condition {
       case Expression.PROPERTY_INDEX:
         return asTable()
           ? context.table.indexes.length > 0
-          : !!context.field && !!context.table.findIndex(context.field);
+          : !!getSelectedIndex();
       case Expression.PROPERTY_CONSTRAINT:
         const hasPrimaryKey = context.table.getPrimaryKey() != null;
         return (

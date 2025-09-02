@@ -137,21 +137,25 @@ export class ASTBuilder implements SQLParserListener {
     this.stack.push(table);
   }
 
-  public exitTableName(_: TableNameContext): void {
-    const node = this.stack.pop() as NamedNode; // pop Name
-    const table = this.stack.peek() as Table;
-    table.setName(node.getName());
-  }
-
   public exitCreateTable(_: CreateTableContext): void {
     this.dataSource.addStatement(this.stack.pop());
   }
 
   public enterFieldStmt(_: FieldStmtContext): void {
     const field = new Field('');
+    this.stack.push(field);
+  }
+
+  public exitFieldStmt(_: FieldStmtContext): void {
+    const field = this.stack.pop() as Field;
     const table = this.stack.peek() as Table;
     table.addField(field);
-    this.stack.push(field);
+  }
+
+  public exitTableName(_: TableNameContext): void {
+    const node = this.stack.pop() as NamedNode; // pop Name
+    const table = this.stack.peek() as Table;
+    table.setName(node.getName());
   }
 
   public exitColumnName(_: ColumnNameContext): void {
@@ -359,10 +363,6 @@ export class ASTBuilder implements SQLParserListener {
     let elem = ctx.STRING().text;
     elem = elem.substring(1, elem.length - 1);
     type.addElement(elem);
-  }
-
-  public exitFieldStmt(_: FieldStmtContext): void {
-    this.stack.pop();
   }
 
   public enterPrimaryKeyStmt(_: PrimaryKeyStmtContext): void {

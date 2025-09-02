@@ -20,7 +20,7 @@ export class FieldConstant extends Constant {
     let option = false;
     // let onAction = false;
     let text = context.field.name;
-    let firstAttribute = Field.Attribute.NAMES;
+    let firstAttribute = Field.Attribute.UNKNOWN;
     for (const property of this.properties) {
       switch (property) {
         case Constant.Property.STYLE:

@@ -27,7 +27,9 @@ export class UniqueEach extends LoopBlock {
   }
 
   public getLength(context: SourceContext): number {
-    this.unique = context.field && context.table.getUniqueIndex(context.field);
+    this.unique =
+      (context.type === SourceType.UNIQUE ? context.index : null) ||
+      (context.field && context.table.getUniqueIndex(context.field));
     return this.unique?.fields.length ?? 0;
   }
 }

@@ -28,7 +28,10 @@ export class ForeignEach extends LoopBlock {
 
   public getLength(context: SourceContext): number {
     this.foreign =
-      context.field && context.table.findForeignKey(context.field.name);
+      (context.type === SourceType.FOREIGN
+        ? (context.index as ForeignKey)
+        : null) ||
+      (context.field && context.table.findForeignKey(context.field.name));
     return this.foreign?.fields.length ?? 0;
   }
 }

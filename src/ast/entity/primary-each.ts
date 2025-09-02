@@ -27,7 +27,9 @@ export class PrimaryEach extends LoopBlock {
   }
 
   public getLength(context: SourceContext): number {
-    this.primaryKey = context.table.getPrimaryKey();
+    this.primaryKey =
+      (context.type === SourceType.PRIMARY ? context.index : null) ||
+      context.table.getPrimaryKey();
     return this.primaryKey?.fields.length || 0;
   }
 }

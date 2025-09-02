@@ -28,7 +28,8 @@ export class ConstraintEach extends LoopBlock {
 
   public getLength(context: SourceContext): number {
     this.constraint =
-      context.field && context.table.findForeignKey(context.field.name);
+      (context.type === SourceType.CONSTRAINT ? context.index : null) ||
+      (context.field && context.table.findForeignKey(context.field.name));
     return this.constraint?.fields.length ?? 0;
   }
 }
