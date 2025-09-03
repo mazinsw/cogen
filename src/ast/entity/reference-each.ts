@@ -19,11 +19,7 @@ export class ReferenceEach extends LoopBlock {
       table,
       field,
       type: SourceType.FIELD,
-      position: {
-        ...context.position,
-        field: runPosition,
-        table: this.tablePosition,
-      },
+      position: runPosition,
     };
   }
 

@@ -22,7 +22,7 @@ export class UniqueEach extends LoopBlock {
       field,
       index: this.unique,
       type: SourceType.UNIQUE,
-      position: { ...context.position, field: runPosition, index: runPosition },
+      position: runPosition,
     };
   }
 

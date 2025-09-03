@@ -11,7 +11,7 @@
   },
   "scripts": {
     "clean": "rimraf coverage dist tmp",
-    "build": "tsc -d -p tsconfig.release.json",
+    "build": "tsc -d -p tsconfig.release.json && tsc-alias -p tsconfig.release.json",
     "build:watch": "tsc -w -p tsconfig.release.json",
     "lint": "tslint -t stylish --project \"tsconfig.json\"",
     "style:fix": "prettier --write \"src/**/*.ts\"",
@@ -32,7 +32,8 @@
   },
   "dependencies": {
     "antlr4ts": "^0.5.0-alpha.4",
-    "tslib": "~2.8.1"
+    "chardet": "^2.1.0",
+    "iconv-lite": "^0.7.0"
   },
   "devDependencies": {
     "@types/jest": "^30.0.0",
@@ -43,6 +44,7 @@
     "rimraf": "^6.0.1",
     "ts-jest": "^29.4.1",
     "ts-node": "^10.9.2",
+    "tsc-alias": "^1.8.16",
     "tsconfig-paths": "^4.2.0",
     "tsutils": "^3.21.0",
     "typescript": "^5.9.2"

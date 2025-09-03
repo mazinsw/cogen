@@ -22,7 +22,7 @@ export class PrimaryEach extends LoopBlock {
       field,
       index: this.primaryKey,
       type: SourceType.PRIMARY,
-      position: { ...context.position, field: runPosition, index: runPosition },
+      position: runPosition,
     };
   }
 

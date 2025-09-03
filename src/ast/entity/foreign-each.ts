@@ -22,7 +22,7 @@ export class ForeignEach extends LoopBlock {
       field,
       index: this.foreign,
       type: SourceType.FOREIGN,
-      position: { ...context.position, field: runPosition, index: runPosition },
+      position: runPosition,
     };
   }
 

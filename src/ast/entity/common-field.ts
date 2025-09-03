@@ -2,38 +2,33 @@ import { Field } from '@/ast/entity/field';
 import { Node } from '@/ast/entity/node';
 
 export class CommonField extends Node {
-  private fields: Field[];
-  private range: string;
+  public fields: Field[] = [];
+  public ranges: { lo: number; hi: number }[] = [];
 
-  public CommonField() {
-    this.fields = [];
+  constructor() {
+    super();
   }
 
   public toString(): string {
-    return this.getRange();
-  }
-
-  public getFields() {
-    return this.fields;
+    return this.ranges.map((item) => `${item.lo}:${item.hi}`).join(';');
   }
 
   public addField(field: Field) {
     this.fields.push(field);
   }
 
-  public indexOf(field: Field): number {
-    return this.getFields().indexOf(field);
+  get size(): number {
+    return this.fields.length;
   }
 
-  public size(): number {
-    return this.getFields().length;
-  }
-
-  public getRange() {
-    return this.range;
-  }
-
-  public setRange(range: string) {
-    this.range = range;
+  public applyRanges(indexes: number[]) {
+    const newRanges = indexes.map((index) => ({ lo: index, hi: index }));
+    this.ranges = newRanges.map((item, index) => {
+      const range = this.ranges[index] || item;
+      return {
+        lo: Math.min(item.lo, range.lo),
+        hi: Math.min(item.hi, range.hi),
+      };
+    });
   }
 }

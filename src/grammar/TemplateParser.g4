@@ -40,6 +40,7 @@ block:
   | referenceReverseEachStmt
 
   | fieldIfStmt
+  | fieldExistsStmt
   | fieldMatchStmt
   | fieldContainsStmt
   | fieldEachStmt
@@ -149,12 +150,14 @@ referenceElseCondStmt:
 
 /** Field */
 fieldIfStmt: OPEN K_FIELD '.' K_IF LPAR testCondition RPAR CLOSE statement* fieldElseStmt? OPEN K_FIELD '.' K_END CLOSE;
+fieldExistsStmt: OPEN K_FIELD '.' K_EXISTS LPAR testCondition RPAR CLOSE statement* fieldElseStmt? OPEN K_FIELD '.' K_END CLOSE;
 fieldMatchStmt: OPEN K_FIELD '.' MATCH_OPEN regex REGEX_CLOSE CLOSE statement* fieldElseStmt? OPEN K_FIELD '.' K_END CLOSE;
 fieldContainsStmt: OPEN K_FIELD '.' K_CONTAINS LPAR word RPAR CLOSE statement* fieldElseStmt? OPEN K_FIELD '.' K_END CLOSE;
 fieldEachStmt: OPEN K_FIELD '.' K_EACH ( LPAR eachCondition RPAR )? CLOSE statement* OPEN K_FIELD '.' K_END CLOSE;
 fieldReverseEachStmt: OPEN K_FIELD '.' K_REVERSE_EACH ( LPAR eachCondition RPAR )? CLOSE statement* OPEN K_FIELD '.' K_END CLOSE;
 
 fieldElseIfStmt: OPEN K_FIELD '.' K_ELSE '.' K_IF LPAR testCondition RPAR CLOSE statement*;
+fieldElseExistsStmt: OPEN K_FIELD '.' K_ELSE '.' K_EXISTS LPAR testCondition RPAR CLOSE statement*;
 fieldElseMatchStmt: OPEN K_FIELD '.' K_ELSE '.' MATCH_OPEN regex REGEX_CLOSE CLOSE statement*;
 fieldElseContainsStmt: OPEN K_FIELD '.' K_ELSE '.' K_CONTAINS LPAR word RPAR CLOSE statement*;
 fieldElseEachStmt: OPEN K_FIELD '.' K_ELSE '.' K_EACH ( LPAR eachCondition RPAR )? CLOSE statement*;
@@ -165,6 +168,7 @@ fieldElseStmt: (fieldElseEachStmt | fieldElseReverseEachStmt | fieldElseEndStmt 
 fieldElseCondEndStmt: fieldElseCondStmt+ (fieldElseEachStmt | fieldElseReverseEachStmt | fieldElseEndStmt)?;
 fieldElseCondStmt:
     fieldElseIfStmt
+  | fieldElseExistsStmt
   | fieldElseMatchStmt
   | fieldElseContainsStmt;
 
@@ -283,9 +287,9 @@ textContent: TEXT;
 
 tableLevel: K_TABLE | K_INHERITED | K_REFERENCE;
 
-fieldLevel: K_FIELD | K_DESCRIPTOR | K_OPTION | K_IMAGE;
+fieldLevel: K_FIELD | K_DESCRIPTOR | K_IMAGE | K_PRIMARY | K_OPTION;
 
-constraintLevel: K_CONSTRAINT | K_INDEX | K_UNIQUE | K_PRIMARY | K_FOREIGN;
+constraintLevel: K_CONSTRAINT | K_INDEX | K_UNIQUE | K_FOREIGN;
 
 regex: REGEX;
 word: WORD;
@@ -351,53 +355,57 @@ attribute:
 
 property:
     K_ALL
-  | K_REFERENCE
-  | K_PRIMARY
-  | K_REPEATED
-  | K_NULL
-  | K_OPTIONAL
-  | K_REQUIRED
-  | K_NOT_NULL
-  | K_NON_NULL
-  | K_UNSIGNED
-  | K_DEFAULT
-  | K_INFO
-  | K_DESCRIPTOR
-  | K_SEARCHABLE
-  | K_INDEX
-  | K_CONSTRAINT
-  | K_FOREIGN
-  | K_UNIQUE
-  | K_FULLTEXT
-  | K_RADIO
-  | K_MASKED
-  | K_PASSWORD
   | K_ARRAY
-  | K_IMAGE
-  | K_OPTION
+  | K_CONSTRAINT
+  | K_DEFAULT
+  | K_DESCRIPTOR
   | K_FEW_FIELDS
-  | K_MANY
-  | K_SINGLE
   | K_FIRST
+  | K_FOREIGN
+  | K_FULLTEXT
+  | K_IMAGE
+  | K_INDEX
+  | K_INFO
+  | K_IGNORED
+  | K_MANY
+  | K_MASKED
   | K_NON_FIRST
+  | K_NON_NULL
+  | K_NOT_NULL
+  | K_NULL
+  | K_OPTION
+  | K_OPTIONAL
+  | K_PASSWORD
+  | K_PLURALIZABLE
+  | K_PRIMARY
+  | K_RADIO
+  | K_REFERENCE
+  | K_REPEATED
+  | K_REQUIRED
+  | K_SEARCHABLE
+  | K_SINGLE
+  | K_UNIQUE
+  | K_UNPLURALIZABLE
+  | K_UNSIGNED
   ;
 
 type:
-    K_INTEGER
-  | K_TINYINT
-  | K_BIGINT
-  | K_STRING
-  | K_CHAR
-  | K_TEXT
-  | K_BOOLEAN
-  | K_CURRENCY
-  | K_DOUBLE
-  | K_FLOAT
-  | K_DATE
-  | K_JSON
-  | K_DATETIME
-  | K_TIMESTAMP
-  | K_TIME
-  | K_ENUM
+    K_BIGINT
   | K_BLOB
+  | K_BOOLEAN
+  | K_CHAR
+  | K_CURRENCY
+  | K_DATE
+  | K_DATETIME
+  | K_DOUBLE
+  | K_ENUM
+  | K_FLOAT
+  | K_INT
+  | K_INTEGER
+  | K_JSON
+  | K_STRING
+  | K_TEXT
+  | K_TIME
+  | K_TIMESTAMP
+  | K_TINYINT
   ;

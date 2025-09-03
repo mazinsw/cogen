@@ -15,7 +15,7 @@ export class CommentEach extends LoopBlock {
       ...context,
       comment,
       type: SourceType.COMMENT,
-      position: { ...context.position, comment: runPosition },
+      position: runPosition,
     };
   }
 

@@ -3,22 +3,17 @@ import { TableConstant } from '@/ast/entity/table-constant';
 
 export class ReferenceConstant extends TableConstant {
   public execute(context: SourceContext): void {
-    const referenceName =
-      context.type === SourceType.REFERENCE
-        ? context.table.name
-        : context.table.getReference(context.field.name);
-    const tablePosition = context.data.findTableIndex(referenceName);
-    if (tablePosition < 0) {
-      throw new Error(
-        `Referenced table ${referenceName} not found for field ${context.field.name} at table ${context.table.name}`,
-      );
+    if (context.type === SourceType.REFERENCE) {
+      return super.execute(context);
     }
+    const referenceName = context.table.getReference(context.field.name);
+    const tablePosition = context.data.findTableIndex(referenceName);
     const table = context.data.tables[tablePosition];
     super.execute({
       ...context,
       type: SourceType.REFERENCE,
       table,
-      position: { ...context.position, table: tablePosition },
+      position: tablePosition,
     });
   }
 }

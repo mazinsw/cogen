@@ -13,7 +13,7 @@ export class OptionEach extends LoopBlock {
       ...context,
       option,
       type: SourceType.OPTION,
-      position: { ...context.position, option: runPosition },
+      position: runPosition,
     };
   }
 

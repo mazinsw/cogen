@@ -13,6 +13,7 @@ describe('Normalization', () => {
     expect(normalize('Matriz1_2', dictionary)).toBe('Matriz[1][2]');
     expect(normalize('Vetor1', dictionary)).toBe('Vetor[1]');
     expect(normalize('Ident1Teste', dictionary)).toBe('Ident[1].Teste');
+    expect(normalize('Ident1Teste2', dictionary)).toBe('Ident[1].Teste[2]');
     expect(normalize('Ident1_2_Teste', dictionary)).toBe('Ident[1][2].Teste');
 
     expect(normalize('Ident1_2teste_3_4_5Teste', dictionary)).toBe(

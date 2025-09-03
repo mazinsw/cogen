@@ -61,7 +61,7 @@ export class Field extends CommentedNode {
     if (this.normalizedName) {
       return this.normalizedName;
     }
-    this.normalizedName = normalize(this.name).replace(/\[\d+\]/g, '');
+    this.normalizedName = normalize(this.name).replace(/\[\d+\]\.?/g, '');
     return this.normalizedName;
   }
 
@@ -72,7 +72,7 @@ export class Field extends CommentedNode {
     this.normalizedAndDespluralizedName = normalize(
       this.name,
       config.getDictionary(),
-    ).replace(/\[\d+\]/g, '');
+    ).replace(/\[\d+\]\.?/g, '');
     return this.normalizedAndDespluralizedName;
   }
 }

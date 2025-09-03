@@ -1,5 +1,5 @@
 import { Constant } from '@/ast/entity/constant';
-import { SourceContext } from '@/ast/entity/source';
+import { SourceContext, SourceType } from '@/ast/entity/source';
 import { Table } from '@/ast/entity/table';
 import { getGenderChar } from '@/util/gender';
 import { firstLetters, recase } from '@/util/helper';
@@ -30,7 +30,7 @@ export class TableConstant extends Constant {
           break;
         case Constant.Property.ORDER:
           const digits = `${context.data.getTables().length}`.length;
-          text = `${context.position.table}`.padStart(digits, '0');
+          text = `${context.position}`.padStart(digits, '0');
           break;
         case Constant.Property.INHERITED:
           text = context.table.getAttribute(Table.Attribute.INHERITED, 0);
@@ -111,7 +111,10 @@ export class TableConstant extends Constant {
           text = context.table.parsedComment.replaceAll("'", "\\'");
           break;
         case Constant.Property.COMMENT:
-          text = context.table.parsedComment;
+          text =
+            context.type === SourceType.COMMENT
+              ? context.comment
+              : context.table.parsedComment;
           break;
         case Constant.Property.IDENTIFIER:
           text = context.table.getAttribute(Table.Attribute.IDENTIFIER);

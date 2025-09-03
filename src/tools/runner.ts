@@ -83,9 +83,7 @@ export class Runner {
         // Hashtable<String, CommonField> indexedFields = new Hashtable<>();
         // processArray(table, indexedFields);
         let fieldIndex = -1;
-        let pathFieldIndex = -1;
         for (const field of table.getFields()) {
-          pathFieldIndex++;
           let destFile = tempFile;
           if (filenameTemplateSource.getStatements().length > 0) {
             this.contents = '';
@@ -96,10 +94,7 @@ export class Runner {
               output: this,
               data: this.dataSource,
               config: this.configuration,
-              position: {
-                table: tableIndex,
-                field: pathFieldIndex,
-              },
+              position: tableIndex,
             });
             destFile = this.contents;
             destFile = destFile.replaceAll('\\', path.sep);
@@ -115,7 +110,9 @@ export class Runner {
             continue;
           }
           prevFile = destFile;
-          this.logger?.addMessage('Template: ' + destFile);
+          this.logger?.addMessage(
+            `${file.isDirectory ? 'Directory' : `File (${contentTemplateSource.encoding})`}: ${destFile}`,
+          );
           if (file.isDirectory) {
             await fs.promises.mkdir(destFile, { recursive: true });
             continue;
@@ -130,16 +127,9 @@ export class Runner {
             output: this,
             data: this.dataSource,
             config: this.configuration,
-            position: {
-              table: tableIndex,
-              field: fieldIndex,
-            },
+            position: tableIndex,
           });
-          await fs.promises.writeFile(
-            destFile,
-            this.contents,
-            contentTemplateSource.encoding,
-          );
+          await contentTemplateSource.writeFile(destFile, this.contents);
           if (filenameTemplateSource.getStatements().length === 0) {
             break;
           }

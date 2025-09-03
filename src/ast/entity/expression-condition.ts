@@ -14,51 +14,54 @@ export enum Expression {
   ATTRIBUTE_PATH,
 
   PROPERTY_ALL,
-  PROPERTY_REFERENCE,
-  PROPERTY_PRIMARY,
-  PROPERTY_REPEATED,
-  PROPERTY_NULL,
-  PROPERTY_OPTIONAL,
-  PROPERTY_REQUIRED,
-  PROPERTY_UNSIGNED,
-  PROPERTY_DEFAULT,
-  PROPERTY_INFO,
-  PROPERTY_DESCRIPTOR,
-  PROPERTY_SEARCHABLE,
-  PROPERTY_INDEX,
-  PROPERTY_CONSTRAINT,
-  PROPERTY_FOREIGN,
-  PROPERTY_UNIQUE,
-  PROPERTY_FULLTEXT,
-  PROPERTY_RADIO,
-  PROPERTY_MASKED,
-  PROPERTY_PASSWORD,
   PROPERTY_ARRAY,
-  PROPERTY_IMAGE,
-  PROPERTY_OPTION,
+  PROPERTY_CONSTRAINT,
+  PROPERTY_DEFAULT,
+  PROPERTY_DESCRIPTOR,
   PROPERTY_FEW_FIELDS,
-  PROPERTY_MANY,
-  PROPERTY_SINGLE,
   PROPERTY_FIRST,
+  PROPERTY_FOREIGN,
+  PROPERTY_FULLTEXT,
+  PROPERTY_IGNORED,
+  PROPERTY_IMAGE,
+  PROPERTY_INDEX,
+  PROPERTY_INFO,
+  PROPERTY_MANY,
+  PROPERTY_MASKED,
   PROPERTY_NON_FIRST,
+  PROPERTY_NULL,
+  PROPERTY_OPTION,
+  PROPERTY_OPTIONAL,
+  PROPERTY_PASSWORD,
+  PROPERTY_PLURALIZABLE,
+  PROPERTY_PRIMARY,
+  PROPERTY_RADIO,
+  PROPERTY_REFERENCE,
+  PROPERTY_REPEATED,
+  PROPERTY_REQUIRED,
+  PROPERTY_SEARCHABLE,
+  PROPERTY_SINGLE,
+  PROPERTY_UNIQUE,
+  PROPERTY_UNPLURALIZABLE,
+  PROPERTY_UNSIGNED,
 
-  TYPE_INTEGER,
-  TYPE_TINYINT,
   TYPE_BIGINT,
-  TYPE_STRING,
-  TYPE_CHAR,
-  TYPE_TEXT,
-  TYPE_BOOLEAN,
-  TYPE_CURRENCY,
-  TYPE_DOUBLE,
-  TYPE_FLOAT,
-  TYPE_DATE,
-  TYPE_JSON,
-  TYPE_DATETIME,
-  TYPE_TIMESTAMP,
-  TYPE_TIME,
-  TYPE_ENUM,
   TYPE_BLOB,
+  TYPE_BOOLEAN,
+  TYPE_CHAR,
+  TYPE_CURRENCY,
+  TYPE_DATE,
+  TYPE_DATETIME,
+  TYPE_DOUBLE,
+  TYPE_ENUM,
+  TYPE_FLOAT,
+  TYPE_INTEGER,
+  TYPE_JSON,
+  TYPE_STRING,
+  TYPE_TEXT,
+  TYPE_TIME,
+  TYPE_TIMESTAMP,
+  TYPE_TINYINT,
 }
 
 export enum Operator {
@@ -122,8 +125,19 @@ export class ExpressionCondition extends Condition {
         context.type,
       );
 
-    const asComment = () => SourceType.COMMENT === context.type;
-    const asOption = () => SourceType.OPTION === context.type;
+    const isPluralizable = () =>
+      asTable()
+        ? context.table.name.toLocaleLowerCase() ===
+          (
+            context.table.getNormalizedAndDespluralizedName(context.config) +
+            's'
+          ).toLocaleLowerCase()
+        : !!context.field &&
+          context.field?.name.toLocaleLowerCase() ===
+            (
+              context.field?.getNormalizedAndDespluralizedName(context.config) +
+              's'
+            ).toLocaleLowerCase();
 
     switch (this.expression) {
       case Expression.ATTRIBUTE_COMMENT:
@@ -149,11 +163,15 @@ export class ExpressionCondition extends Condition {
         );
       case Expression.PROPERTY_PRIMARY:
         return context.type === SourceType.UNIQUE
-          ? context.table.constraints[context.position.index] instanceof
-              PrimaryKey
+          ? context.index instanceof PrimaryKey
           : !!context.field && context.table.isPrimaryKeyField(context.field);
       case Expression.PROPERTY_REPEATED:
-        return false;
+        const commonField = context.table.indexedFields.get(
+          context.field?.getNormalizedName(),
+        );
+        return commonField
+          ? commonField.fields.indexOf(context.field) > 0
+          : false;
       case Expression.PROPERTY_NULL:
         return !!context.field && !context.field.isNotNull();
       case Expression.PROPERTY_OPTIONAL:
@@ -197,12 +215,20 @@ export class ExpressionCondition extends Condition {
         return asTable()
           ? context.table.getUniqueKeys(true).length > 0
           : !!context.field && !!context.table.isUnique(context.field);
+      case Expression.PROPERTY_UNPLURALIZABLE:
+        return !isPluralizable();
+      case Expression.PROPERTY_PLURALIZABLE:
+        return isPluralizable();
       case Expression.PROPERTY_FULLTEXT:
         const selectedIndex = getSelectedIndex();
         return !!selectedIndex && selectedIndex instanceof FulltextIndex;
       case Expression.PROPERTY_RADIO:
         return (
           !!context.field && context.field.is(CommentedNode.Attribute.RADIO)
+        );
+      case Expression.PROPERTY_IGNORED:
+        return (
+          !!context.field && context.field.is(CommentedNode.Attribute.HIDDEN)
         );
       case Expression.PROPERTY_MASKED:
         return (
@@ -213,7 +239,9 @@ export class ExpressionCondition extends Condition {
           !!context.field && context.field.is(CommentedNode.Attribute.PASSWORD)
         );
       case Expression.PROPERTY_ARRAY:
-        return false;
+        return context.table.indexedFields.has(
+          context.field?.getNormalizedName(),
+        );
       case Expression.PROPERTY_IMAGE:
         return (
           !!context.field && context.field.is(CommentedNode.Attribute.IMAGE)
@@ -239,22 +267,9 @@ export class ExpressionCondition extends Condition {
           : context.field?.getType().getType() != DataType.ENUM ||
               (context.field.getType() as EnumType).getElements().length == 1;
       case Expression.PROPERTY_FIRST:
-        return asTable()
-          ? context.position.table === 0
-          : asComment()
-            ? context.position.comment === 0
-            : asOption()
-              ? context.position.option === 0
-              : context.position.field === 0;
+        return context.position === 0;
       case Expression.PROPERTY_NON_FIRST:
-        return asTable()
-          ? context.position.table > 0
-          : asComment()
-            ? context.position.comment > 0
-            : asOption()
-              ? context.position.option > 0
-              : context.position.field > 0;
-
+        return context.position > 0;
       case Expression.TYPE_INTEGER:
         return context.field?.getType().getType() === DataType.INTEGER;
       case Expression.TYPE_TINYINT:

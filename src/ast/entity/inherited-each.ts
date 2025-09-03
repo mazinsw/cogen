@@ -17,11 +17,7 @@ export class InheritedEach extends LoopBlock {
       table,
       field,
       type: SourceType.INHERITED,
-      position: {
-        ...context.position,
-        field: runPosition,
-        table: this.tablePosition,
-      },
+      position: runPosition,
     };
   }
 

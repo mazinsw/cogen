@@ -79,9 +79,11 @@ import {
   FieldElseContainsStmtContext,
   FieldElseEachStmtContext,
   FieldElseEndStmtContext,
+  FieldElseExistsStmtContext,
   FieldElseIfStmtContext,
   FieldElseMatchStmtContext,
   FieldElseReverseEachStmtContext,
+  FieldExistsStmtContext,
   FieldIfStmtContext,
   FieldLevelContext,
   FieldMatchStmtContext,
@@ -163,7 +165,6 @@ import {
 import { TemplateParserListener } from '@/grammar/TemplateParserListener';
 import { CharStream, CharStreams, CommonTokenStream, Token } from 'antlr4ts';
 import { ParseTreeWalker } from 'antlr4ts/tree/ParseTreeWalker';
-import * as fs from 'fs';
 
 export class ASTBuilder implements TemplateParserListener {
   private stack: Stack<Node>;
@@ -185,9 +186,7 @@ export class ASTBuilder implements TemplateParserListener {
     let chars: CharStream;
     try {
       chars = CharStreams.fromString(
-        pathAsContent
-          ? fileName
-          : await fs.promises.readFile(fileName, this.templateSource.encoding),
+        pathAsContent ? fileName : await this.templateSource.readFile(fileName),
       );
     } catch (error) {
       this.errors.push(error.message);
@@ -232,6 +231,8 @@ export class ASTBuilder implements TemplateParserListener {
         return new FieldConstant(ctx.K_FIELD().text);
       case !!ctx.K_DESCRIPTOR():
         return new DescriptorConstant(ctx.K_DESCRIPTOR().text);
+      case !!ctx.K_PRIMARY():
+        return new PrimaryConstant(ctx.K_PRIMARY().text);
       case !!ctx.K_OPTION():
         return new OptionConstant(ctx.K_OPTION().text);
       default: // K_IMAGE
@@ -247,8 +248,6 @@ export class ASTBuilder implements TemplateParserListener {
         return new IndexConstant(ctx.K_INDEX().text);
       case !!ctx.K_UNIQUE():
         return new UniqueConstant(ctx.K_UNIQUE().text);
-      case !!ctx.K_PRIMARY():
-        return new PrimaryConstant(ctx.K_PRIMARY().text);
       default: // K_FOREIGN
         return new ForeignConstant(ctx.K_FOREIGN().text);
     }
@@ -265,8 +264,13 @@ export class ASTBuilder implements TemplateParserListener {
   exitTextContent(ctx: TextContentContext) {
     const block = this.stack.peek() as Block;
     const text = ctx.text.replace(/^\r?\n/, '');
-    if (text) {
-      block.addStatement(new StringValue(text));
+    const applyText =
+      block.statements.length === 0 ||
+      block.statements[block.statements.length - 1] instanceof Block
+        ? text
+        : ctx.text;
+    if (applyText) {
+      block.addStatement(new StringValue(applyText));
     }
   }
 
@@ -467,6 +471,18 @@ export class ASTBuilder implements TemplateParserListener {
     this.stack.pop();
   }
 
+  enterFieldExistsStmt(_: FieldExistsStmtContext) {
+    const block = this.stack.peek() as Block;
+    const conditionBlock = new FieldConditionBlock();
+    conditionBlock.condition = new TableExistsCondition();
+    block.addStatement(conditionBlock);
+    this.stack.push(conditionBlock);
+  }
+
+  exitFieldExistsStmt(_: FieldExistsStmtContext) {
+    this.stack.pop();
+  }
+
   enterFieldMatchStmt(ctx: FieldMatchStmtContext) {
     const block = this.stack.peek() as Block;
     const conditionBlock = new FieldConditionBlock();
@@ -517,6 +533,14 @@ export class ASTBuilder implements TemplateParserListener {
   enterFieldElseIfStmt(_: FieldElseIfStmtContext) {
     const testConditionBlock = this.stack.pop() as TestConditionBlock;
     const conditionBlock = new FieldConditionBlock();
+    testConditionBlock.elseCondition = conditionBlock;
+    this.stack.push(conditionBlock);
+  }
+
+  enterFieldElseExistsStmt(_: FieldElseExistsStmtContext) {
+    const testConditionBlock = this.stack.pop() as TestConditionBlock;
+    const conditionBlock = new FieldConditionBlock();
+    conditionBlock.condition = new TableExistsCondition();
     testConditionBlock.elseCondition = conditionBlock;
     this.stack.push(conditionBlock);
   }
@@ -1263,9 +1287,8 @@ export class ASTBuilder implements TemplateParserListener {
 
   enterEachCondition(_: EachConditionContext) {
     const conditionBlock = this.stack.peek() as ConditionBlock;
-    const condition = new ExpressionCondition();
-    conditionBlock.condition = condition;
-    this.stack.push(condition);
+    conditionBlock.condition ||= new ExpressionCondition();
+    this.stack.push(conditionBlock.condition);
   }
 
   exitEachCondition(_: EachConditionContext) {
@@ -1274,9 +1297,8 @@ export class ASTBuilder implements TemplateParserListener {
 
   enterTestCondition(_: TestConditionContext) {
     const conditionBlock = this.stack.peek() as ConditionBlock;
-    const condition = new ExpressionCondition();
-    conditionBlock.condition = condition;
-    this.stack.push(condition);
+    conditionBlock.condition ||= new ExpressionCondition();
+    this.stack.push(conditionBlock.condition);
   }
 
   exitTestCondition(_: TestConditionContext) {
@@ -1360,6 +1382,8 @@ export class ASTBuilder implements TemplateParserListener {
           return (condition.expression = Expression.PROPERTY_DEFAULT);
         case !!property.K_INFO():
           return (condition.expression = Expression.PROPERTY_INFO);
+        case !!property.K_IGNORED():
+          return (condition.expression = Expression.PROPERTY_IGNORED);
         case !!property.K_DESCRIPTOR():
           return (condition.expression = Expression.PROPERTY_DESCRIPTOR);
         case !!property.K_SEARCHABLE():
@@ -1372,6 +1396,8 @@ export class ASTBuilder implements TemplateParserListener {
           return (condition.expression = Expression.PROPERTY_FOREIGN);
         case !!property.K_UNIQUE():
           return (condition.expression = Expression.PROPERTY_UNIQUE);
+        case !!property.K_UNPLURALIZABLE():
+          return (condition.expression = Expression.PROPERTY_UNPLURALIZABLE);
         case !!property.K_FULLTEXT():
           return (condition.expression = Expression.PROPERTY_FULLTEXT);
         case !!property.K_RADIO():
@@ -1380,6 +1406,8 @@ export class ASTBuilder implements TemplateParserListener {
           return (condition.expression = Expression.PROPERTY_MASKED);
         case !!property.K_PASSWORD():
           return (condition.expression = Expression.PROPERTY_PASSWORD);
+        case !!property.K_PLURALIZABLE():
+          return (condition.expression = Expression.PROPERTY_PLURALIZABLE);
         case !!property.K_ARRAY():
           return (condition.expression = Expression.PROPERTY_ARRAY);
         case !!property.K_IMAGE():
@@ -1401,6 +1429,7 @@ export class ASTBuilder implements TemplateParserListener {
 
     const type = ctx.type()!;
     switch (true) {
+      case !!type.K_INT():
       case !!type.K_INTEGER():
         return (condition.expression = Expression.TYPE_INTEGER);
       case !!type.K_TINYINT():

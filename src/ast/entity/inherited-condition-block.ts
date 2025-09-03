@@ -12,7 +12,7 @@ export class InheritedConditionBlock extends TestConditionBlock {
       ...context,
       type: SourceType.INHERITED,
       table,
-      position: { ...context.position, table: tablePosition },
+      position: tablePosition,
     };
   }
 }

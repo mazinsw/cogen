@@ -10,11 +10,7 @@ export class PrimaryConstant extends FieldConstant {
       field,
       index,
       type: SourceType.PRIMARY,
-      position: {
-        ...context.position,
-        field: context.table.fields.indexOf(field),
-        index: context.table.constraints.indexOf(index),
-      },
+      position: context.table.fields.indexOf(field),
     });
   }
 }

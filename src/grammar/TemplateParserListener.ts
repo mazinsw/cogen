@@ -57,11 +57,13 @@ import { ReferenceElseStmtContext } from "./TemplateParser";
 import { ReferenceElseCondEndStmtContext } from "./TemplateParser";
 import { ReferenceElseCondStmtContext } from "./TemplateParser";
 import { FieldIfStmtContext } from "./TemplateParser";
+import { FieldExistsStmtContext } from "./TemplateParser";
 import { FieldMatchStmtContext } from "./TemplateParser";
 import { FieldContainsStmtContext } from "./TemplateParser";
 import { FieldEachStmtContext } from "./TemplateParser";
 import { FieldReverseEachStmtContext } from "./TemplateParser";
 import { FieldElseIfStmtContext } from "./TemplateParser";
+import { FieldElseExistsStmtContext } from "./TemplateParser";
 import { FieldElseMatchStmtContext } from "./TemplateParser";
 import { FieldElseContainsStmtContext } from "./TemplateParser";
 import { FieldElseEachStmtContext } from "./TemplateParser";
@@ -747,6 +749,17 @@ export interface TemplateParserListener extends ParseTreeListener {
 	exitFieldIfStmt?: (ctx: FieldIfStmtContext) => void;
 
 	/**
+	 * Enter a parse tree produced by `TemplateParser.fieldExistsStmt`.
+	 * @param ctx the parse tree
+	 */
+	enterFieldExistsStmt?: (ctx: FieldExistsStmtContext) => void;
+	/**
+	 * Exit a parse tree produced by `TemplateParser.fieldExistsStmt`.
+	 * @param ctx the parse tree
+	 */
+	exitFieldExistsStmt?: (ctx: FieldExistsStmtContext) => void;
+
+	/**
 	 * Enter a parse tree produced by `TemplateParser.fieldMatchStmt`.
 	 * @param ctx the parse tree
 	 */
@@ -800,6 +813,17 @@ export interface TemplateParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	exitFieldElseIfStmt?: (ctx: FieldElseIfStmtContext) => void;
+
+	/**
+	 * Enter a parse tree produced by `TemplateParser.fieldElseExistsStmt`.
+	 * @param ctx the parse tree
+	 */
+	enterFieldElseExistsStmt?: (ctx: FieldElseExistsStmtContext) => void;
+	/**
+	 * Exit a parse tree produced by `TemplateParser.fieldElseExistsStmt`.
+	 * @param ctx the parse tree
+	 */
+	exitFieldElseExistsStmt?: (ctx: FieldElseExistsStmtContext) => void;
 
 	/**
 	 * Enter a parse tree produced by `TemplateParser.fieldElseMatchStmt`.

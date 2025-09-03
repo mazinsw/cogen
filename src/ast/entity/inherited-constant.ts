@@ -12,7 +12,7 @@ export class InheritedConstant extends TableConstant {
       ...context,
       type: SourceType.INHERITED,
       table,
-      position: { ...context.position, table: tablePosition },
+      position: tablePosition,
     });
   }
 }

@@ -1,3 +1,4 @@
+import { CommentEach } from '@/ast/entity/comment-each';
 import {
   Expression,
   ExpressionCondition,
@@ -11,6 +12,7 @@ export class TableEach extends LoopBlock {
   private newType?: SourceType;
   private retroCompatConstraint?: TableConstraintEach;
   private retroCompatIndex?: TableIndexEach;
+  private retroCompatComment?: CommentEach;
 
   public buildContext(
     context: SourceContext,
@@ -27,16 +29,18 @@ export class TableEach extends LoopBlock {
     if (this.retroCompatIndex) {
       return this.retroCompatIndex.buildContext(context, position, runPosition);
     }
+    if (this.retroCompatComment) {
+      return this.retroCompatComment.buildContext(
+        context,
+        position,
+        runPosition,
+      );
+    }
     const relativePosition = this.reverse
       ? context.data.tables.length - position - 1
       : position;
     const table = context.data.tables[relativePosition];
-    return {
-      ...context,
-      table,
-      type: SourceType.TABLE,
-      position: { ...context.position, table: runPosition },
-    };
+    return { ...context, table, type: SourceType.TABLE, position: runPosition };
   }
 
   public getLength(context: SourceContext): number {
@@ -47,6 +51,13 @@ export class TableEach extends LoopBlock {
     if (expressionCondition.expression === Expression.PROPERTY_INDEX) {
       this.retroCompatIndex = new TableIndexEach();
       return this.retroCompatIndex.getLength(context);
+    }
+    if (expressionCondition.expression === Expression.ATTRIBUTE_COMMENT) {
+      this.retroCompatComment = new CommentEach();
+      return this.retroCompatComment.getLength({
+        ...context,
+        type: SourceType.TABLE,
+      });
     }
     const retroCompat = {
       [Expression.PROPERTY_FOREIGN]: SourceType.FOREIGN,

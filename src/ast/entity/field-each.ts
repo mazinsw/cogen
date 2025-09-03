@@ -47,7 +47,7 @@ export class FieldEach extends LoopBlock {
       ...context,
       field,
       type: SourceType.FIELD,
-      position: { ...context.position, field: runPosition },
+      position: runPosition,
     };
   }
 

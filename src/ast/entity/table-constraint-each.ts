@@ -17,11 +17,7 @@ export class TableConstraintEach extends LoopBlock {
       ? this.constraints.length - position - 1
       : position;
     const index = this.constraints[relativePosition];
-    return {
-      ...context,
-      index,
-      position: { ...context.position, field: runPosition, index: runPosition },
-    };
+    return { ...context, index, position: runPosition };
   }
 
   public getLength(context: SourceContext): number {

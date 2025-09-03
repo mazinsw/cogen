@@ -37,7 +37,7 @@ export class FieldConstant extends Constant {
           break;
         case Constant.Property.ORDER:
           const digits = `${context.table.fields.length}`.length;
-          text = `${context.position.field}`.padStart(digits, '0');
+          text = `${context.position}`.padStart(digits, '0');
           break;
         case Constant.Property.GENDER:
           text =
@@ -74,11 +74,10 @@ export class FieldConstant extends Constant {
           if (option) {
             const elements = (context.field.getType() as EnumType).elements;
             text =
-              context.position.option >= 0 &&
-              context.position.option < elements.length
+              context.position >= 0 && context.position < elements.length
                 ? context.field.getAttribute(
                     Field.Attribute.ENUM_NAMES,
-                    context.position.option,
+                    context.position,
                   ) || text
                 : '';
             text = recase(this.caseSample, text);
@@ -115,8 +114,7 @@ export class FieldConstant extends Constant {
           if (option) {
             const elements = (context.field.getType() as EnumType).elements;
             text =
-              context.position.option >= 0 &&
-              context.position.option < elements.length
+              context.position >= 0 && context.position < elements.length
                 ? unixTransform(text)
                 : '';
             text = recase(this.caseSample, text);
@@ -142,12 +140,11 @@ export class FieldConstant extends Constant {
           if (option) {
             const elements = (context.field.getType() as EnumType).elements;
             text =
-              context.position.option >= 0 &&
-              context.position.option < elements.length
+              context.position >= 0 && context.position < elements.length
                 ? normalize(
-                    elements[context.position.option],
+                    elements[context.position],
                     context.config.getDictionary(),
-                  )
+                  ).replace(/\[\d+\]\.?/g, '')
                 : '';
             text = recase(
               this.caseSample,
@@ -161,7 +158,7 @@ export class FieldConstant extends Constant {
               ? normalize(
                   context.field.getAttribute(Field.Attribute.NAMES) ||
                     context.field.name,
-                ).replace(/\[\d+\]/g, '')
+                ).replace(/\[\d+\]\.?/g, '')
               : context.field.getNormalizedName();
           text = recase(this.caseSample, text, context.config.getUpperWords());
           break;
@@ -188,7 +185,9 @@ export class FieldConstant extends Constant {
         case Constant.Property.HIGH:
           text =
             context.field.getType() instanceof EnumType
-              ? (context.field.getType() as EnumType).elements.length.toString()
+              ? (
+                  (context.field.getType() as EnumType).elements.length - 1
+                ).toString()
               : '';
           break;
         case Constant.Property.LENGTH:
@@ -198,7 +197,10 @@ export class FieldConstant extends Constant {
           text = context.field.parsedComment.replaceAll("'", "\\'");
           break;
         case Constant.Property.COMMENT:
-          text = context.field.parsedComment;
+          text =
+            context.type === SourceType.COMMENT
+              ? context.comment
+              : context.field.parsedComment;
           break;
         case Constant.Property.IDENTIFIER:
           text = context.field.getAttribute(Field.Attribute.IDENTIFIER);
@@ -211,22 +213,40 @@ export class FieldConstant extends Constant {
           }
           const elements = (context.field.getType() as EnumType).elements;
           text =
-            context.position.option >= 0 &&
-            context.position.option < elements.length
-              ? elements[context.position.option]
+            context.position >= 0 && context.position < elements.length
+              ? elements[context.position]
               : '';
           break;
         case Constant.Property.INDEX:
           if (option) {
-            text = context.position.option.toString();
+            text = context.position.toString();
             break;
           }
+          text = (
+            context.table.indexedFields
+              .get(context.field.getNormalizedName())
+              ?.fields.indexOf(context.field) ?? ''
+          ).toString();
+          break;
+        case Constant.Property.NUMBER:
+          const commonField = context.table.indexedFields.get(
+            context.field.getNormalizedName(),
+          );
+          text = commonField
+            ? (commonField.fields.indexOf(context.field) + 1).toString()
+            : '';
           break;
         case Constant.Property.IMAGE:
           image = true;
           break;
         case Constant.Property.ARRAY:
           array = true;
+          break;
+        case Constant.Property.COUNT:
+          text = (
+            context.table.indexedFields.get(context.field.getNormalizedName())
+              ?.size ?? ''
+          ).toString();
           break;
         case Constant.Property.ON:
           // onAction = true;

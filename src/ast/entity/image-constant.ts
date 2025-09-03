@@ -8,10 +8,7 @@ export class ImageConstant extends FieldConstant {
       ...context,
       field,
       type: SourceType.IMAGE,
-      position: {
-        ...context.position,
-        field: context.table.fields.indexOf(field),
-      },
+      position: context.table.fields.indexOf(field),
     });
   }
 }

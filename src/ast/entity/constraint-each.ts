@@ -22,7 +22,7 @@ export class ConstraintEach extends LoopBlock {
       field,
       index: this.constraint,
       type: SourceType.CONSTRAINT,
-      position: { ...context.position, field: runPosition, index: runPosition },
+      position: runPosition,
     };
   }
 

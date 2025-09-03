@@ -11,12 +11,7 @@ export class TableIndexEach extends LoopBlock {
       ? context.table.indexes.length - position - 1
       : position;
     const index = context.table.indexes[relativePosition];
-    return {
-      ...context,
-      index,
-      type: SourceType.INDEX,
-      position: { ...context.position, field: runPosition, index: runPosition },
-    };
+    return { ...context, index, type: SourceType.INDEX, position: runPosition };
   }
 
   public getLength(context: SourceContext): number {

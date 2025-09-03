@@ -1,5 +1,6 @@
 import { Index } from '@/ast/entity';
 import { CommentedNode } from '@/ast/entity/commented-node';
+import { CommonField } from '@/ast/entity/common-field';
 import { Constraint } from '@/ast/entity/constraint';
 import { Field } from '@/ast/entity/field';
 import { ForeignKey } from '@/ast/entity/foreign-key';
@@ -8,10 +9,12 @@ import { UniqueKey } from '@/ast/entity/unique-key';
 import { Configuration } from '@/util/configuration';
 import { normalize } from '@/util/normalize';
 import { despluralize } from '@/util/plural';
+import { makeIndexedFields } from '@/util/uniform';
 
 export class Table extends CommentedNode {
   public fields: Field[];
   public constraints: Constraint[];
+  public indexedFields: Map<string, CommonField>;
   public indexes: Index[];
   private normalizedName?: string;
   private normalizedDefault?: string;
@@ -22,6 +25,12 @@ export class Table extends CommentedNode {
     this.fields = [];
     this.constraints = [];
     this.indexes = [];
+    this.indexedFields = new Map();
+  }
+
+  prepare(): void {
+    super.prepare();
+    this.indexedFields = makeIndexedFields(this);
   }
 
   public getFields() {

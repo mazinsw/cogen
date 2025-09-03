@@ -1,14 +1,11 @@
-SQLtoClass
+Codeg - Code Generator
 ==========
 
-Cria arquivos de classes usando tabelas SQL como modelo
+A code generator for any language based on entity modeling
 
-Com essa aplicação você poderá criar classes em PHP ou Delphi rapidamente
-basta selecionar o arquivo .sql e escolher a pasta de destino
+## Modeling
 
-![Alt text](/img/screenshots/generated_class.png?raw=true "Exemplo de classe gerada")
-
-## Modelando
+Append these command to end of each comment of each field or table
 ```
 format:[command:options]
 example: [N:name|names]
@@ -181,11 +178,4 @@ example: for table category, $[Table.name] outputs: Category
 example: for table Category, $[table.name] outputs: category
 example: for table category, $[TABLE.name] outputs: CATEGORY
 example: for table CaTeGoRy, $[tAble.name] outputs: CaTeGoRy
-```
-
-## Desenvolvimento
-
-Rode o comando abaixo após alterar o arquivo SQL.g4 para gerar atualizar as classes
-```sh
-./make_parser.sh
 ```

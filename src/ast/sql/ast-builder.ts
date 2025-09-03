@@ -85,7 +85,6 @@ import { SQLParserListener } from '@/grammar/SQLParserListener';
 import { Comment } from '@/util/comment';
 import { CharStream, CharStreams, CommonTokenStream, Token } from 'antlr4ts';
 import { ParseTreeWalker } from 'antlr4ts/tree/ParseTreeWalker';
-import * as fs from 'fs';
 
 export class ASTBuilder implements SQLParserListener {
   private stack: Stack<Node>;
@@ -103,9 +102,7 @@ export class ASTBuilder implements SQLParserListener {
   public async build(fileName: string): Promise<boolean> {
     let chars: CharStream;
     try {
-      chars = CharStreams.fromString(
-        await fs.promises.readFile(fileName, this.dataSource.encoding),
-      );
+      chars = CharStreams.fromString(await this.dataSource.readFile(fileName));
     } catch (error) {
       this.errors.push(error.message);
       return false;

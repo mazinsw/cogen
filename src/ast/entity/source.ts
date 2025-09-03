@@ -5,6 +5,9 @@ import { Field } from '@/ast/entity/field';
 import { Table } from '@/ast/entity/table';
 import { Configuration } from '@/util/configuration';
 import { LogListener } from '@/util/log-listener';
+import chardet from 'chardet';
+import * as fs from 'fs';
+import * as iconv from 'iconv-lite';
 
 export interface OutputWriter {
   appendContents(text: string): void;
@@ -35,27 +38,41 @@ export class SourceContext {
   output: OutputWriter;
   config: Configuration;
   data: DataSource;
-  position: {
-    table: number;
-    field: number;
-    index?: number;
-    option?: number;
-    comment?: number;
-  };
+  position: number;
 }
 
 export abstract class Source extends Block {
   protected logger?: LogListener;
-  public encoding: BufferEncoding;
+  public encoding: string;
 
   constructor(protected configuration: Configuration) {
     super();
-    this.encoding = 'utf8';
   }
 
   public abstract load(): Promise<void>;
 
   public setLogger(logger: LogListener) {
     this.logger = logger;
+  }
+
+  public async readFile(fileName: string): Promise<string> {
+    const buffer = await fs.promises.readFile(fileName);
+    const [first, second] = chardet
+      .analyse(buffer)
+      .filter(
+        (item, index) =>
+          index === 0 || (item.name === 'UTF-8' && item.confidence > 0),
+      );
+    const encodingName =
+      first && first?.confidence < 100
+        ? second?.name || first?.name
+        : first.name;
+    this.encoding = encodingName || 'UTF-8';
+    return iconv.decode(buffer, this.encoding);
+  }
+
+  public async writeFile(fileName: string, contents: string) {
+    const buffer = iconv.encode(contents, this.encoding);
+    await fs.promises.writeFile(fileName, buffer);
   }
 }

@@ -9,7 +9,7 @@ export class DescriptorConditionBlock extends TestConditionBlock {
       ...context,
       type: SourceType.FIELD,
       field,
-      position: { ...context.position, field: fieldPosition },
+      position: fieldPosition,
     };
   }
 }

@@ -22,7 +22,7 @@ export class IndexEach extends LoopBlock {
       field,
       index: this.index,
       type: SourceType.INDEX,
-      position: { ...context.position, field: runPosition, index: runPosition },
+      position: runPosition,
     };
   }
 

@@ -7,10 +7,7 @@ export class DescriptorConstant extends FieldConstant {
     super.execute({
       ...context,
       field,
-      position: {
-        ...context.position,
-        field: context.table.fields.indexOf(field),
-      },
+      position: context.table.fields.indexOf(field),
     });
   }
 }

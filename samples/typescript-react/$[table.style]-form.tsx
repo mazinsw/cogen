@@ -31,6 +31,11 @@ import { KeyboardEvent, useContext, useEffect, useState, useMemo } from "react";
 import { MdOutlineWallet } from "react-icons/md";
 import { LuFileUp } from "react-icons/lu";
 import { I$[Table.norm]$[field.each(enum)]$[field.if(boolean)]$[field.else], $[Table.norm]$[Field.norm]$[field.end]$[field.end] } from "@/store/slices/$[table.style]/types";
+$[table.exists(array|enum)]
+import {enum, array} from 'utils';
+$[table.else]
+import * as utils from 'utils';
+$[table.end]
 
 interface $[Table.style]FormProps extends FlexProps {
   onNext?: () => void;
@@ -55,7 +60,7 @@ $[field.end]
   const { original, changes, isSaving, invalidFields, setField, setChanges } =
     useContext($[Table.style]ManagerContext);
 $[field.each(all)]
-$[field.if(primary|image)]
+$[field.if(primary|image|repeated)]
 $[field.else.if(reference)]
 $[reference.finds(uuid)]
 $[reference.else]
@@ -78,7 +83,7 @@ $[field.end]
 $[field.end]
 
 $[field.each(all)]
-$[field.if(image)]
+$[field.if(image|repeated)]
 $[field.else.if(reference)]
 $[reference.finds(uuid)]
 $[reference.else]
@@ -93,7 +98,7 @@ $[field.end]
 $[field.end]
 
 $[field.each(enum)]
-$[field.if(boolean)]
+$[field.if(boolean|repeated)]
 $[field.else]
   const $[fIeld.norm]Options = useMemo(() => Object.values($[Table.norm]$[Field.norm]).map((value) => ({
     label: $[fIeld.norm]ToCaption(value),
@@ -117,7 +122,7 @@ $[field.end]
       return;
     }
 $[field.each(all)]
-$[field.if(primary|reference|image)]
+$[field.if(primary|reference|image|repeated)]
 $[field.else.if(date|time|datetime)]
 $[field.match(.*abertura|.*adicao|.*inicio|.*evento|.*registro|.*cadastro|.*criacao.*|.*lancamento|.*envio|.*atualizacao|.*extincao|.*remocao|.*arquivad.*)]$[field.else]
     if (event.target === $[fIeld.norm]Ref.current) {
@@ -137,7 +142,7 @@ $[field.end]
 
   useEffect(() => {
 $[field.each(all)]
-$[field.if(primary|image)]
+$[field.if(primary|image|repeated)]
 $[field.else.if(reference)]
 $[reference.finds(uuid)]
 $[reference.else]
@@ -153,7 +158,7 @@ $[field.end]
     <Flex flexDir="column" gap="4" {...props}>
       <Flex gap={["4", "2"]} w="100%" flexDir={["column", "row"]}>
 $[field.each(all)]
-$[field.if(primary)]
+$[field.if(primary|repeated)]
 $[field.else.if(reference)]
 $[reference.finds(uuid)]
 $[reference.else]
