@@ -82,7 +82,7 @@ export class Main implements LogListener {
   }
 
   private showHelp(status: number, cmd: string, errorMessage?: string): number {
-    console.log('===== codeg (CODE Generator) =====');
+    console.log('===== cogen (COde GENerator) =====');
     if (status == 4) console.log('Command not found: ' + cmd);
     else if (status == 3) console.log("Parameter of '" + cmd + "' not found");
     else if (status != 0)
@@ -93,9 +93,9 @@ export class Main implements LogListener {
     if (status != 0) {
       console.log();
     }
-    console.log('Usage: codeg [options] input.sql');
+    console.log('Usage: cogen [options] input.sql');
     console.log('Options:');
-    console.log('\t(-p|--project) codeg.properties: read a project from file');
+    console.log('\t(-p|--project) cogen.properties: read a project from file');
     console.log('\t(-f|--file|-i|--input) input.sql: set the input sql file');
     console.log(
       '\t(-t|--template) scripts/template/: set the template input directory',
@@ -105,7 +105,7 @@ export class Main implements LogListener {
       '\t(-d|--database) word1|word2: set the uppercase database name',
     );
     console.log(
-      '\t(-w|--write) codeg.properties: save configuration to file when finishes',
+      '\t(-w|--write) cogen.properties: save configuration to file when finishes',
     );
     console.log('\t(-h|--help): show this help');
     console.log('\t(-s|--silent): run without print anything');

@@ -1,4 +1,4 @@
-Codeg - Code Generator
+Cogen - Code Generator
 ==========
 
 A code generator for any language based on entity modeling
