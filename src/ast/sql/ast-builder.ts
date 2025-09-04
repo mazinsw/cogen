@@ -99,10 +99,15 @@ export class ASTBuilder implements SQLParserListener {
     return this.errors;
   }
 
-  public async build(fileName: string): Promise<boolean> {
+  public async build(
+    fileName: string,
+    pathAsContent: boolean,
+  ): Promise<boolean> {
     let chars: CharStream;
     try {
-      chars = CharStreams.fromString(await this.dataSource.readFile(fileName));
+      chars = CharStreams.fromString(
+        pathAsContent ? fileName : await this.dataSource.readFile(fileName),
+      );
     } catch (error) {
       this.errors.push(error.message);
       return false;

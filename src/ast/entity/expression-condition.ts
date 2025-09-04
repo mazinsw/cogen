@@ -75,6 +75,7 @@ export class ExpressionCondition extends Condition {
     public left?: Condition,
     public operator?: Operator,
     public right?: Condition,
+    public negate?: boolean,
   ) {
     super();
   }
@@ -98,6 +99,11 @@ export class ExpressionCondition extends Condition {
   }
 
   public test(context: SourceContext): boolean {
+    const result = this.directTest(context);
+    return this.negate ? !result : result;
+  }
+
+  public directTest(context: SourceContext): boolean {
     const getSelectedIndex = () =>
       context.index ||
       (!!context.field &&
@@ -191,11 +197,11 @@ export class ExpressionCondition extends Condition {
           : !!context.field?.is(CommentedNode.Attribute.INFORMATION);
       case Expression.PROPERTY_DESCRIPTOR:
         return (
-          context.field?.is(CommentedNode.Attribute.INFORMATION) &&
-          !context.field?.getAttribute(CommentedNode.Attribute.INFORMATION)
+          context.field?.is(CommentedNode.Attribute.DESCRIPTOR) &&
+          !context.field?.getAttribute(CommentedNode.Attribute.DESCRIPTOR)
         );
       case Expression.PROPERTY_SEARCHABLE:
-        return context.field?.is(CommentedNode.Attribute.INFORMATION);
+        return context.field?.is(CommentedNode.Attribute.DESCRIPTOR);
       case Expression.PROPERTY_INDEX:
         return asTable()
           ? context.table.indexes.length > 0
@@ -301,7 +307,10 @@ export class ExpressionCondition extends Condition {
       case Expression.TYPE_TIME:
         return context.field?.getType().getType() === DataType.TIME;
       case Expression.TYPE_ENUM:
-        return context.field?.getType().getType() === DataType.ENUM;
+        return (
+          context.field?.getType().getType() === DataType.ENUM &&
+          (!context.config.legacy || !context.field?.getType().isBoolean())
+        );
       case Expression.TYPE_BLOB:
         return context.field?.getType().getType() === DataType.BLOB;
     }

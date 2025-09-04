@@ -2,12 +2,7 @@ import { Node } from '@/ast/entity/node';
 import { SourceContext } from '@/ast/entity/source';
 
 export class Block extends Node {
-  public statements: Node[];
-
-  constructor() {
-    super();
-    this.statements = [];
-  }
+  public statements: Node[] = [];
 
   public getStatements(): Node[] {
     return this.statements;

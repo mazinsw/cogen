@@ -9,11 +9,11 @@ import * as path from 'path';
 
 export class Runner {
   private configuration: Configuration;
-  private dataSource: DataSource;
+  public dataSource: DataSource;
   private files: FileEntry[];
-  private contents: string;
+  public contents: string;
 
-  constructor(private logger: LogListener) {
+  constructor(private logger?: LogListener) {
     this.setConfiguration(new Configuration());
   }
 
@@ -31,15 +31,19 @@ export class Runner {
 
   public async execute(saveOnSuccess = false): Promise<number> {
     const startTime = Date.now();
-    this.dataSource = new DataSource(this.configuration);
+    this.dataSource = new DataSource(
+      this.configuration,
+      this.configuration.getInputFile(),
+    );
     this.dataSource.setLogger(this.logger);
     try {
       await this.dataSource.load();
     } catch (error) {
+      console.error(error);
       return 5;
     }
     try {
-      await this.generate();
+      await this.iterate();
       if (saveOnSuccess) await this.configuration.save();
     } catch (error) {
       console.error(error);
@@ -51,7 +55,7 @@ export class Runner {
     return 0;
   }
 
-  public async generate() {
+  private async iterate() {
     const templateDirectory = this.configuration.getTemplatePath();
     this.files = await readDirRecursive(templateDirectory);
     for (const file of this.files) {
@@ -76,67 +80,87 @@ export class Runner {
         await contentTemplateSource.load();
       }
       const parentFile = path.dirname(tempFile);
-      let prevFile: string = null;
-      let tableIndex = -1;
-      for (const table of this.dataSource.getTables()) {
-        tableIndex++;
-        // Hashtable<String, CommonField> indexedFields = new Hashtable<>();
-        // processArray(table, indexedFields);
-        let fieldIndex = -1;
-        for (const field of table.getFields()) {
-          let destFile = tempFile;
-          if (filenameTemplateSource.getStatements().length > 0) {
-            this.contents = '';
-            filenameTemplateSource.execute({
-              type: SourceType.TABLE,
-              table,
-              field,
-              output: this,
-              data: this.dataSource,
-              config: this.configuration,
-              position: tableIndex,
-            });
-            destFile = this.contents;
-            destFile = destFile.replaceAll('\\', path.sep);
-            destFile = destFile.replaceAll('/', path.sep);
-            if (destFile.includes(path.sep + path.sep)) {
-              continue;
-            }
-          }
-          if (parentFile === destFile) {
-            continue;
-          }
-          if (prevFile === destFile) {
-            continue;
-          }
-          prevFile = destFile;
-          this.logger?.addMessage(
-            `${file.isDirectory ? 'Directory' : `File (${contentTemplateSource.encoding})`}: ${destFile}`,
-          );
-          if (file.isDirectory) {
-            await fs.promises.mkdir(destFile, { recursive: true });
-            continue;
-          }
-          await fs.promises.mkdir(path.dirname(destFile), { recursive: true });
-          fieldIndex++;
-          this.contents = '';
-          contentTemplateSource.execute({
+      await this.generate(
+        filenameTemplateSource,
+        contentTemplateSource,
+        async (destFile) => {
+          await contentTemplateSource.writeFile(destFile, this.contents);
+        },
+        parentFile,
+        file.isDirectory,
+      );
+    }
+  }
+
+  public async generate(
+    filenameTemplateSource: TemplateSource,
+    contentTemplateSource: TemplateSource,
+    onWriteFile?: (destFile: string) => Promise<void>,
+    parentFile?: string,
+    isDirectory?: boolean,
+  ) {
+    let prevFile: string = null;
+    let tableIndex = -1;
+    for (const table of this.dataSource.getTables()) {
+      tableIndex++;
+      let fieldIndex = -1;
+      const fields = table.fields.length === 0 ? [undefined] : table.fields;
+      for (const field of fields) {
+        let destFile = filenameTemplateSource.filePathOrContents;
+        if (filenameTemplateSource.getStatements().length > 0) {
+          destFile = '';
+          filenameTemplateSource.execute({
             type: SourceType.TABLE,
             table,
             field,
-            output: this,
+            output: {
+              appendContents(text) {
+                destFile += text;
+              },
+            },
             data: this.dataSource,
             config: this.configuration,
             position: tableIndex,
           });
-          await contentTemplateSource.writeFile(destFile, this.contents);
-          if (filenameTemplateSource.getStatements().length === 0) {
-            break;
+          destFile = destFile.replaceAll('\\', path.sep);
+          destFile = destFile.replaceAll('/', path.sep);
+          if (destFile.includes(path.sep + path.sep)) {
+            continue;
           }
         }
+        if (parentFile === destFile) {
+          continue;
+        }
+        if (prevFile === destFile) {
+          continue;
+        }
+        prevFile = destFile;
+        this.logger?.addMessage(
+          `${isDirectory ? 'Directory' : `File (${contentTemplateSource.encoding})`}: ${destFile}`,
+        );
+        if (isDirectory) {
+          await fs.promises.mkdir(destFile, { recursive: true });
+          continue;
+        }
+        await fs.promises.mkdir(path.dirname(destFile), { recursive: true });
+        fieldIndex++;
+        this.contents = '';
+        contentTemplateSource.execute({
+          type: SourceType.TABLE,
+          table,
+          field,
+          output: this,
+          data: this.dataSource,
+          config: this.configuration,
+          position: tableIndex,
+        });
+        await onWriteFile?.(destFile);
         if (filenameTemplateSource.getStatements().length === 0) {
           break;
         }
+      }
+      if (filenameTemplateSource.getStatements().length === 0) {
+        break;
       }
     }
   }

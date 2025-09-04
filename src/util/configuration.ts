@@ -2,6 +2,7 @@ import { Properties } from '@/util/properties';
 import * as path from 'path';
 
 export class Configuration {
+  public legacy: boolean;
   private lang: string;
   private projectFile: string;
   private inputFile: string;

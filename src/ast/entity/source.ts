@@ -45,11 +45,14 @@ export abstract class Source extends Block {
   protected logger?: LogListener;
   public encoding: string;
 
-  constructor(protected configuration: Configuration) {
+  constructor(
+    protected configuration: Configuration,
+    public filePathOrContents?: string,
+  ) {
     super();
   }
 
-  public abstract load(): Promise<void>;
+  public abstract load(pathAsContent?: boolean): Promise<void>;
 
   public setLogger(logger: LogListener) {
     this.logger = logger;

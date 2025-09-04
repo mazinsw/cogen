@@ -9,12 +9,7 @@ describe('TemplateParser', () => {
     );
     const root = parser.template();
     expect(root.toStringTree(parser)).toBe(
-      '(template ' +
-        '(statement (textContent $a )) ' +
-        '(statement (constant (tableStmt $[ (tableLevel table) ]))) ' +
-        '(statement (textContent  \\$[table] $b \\nwo[(])rd$a )) ' +
-        '(statement (constant (fieldStmt $[ (fieldLevel field) ]))) ' +
-        '<EOF>)',
+      '(template (statement (textContent $a )) (statement (constant (tableStmt $[ (tableLevel table) ]))) (statement (textContent  \\)) (statement (constant (tableStmt $[ (tableLevel table) ]))) (statement (textContent  $b \\nwo[(])rd$a )) (statement (constant (fieldStmt $[ (fieldLevel field) ]))) <EOF>)',
     );
   });
 
@@ -30,17 +25,11 @@ describe('TemplateParser', () => {
 
   it('if with multiple conditions and levels', async () => {
     const parser = parseTemplate(
-      '$[table.if((image|descriptor)&string)]code$[table.end]',
+      '$[table.if(~(image|~descriptor)&~string)]code$[table.end]',
     );
     const root = parser.template();
     expect(root.toStringTree(parser)).toBe(
-      '(template ' +
-        '(statement (block (tableIfStmt $[ table . if ( (testCondition (condition (anyCondition ' +
-        '(priorityCondition ( (condition (anyCondition ' +
-        '(expression (property image))) ' +
-        '(orCondition | (condition ' +
-        '(expression (property descriptor))))) ))) (andCondition & (condition (expression (type string)))))) ) ] ' +
-        '(statement (textContent code)) $[ table . end ]))) <EOF>)',
+      '(template (statement (block (tableIfStmt $[ table . if ( (testCondition (condition (anyCondition (anyPriorityCondition (negativePriorityCondition ~ ( (condition (anyCondition (anyExpression (expression (property image)))) (orCondition | (condition (anyExpression (negativeExpression ~ (expression (property descriptor))))))) )))) (andCondition & (condition (anyExpression (negativeExpression ~ (expression (type string)))))))) ) ] (statement (textContent code)) $[ table . end ]))) <EOF>)',
     );
   });
 

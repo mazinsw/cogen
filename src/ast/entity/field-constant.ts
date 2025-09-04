@@ -15,9 +15,9 @@ export class FieldConstant extends Constant {
     if (!context.field) {
       return;
     }
-    let image = false;
     let array = false;
-    let option = false;
+    let image = context.type === SourceType.IMAGE;
+    let option = context.type === SourceType.OPTION;
     // let onAction = false;
     let text = context.field.name;
     let firstAttribute = Field.Attribute.UNKNOWN;
@@ -133,19 +133,11 @@ export class FieldConstant extends Constant {
           text = context.field.getValue()?.toString() ?? 'null';
           break;
         case Constant.Property.NORMALIZED:
-          if (option && !(context.field.getType() instanceof EnumType)) {
-            text = '';
-            break;
-          }
           if (option) {
-            const elements = (context.field.getType() as EnumType).elements;
-            text =
-              context.position >= 0 && context.position < elements.length
-                ? normalize(
-                    elements[context.position],
-                    context.config.getDictionary(),
-                  ).replace(/\[\d+\]\.?/g, '')
-                : '';
+            text = normalize(
+              context.option,
+              context.config.getDictionary(),
+            ).replace(/\[\d+\]\.?/g, '');
             text = recase(
               this.caseSample,
               text,
@@ -218,7 +210,7 @@ export class FieldConstant extends Constant {
               : '';
           break;
         case Constant.Property.INDEX:
-          if (option) {
+          if (option && !array) {
             text = context.position.toString();
             break;
           }

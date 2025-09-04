@@ -34,6 +34,7 @@ import { OptionEach } from '@/ast/entity/option-each';
 import { PrimaryConditionBlock } from '@/ast/entity/primary-condition-block';
 import { PrimaryConstant } from '@/ast/entity/primary-constant';
 import { PrimaryEach } from '@/ast/entity/primary-each';
+import { PrimaryKeyConstant } from '@/ast/entity/primary-key-constant';
 import { ReferenceConditionBlock } from '@/ast/entity/reference-condition-block';
 import { ReferenceConstant } from '@/ast/entity/reference-constant';
 import { ReferenceEach } from '@/ast/entity/reference-each';
@@ -112,6 +113,8 @@ import {
   InheritedFindsStmtContext,
   InheritedIfStmtContext,
   InheritedMatchStmtContext,
+  NegativeExpressionContext,
+  NegativePriorityConditionContext,
   OptionEachStmtContext,
   OrConditionContext,
   PrimaryEachStmtContext,
@@ -248,6 +251,8 @@ export class ASTBuilder implements TemplateParserListener {
         return new IndexConstant(ctx.K_INDEX().text);
       case !!ctx.K_UNIQUE():
         return new UniqueConstant(ctx.K_UNIQUE().text);
+      case !!ctx.K_PRIMARY_KEY():
+        return new PrimaryKeyConstant(ctx.K_PRIMARY_KEY().text);
       default: // K_FOREIGN
         return new ForeignConstant(ctx.K_FOREIGN().text);
     }
@@ -1316,6 +1321,18 @@ export class ASTBuilder implements TemplateParserListener {
     this.stack.pop();
   }
 
+  enterNegativePriorityCondition(_: NegativePriorityConditionContext) {
+    const condition = this.stack.peek() as ExpressionCondition;
+    const priorityCondition = new ExpressionCondition();
+    priorityCondition.negate = true;
+    condition.left = priorityCondition;
+    this.stack.push(priorityCondition);
+  }
+
+  exitNegativePriorityCondition(_: NegativePriorityConditionContext) {
+    this.stack.pop();
+  }
+
   enterAndCondition(_: AndConditionContext) {
     const condition = this.stack.peek() as ExpressionCondition;
     condition.operator = Operator.AND;
@@ -1338,6 +1355,11 @@ export class ASTBuilder implements TemplateParserListener {
 
   exitOrCondition(_: OrConditionContext) {
     this.stack.pop();
+  }
+
+  enterNegativeExpression(_: NegativeExpressionContext) {
+    const condition = this.stack.peek() as ExpressionCondition;
+    condition.negate = true;
   }
 
   enterExpression(ctx: ExpressionContext) {

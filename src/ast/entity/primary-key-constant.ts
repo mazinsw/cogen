@@ -1,13 +1,16 @@
 import { FieldConstant } from '@/ast/entity/field-constant';
 import { SourceContext, SourceType } from '@/ast/entity/source';
 
-export class ImageConstant extends FieldConstant {
+export class PrimaryKeyConstant extends FieldConstant {
   public execute(context: SourceContext): void {
-    const field = context.table.getImage();
+    const index = context.table.getPrimaryKey();
+    const field =
+      index === context.index ? context.field : context.table.getPrimary();
     super.execute({
       ...context,
       field,
-      type: SourceType.IMAGE,
+      index,
+      type: SourceType.PRIMARY,
       position:
         field === context.field
           ? context.position

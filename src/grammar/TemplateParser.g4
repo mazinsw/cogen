@@ -273,14 +273,18 @@ eachCondition: condition;
 testCondition: condition;
 
 condition:
-    expression
-  | priorityCondition
+    anyExpression
+  | anyPriorityCondition
   | anyCondition orCondition
   | anyCondition andCondition;
-anyCondition: expression | priorityCondition;
+anyCondition: anyExpression | anyPriorityCondition;
+anyPriorityCondition: negativePriorityCondition | priorityCondition;
+negativePriorityCondition: NOT LPAR condition RPAR;
 priorityCondition: LPAR condition RPAR;
 orCondition: OR condition;
 andCondition: AND condition;
+anyExpression: negativeExpression | expression;
+negativeExpression: NOT expression;
 expression: attribute | property | type;
 
 textContent: TEXT;
@@ -289,7 +293,7 @@ tableLevel: K_TABLE | K_INHERITED | K_REFERENCE;
 
 fieldLevel: K_FIELD | K_DESCRIPTOR | K_IMAGE | K_PRIMARY | K_OPTION;
 
-constraintLevel: K_CONSTRAINT | K_INDEX | K_UNIQUE | K_FOREIGN;
+constraintLevel: K_CONSTRAINT | K_INDEX | K_UNIQUE | K_PRIMARY_KEY | K_FOREIGN;
 
 regex: REGEX;
 word: WORD;

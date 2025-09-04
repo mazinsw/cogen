@@ -1,15 +1,7 @@
 import { Source } from '@/ast/entity/source';
 import { ASTBuilder } from '@/ast/template/ast-builder';
-import { Configuration } from '@/util/configuration';
 
 export class TemplateSource extends Source {
-  constructor(
-    configuration: Configuration,
-    private filePathOrContents?: string,
-  ) {
-    super(configuration);
-  }
-
   public async load(pathAsContent?: boolean) {
     this.statements = [];
     const builder = new ASTBuilder(this);

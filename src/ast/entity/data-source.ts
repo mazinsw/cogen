@@ -2,19 +2,13 @@ import { Node } from '@/ast/entity/node';
 import { Source } from '@/ast/entity/source';
 import { Table } from '@/ast/entity/table';
 import { ASTBuilder } from '@/ast/sql/ast-builder';
-import { Configuration } from '@/util/configuration';
 
 export class DataSource extends Source {
-  public tables: Table[];
+  public tables: Table[] = [];
 
-  constructor(configuration: Configuration) {
-    super(configuration);
-    this.tables = [];
-  }
-
-  public async load() {
+  public async load(pathAsContent?: boolean) {
     const builder = new ASTBuilder(this);
-    const ok = await builder.build(this.configuration.getInputFile());
+    const ok = await builder.build(this.filePathOrContents, pathAsContent);
     if (ok) {
       return;
     }

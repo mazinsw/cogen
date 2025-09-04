@@ -48,10 +48,16 @@ export class Main implements LogListener {
           config.setTemplatePath(args[i + 1]);
           i++;
           break;
-        case '-d':
-        case '--database':
+        case '-u':
+        case '--uppercase':
           if (i + 1 >= args.length) return this.showHelp(3, cmd);
           config.setUpperWords(args[i + 1]);
+          i++;
+          break;
+        case '-d':
+        case '--despluralize':
+          if (i + 1 >= args.length) return this.showHelp(3, cmd);
+          config.setDictionary(args[i + 1]);
           i++;
           break;
         case '-w':
@@ -67,6 +73,10 @@ export class Main implements LogListener {
         case '-s':
         case '--silent':
           silent = true;
+          break;
+        case '-l':
+        case '--legacy':
+          config.legacy = true;
           break;
         default:
           config.setInputFile(cmd);
@@ -95,20 +105,22 @@ export class Main implements LogListener {
     }
     console.log('Usage: cogen [options] input.sql');
     console.log('Options:');
-    console.log('\t(-p|--project) cogen.properties: read a project from file');
+    console.log(
+      '\t(-d|--despluralize) "match1|match2/slice_end/[replacement[/min_length]];ms|ls/1/s/4": set the despluralization database rules',
+    );
     console.log('\t(-f|--file|-i|--input) input.sql: set the input sql file');
+    console.log('\t(-h|--help): show this help');
+    console.log('\t(-l|--legacy): use legacy loops instead of as filter');
+    console.log('\t(-o|--output) storage/generated: set the output directory');
+    console.log('\t(-p|--project) cogen.properties: read a project from file');
+    console.log('\t(-s|--silent): run without print anything');
     console.log(
       '\t(-t|--template) scripts/template/: set the template input directory',
     );
-    console.log('\t(-o|--output) storage/generated: set the output directory');
-    console.log(
-      '\t(-d|--database) word1|word2: set the uppercase database name',
-    );
+    console.log('\t(-u|--uppercase) USA|W3C: set the uppercase database names');
     console.log(
       '\t(-w|--write) cogen.properties: save configuration to file when finishes',
     );
-    console.log('\t(-h|--help): show this help');
-    console.log('\t(-s|--silent): run without print anything');
     return status;
   }
 

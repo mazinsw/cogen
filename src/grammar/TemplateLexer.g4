@@ -8,7 +8,7 @@ lexer grammar TemplateLexer;
 
 OPEN: '$[' -> pushMode(INSIDE);
 
-TEXT: ( ~[$] | '\\$[' | '$' ~('[') )+;
+TEXT: ( . {!this.text.endsWith('$') || this._input.LA(1) !== '['.charCodeAt(0)}? )+;
 
 mode INSIDE;
 
@@ -85,6 +85,7 @@ K_PATH: P A T H;
 K_PLURAL: P L U R A L;
 K_PLURALIZABLE: P L U R A L I Z A B L E;
 K_PRIMARY: P R I M A R Y;
+K_PRIMARY_KEY: P R I M A R Y '_' K E Y;
 K_RADIO: R A D I O;
 K_REFERENCE: R E F E R E N C E;
 K_REPEATED: R E P E A T E D;
@@ -118,6 +119,7 @@ LPAR: '(';
 RPAR: ')';
 OR: '|';
 AND: '&';
+NOT: '~';
 
 WORD: [A-Za-z0-9_]+;
 

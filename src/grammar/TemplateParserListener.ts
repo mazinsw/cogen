@@ -132,9 +132,13 @@ import { EachConditionContext } from "./TemplateParser";
 import { TestConditionContext } from "./TemplateParser";
 import { ConditionContext } from "./TemplateParser";
 import { AnyConditionContext } from "./TemplateParser";
+import { AnyPriorityConditionContext } from "./TemplateParser";
+import { NegativePriorityConditionContext } from "./TemplateParser";
 import { PriorityConditionContext } from "./TemplateParser";
 import { OrConditionContext } from "./TemplateParser";
 import { AndConditionContext } from "./TemplateParser";
+import { AnyExpressionContext } from "./TemplateParser";
+import { NegativeExpressionContext } from "./TemplateParser";
 import { ExpressionContext } from "./TemplateParser";
 import { TextContentContext } from "./TemplateParser";
 import { TableLevelContext } from "./TemplateParser";
@@ -1574,6 +1578,28 @@ export interface TemplateParserListener extends ParseTreeListener {
 	exitAnyCondition?: (ctx: AnyConditionContext) => void;
 
 	/**
+	 * Enter a parse tree produced by `TemplateParser.anyPriorityCondition`.
+	 * @param ctx the parse tree
+	 */
+	enterAnyPriorityCondition?: (ctx: AnyPriorityConditionContext) => void;
+	/**
+	 * Exit a parse tree produced by `TemplateParser.anyPriorityCondition`.
+	 * @param ctx the parse tree
+	 */
+	exitAnyPriorityCondition?: (ctx: AnyPriorityConditionContext) => void;
+
+	/**
+	 * Enter a parse tree produced by `TemplateParser.negativePriorityCondition`.
+	 * @param ctx the parse tree
+	 */
+	enterNegativePriorityCondition?: (ctx: NegativePriorityConditionContext) => void;
+	/**
+	 * Exit a parse tree produced by `TemplateParser.negativePriorityCondition`.
+	 * @param ctx the parse tree
+	 */
+	exitNegativePriorityCondition?: (ctx: NegativePriorityConditionContext) => void;
+
+	/**
 	 * Enter a parse tree produced by `TemplateParser.priorityCondition`.
 	 * @param ctx the parse tree
 	 */
@@ -1605,6 +1631,28 @@ export interface TemplateParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	exitAndCondition?: (ctx: AndConditionContext) => void;
+
+	/**
+	 * Enter a parse tree produced by `TemplateParser.anyExpression`.
+	 * @param ctx the parse tree
+	 */
+	enterAnyExpression?: (ctx: AnyExpressionContext) => void;
+	/**
+	 * Exit a parse tree produced by `TemplateParser.anyExpression`.
+	 * @param ctx the parse tree
+	 */
+	exitAnyExpression?: (ctx: AnyExpressionContext) => void;
+
+	/**
+	 * Enter a parse tree produced by `TemplateParser.negativeExpression`.
+	 * @param ctx the parse tree
+	 */
+	enterNegativeExpression?: (ctx: NegativeExpressionContext) => void;
+	/**
+	 * Exit a parse tree produced by `TemplateParser.negativeExpression`.
+	 * @param ctx the parse tree
+	 */
+	exitNegativeExpression?: (ctx: NegativeExpressionContext) => void;
 
 	/**
 	 * Enter a parse tree produced by `TemplateParser.expression`.

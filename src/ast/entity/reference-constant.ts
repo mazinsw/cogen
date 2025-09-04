@@ -13,7 +13,7 @@ export class ReferenceConstant extends TableConstant {
       ...context,
       type: SourceType.REFERENCE,
       table,
-      position: tablePosition,
+      position: table === context.table ? context.position : tablePosition,
     });
   }
 }

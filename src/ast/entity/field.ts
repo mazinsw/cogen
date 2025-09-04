@@ -13,10 +13,6 @@ export class Field extends CommentedNode {
   private normalizedName?: string;
   private normalizedAndDespluralizedName?: string;
 
-  constructor(name: string) {
-    super(name);
-  }
-
   public getType(): DataType {
     return this.type;
   }
