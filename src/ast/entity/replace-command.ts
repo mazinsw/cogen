@@ -18,7 +18,7 @@ export class ReplaceCommand extends Command implements OutputWriter {
     this.constant.execute({ ...context, output: this });
     this.output = this.output.replace(
       new RegExp(this.subject),
-      this.replacement,
+      this.replacement || '',
     );
     context.output.appendContents(this.output);
   }

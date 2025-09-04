@@ -71,4 +71,11 @@ export class Field extends CommentedNode {
     ).replace(/\[\d+\]\.?/g, '');
     return this.normalizedAndDespluralizedName;
   }
+
+  public isDescriptor(): boolean {
+    return (
+      this.is(Field.Attribute.DESCRIPTOR) &&
+      !this.getAttribute(Field.Attribute.DESCRIPTOR)
+    );
+  }
 }

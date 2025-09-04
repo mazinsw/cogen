@@ -215,18 +215,21 @@ export class Table extends CommentedNode {
   }
 
   public getDescriptor(): Field | null {
-    let descField: Field | null = null;
+    let descField: Field;
     for (const field of this.getFields()) {
-      if (field.is(Field.Attribute.DESCRIPTOR)) {
-        if (field.getType().isString() || descField == null) {
-          descField = field;
-        }
-        if (!field.getAttribute(Field.Attribute.DESCRIPTOR)) {
-          return field;
-        }
+      if (field.isDescriptor()) {
+        return field;
+      }
+      if (
+        field.is(Field.Attribute.DESCRIPTOR) &&
+        (field.getType().isString() || !descField)
+      ) {
+        descField = field;
       }
     }
-    if (descField != null) return descField;
+    if (descField) {
+      return descField;
+    }
     for (const constraint of this.constraints) {
       if (constraint instanceof UniqueKey) {
         if (constraint.getFields().length == 1) {

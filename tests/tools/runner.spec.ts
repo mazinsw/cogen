@@ -57,6 +57,22 @@ describe('Runner', () => {
     expect(result).toBe('name');
   });
 
+  it('replace field name over loop', async () => {
+    const result = await runTemplateText(
+      'CREATE TABLE Users (image_url TEXT COMMENT "[I]", cover_url TEXT COMMENT "[I]");',
+      '$[field.each(image)], $[image.replace(_url,_file)]$[field.end]',
+    );
+    expect(result).toBe(', image_file, cover_file');
+  });
+
+  it('replace inline field name', async () => {
+    const result = await runTemplateText(
+      'CREATE TABLE Users (link_url TEXT, image_url TEXT COMMENT "[I]");',
+      '$[image.replace(_url,_file)]',
+    );
+    expect(result).toBe('image_file');
+  });
+
   it('keep new single new lines', async () => {
     const result = await runTemplateText(
       'CREATE TABLE Users (name TEXT, age INT);',
@@ -80,5 +96,26 @@ describe('Runner', () => {
       { legacy: true },
     );
     expect(result).toBe(', gender.male, gender.female');
+  });
+
+  it('each comment line of table', async () => {
+    const result = await runTemplateText(
+      'CREATE TABLE Users () COMMENT = "is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.";',
+      '$[comment.each]$[table.comment]\n$[comment.end]',
+    );
+    expect(result).toBe(
+      'is simply dummy text of the printing and typesetting industry. Lorem\nIpsum has been the industrys standard dummy text ever since the 1500s,\nwhen an unknown printer took a galley of type and scrambled it to make a\ntype specimen book. It has survived not only five centuries, but also\nthe leap into electronic typesetting, remaining essentially unchanged.\n',
+    );
+  });
+
+  it('legacy each comment line of table', async () => {
+    const result = await runTemplateText(
+      'CREATE TABLE Users () COMMENT = "is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.";',
+      '$[table.each(comment)]$[table.comment]\n$[table.end]',
+      { legacy: true },
+    );
+    expect(result).toBe(
+      'is simply dummy text of the printing and typesetting industry. Lorem\nIpsum has been the industrys standard dummy text ever since the 1500s,\nwhen an unknown printer took a galley of type and scrambled it to make a\ntype specimen book. It has survived not only five centuries, but also\nthe leap into electronic typesetting, remaining essentially unchanged.\n',
+    );
   });
 });

@@ -3,6 +3,10 @@ import { TableBaseConstant } from '@/ast/entity/table-base-constant';
 
 export class TableConstant extends TableBaseConstant {
   public execute(context: SourceContext): void {
-    super.execute({ ...context, type: SourceType.TABLE });
+    super.execute({
+      ...context,
+      type:
+        context.type === SourceType.COMMENT ? context.type : SourceType.TABLE,
+    });
   }
 }

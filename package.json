@@ -1,6 +1,6 @@
 {
   "name": "@mazinsw/cogen",
-  "version": "2.0.3",
+  "version": "2.0.4",
   "description": "A code generator from SQL to any language",
   "repository": {
     "type": "git",

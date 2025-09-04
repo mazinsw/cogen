@@ -5,7 +5,9 @@ export class PrimaryConstant extends FieldBaseConstant {
   public execute(context: SourceContext): void {
     const index = context.table.getPrimaryKey();
     const field =
-      index === context.index ? context.field : context.table.getPrimary();
+      index === context.index
+        ? context.field
+        : context.table.find(index.fields[0].name);
     super.execute({
       ...context,
       field,

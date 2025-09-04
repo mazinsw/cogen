@@ -148,9 +148,11 @@ export class ExpressionCondition extends Condition {
     switch (this.expression) {
       case Expression.ATTRIBUTE_COMMENT:
       case Expression.ATTRIBUTE_DESCRIPTION:
-        return asTable()
-          ? !!context.table.parsedComment
-          : !!context.field?.parsedComment;
+        return context.type === SourceType.COMMENT
+          ? true
+          : asTable()
+            ? !!context.table.parsedComment
+            : !!context.field?.parsedComment;
       case Expression.ATTRIBUTE_INHERITED:
         return context.table.is(CommentedNode.Attribute.INHERITED);
       case Expression.ATTRIBUTE_PACKAGE:
@@ -196,12 +198,12 @@ export class ExpressionCondition extends Condition {
           ? context.table.is(CommentedNode.Attribute.INFORMATION)
           : !!context.field?.is(CommentedNode.Attribute.INFORMATION);
       case Expression.PROPERTY_DESCRIPTOR:
-        return (
-          context.field?.is(CommentedNode.Attribute.DESCRIPTOR) &&
-          !context.field?.getAttribute(CommentedNode.Attribute.DESCRIPTOR)
-        );
+        return !!context.field && context.field.isDescriptor();
       case Expression.PROPERTY_SEARCHABLE:
-        return context.field?.is(CommentedNode.Attribute.DESCRIPTOR);
+        return (
+          !!context.field &&
+          context.field.is(CommentedNode.Attribute.DESCRIPTOR)
+        );
       case Expression.PROPERTY_INDEX:
         return asTable()
           ? context.table.indexes.length > 0

@@ -1,17 +1,17 @@
-import { ANTLRErrorListener, RecognitionException, Recognizer } from "antlr4ts";
+import { ANTLRErrorListener, RecognitionException, Recognizer } from 'antlr4ts';
 
 export class ListErrorListener<T> implements ANTLRErrorListener<T> {
-  private errorList: string[];
+  private errorList: string[] = [];
 
-  public constructor() {
-    this.errorList = [];
-  }
-
-  public syntaxError(_: Recognizer<T, any>,
-      __: T | undefined, line: number, charPositionInLine: number,
-      msg: string, ___: RecognitionException | undefined
+  public syntaxError(
+    _recognizer: Recognizer<T, any>,
+    _offendingSymbol: T | undefined,
+    line: number,
+    charPositionInLine: number,
+    msg: string,
+    _e: RecognitionException | undefined,
   ): void {
-    this.errorList.push(line + ":" + charPositionInLine + ": " + msg);
+    this.errorList.push(line + ':' + charPositionInLine + ': ' + msg);
   }
 
   public getNotificationList(): string[] {
