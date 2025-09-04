@@ -5,11 +5,11 @@ import * as path from 'node:path';
 describe('TemplateParser', () => {
   it('escaped and invalid symbol', async () => {
     const parser = parseTemplate(
-      '$a $[table] \\$[table] $b \nwo[(])rd$a $[field]',
+      '$a $[table] \\$[table] $b \nwo[(])rd$a $[field]$',
     );
     const root = parser.template();
     expect(root.toStringTree(parser)).toBe(
-      '(template (statement (textContent $a )) (statement (constant (tableStmt $[ (tableLevel table) ]))) (statement (textContent  \\)) (statement (constant (tableStmt $[ (tableLevel table) ]))) (statement (textContent  $b \\nwo[(])rd$a )) (statement (constant (fieldStmt $[ (fieldLevel field) ]))) <EOF>)',
+      '(template (statement (textContent $a )) (statement (constant (tableStmt $[ (tableLevel table) ]))) (statement (textContent  \\)) (statement (constant (tableStmt $[ (tableLevel table) ]))) (statement (textContent  $b \\nwo[(])rd$a )) (statement (constant (fieldStmt $[ (fieldLevel field) ]))) (statement (textContent $)) <EOF>)',
     );
   });
 

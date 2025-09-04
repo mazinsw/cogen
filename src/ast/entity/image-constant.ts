@@ -1,7 +1,7 @@
-import { FieldConstant } from '@/ast/entity/field-constant';
+import { FieldBaseConstant } from '@/ast/entity/field-base-constant';
 import { SourceContext, SourceType } from '@/ast/entity/source';
 
-export class ImageConstant extends FieldConstant {
+export class ImageConstant extends FieldBaseConstant {
   public execute(context: SourceContext): void {
     const field = context.table.getImage();
     super.execute({

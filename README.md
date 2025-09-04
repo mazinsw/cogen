@@ -160,7 +160,7 @@ commands:
 	- `$[field.array.index]` current index of common field, start from 0
 	- `$[field.array.number]` current number of common field, start from 1
 	- `$[field.size]` Size of the field in bytes
-	- `$[*field.length]` Length of the string field
+	- `$[field.length]` Length of the string field
 	- `$[field.each]` for each table field or each field of source on legacy
 		- legacy example: `$[field.each(primary)]` for each primary key fields
 		- example: `$[field.each(reference & required)]`
@@ -218,7 +218,7 @@ commands:
 	- `$[field.contains(text)]` test if field SQL name contains "text"
 	- `$[field.end]` end contains
 
-- `$[option or field.option]` enum item value
+- `$[option]` or `$[field.option]` enum item value
 	- `$[option.unix]` enum item value as unix name
 	- `$[option.norm]` enum item value normalized
 	- `$[option.low]` first enum item index, start from 0
@@ -251,5 +251,5 @@ commands:
  - (`-p` | `--project`) `cogen.properties`: read a project from file
  - (`-s` | `--silent`): run without print anything
  - (`-t` | `--template`) `scripts/template/`: set the template input directory
- - (`-u` | `--uppercase`) `USA|W3C`: set the uppercase database names
+ - (`-u` | `--uppercase`) `"|USA|W3C|"`: set the uppercase database names
  - (`-w` | `--write`) `cogen.properties`: save configuration to file when finishes

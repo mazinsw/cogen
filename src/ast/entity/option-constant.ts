@@ -1,3 +1,8 @@
-import { FieldConstant } from '@/ast/entity/field-constant';
+import { FieldBaseConstant } from '@/ast/entity/field-base-constant';
+import { SourceContext, SourceType } from '@/ast/entity/source';
 
-export class OptionConstant extends FieldConstant {}
+export class OptionConstant extends FieldBaseConstant {
+  public execute(context: SourceContext): void {
+    super.execute({ ...context, type: SourceType.OPTION });
+  }
+}

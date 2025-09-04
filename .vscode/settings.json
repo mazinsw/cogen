@@ -1,13 +1,4 @@
 {
-  "antlr4.generation": {
-    "mode": "none",
-    "language": "JavaScript",
-    "listeners": true,
-    "visitors": false,
-    "package": "grammar",
-    "outputDir": ".",
-    "alternativeJar": "../../lib/antlr-4.8-complete.jar"
-  },
   "[typescript]": {
     "editor.formatOnSave": true
   },

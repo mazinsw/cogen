@@ -1,7 +1,7 @@
 import { SourceContext, SourceType } from '@/ast/entity/source';
-import { TableConstant } from '@/ast/entity/table-constant';
+import { TableBaseConstant } from '@/ast/entity/table-base-constant';
 
-export class ReferenceConstant extends TableConstant {
+export class ReferenceConstant extends TableBaseConstant {
   public execute(context: SourceContext): void {
     if (context.type === SourceType.REFERENCE) {
       return super.execute(context);

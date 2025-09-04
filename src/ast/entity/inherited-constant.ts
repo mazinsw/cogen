@@ -1,8 +1,8 @@
 import { SourceContext, SourceType } from '@/ast/entity/source';
 import { Table } from '@/ast/entity/table';
-import { TableConstant } from '@/ast/entity/table-constant';
+import { TableBaseConstant } from '@/ast/entity/table-base-constant';
 
-export class InheritedConstant extends TableConstant {
+export class InheritedConstant extends TableBaseConstant {
   public execute(context: SourceContext): void {
     const tablePosition = context.data.findTableIndex(
       context.table.getAttribute(Table.Attribute.INHERITED),

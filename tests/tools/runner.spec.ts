@@ -68,17 +68,17 @@ describe('Runner', () => {
   it('each field option', async () => {
     const result = await runTemplateText(
       'CREATE TABLE Users (active ENUM("Y", "N"), gender ENUM("male", "female"));',
-      '$[field.each(enum)]$[field.each(option)], $[field.option]$[field.end]$[field.end]',
+      '$[field.each(enum)]$[field.each(option)], $[field.norm].$[field.option]$[field.end]$[field.end]',
     );
-    expect(result).toBe(', male, male');
+    expect(result).toBe(', gender.male, gender.male');
   });
 
   it('legacy each field option', async () => {
     const result = await runTemplateText(
       'CREATE TABLE Users (active ENUM("Y", "N"), gender ENUM("male", "female"));',
-      '$[field.each(enum)]$[field.each(option)], $[field.option]$[field.end]$[field.end]',
+      '$[field.each(enum)]$[field.each(option)], $[field.norm].$[field.option]$[field.end]$[field.end]',
       { legacy: true },
     );
-    expect(result).toBe(', male, female');
+    expect(result).toBe(', gender.male, gender.female');
   });
 });

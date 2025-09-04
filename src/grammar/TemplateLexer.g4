@@ -8,7 +8,7 @@ lexer grammar TemplateLexer;
 
 OPEN: '$[' -> pushMode(INSIDE);
 
-TEXT: ( . {!this.text.endsWith('$') || this._input.LA(1) !== '['.charCodeAt(0)}? )+;
+TEXT: ( ~'$' | '$' {this._input.LA(1) !== '['.charCodeAt(0)}? )+;
 
 mode INSIDE;
 

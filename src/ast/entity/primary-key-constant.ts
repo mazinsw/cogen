@@ -1,7 +1,7 @@
-import { FieldConstant } from '@/ast/entity/field-constant';
+import { FieldBaseConstant } from '@/ast/entity/field-base-constant';
 import { SourceContext, SourceType } from '@/ast/entity/source';
 
-export class PrimaryKeyConstant extends FieldConstant {
+export class PrimaryKeyConstant extends FieldBaseConstant {
   public execute(context: SourceContext): void {
     const index = context.table.getPrimaryKey();
     const field =

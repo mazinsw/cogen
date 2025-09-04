@@ -117,7 +117,9 @@ export class Main implements LogListener {
     console.log(
       '\t(-t|--template) scripts/template/: set the template input directory',
     );
-    console.log('\t(-u|--uppercase) USA|W3C: set the uppercase database names');
+    console.log(
+      '\t(-u|--uppercase) "|USA|W3C|": set the uppercase database names',
+    );
     console.log(
       '\t(-w|--write) cogen.properties: save configuration to file when finishes',
     );
