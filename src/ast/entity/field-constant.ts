@@ -135,7 +135,7 @@ export class FieldConstant extends Constant {
         case Constant.Property.NORMALIZED:
           if (option) {
             text = normalize(
-              context.option,
+              context.option || '',
               context.config.getDictionary(),
             ).replace(/\[\d+\]\.?/g, '');
             text = recase(

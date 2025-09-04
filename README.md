@@ -1,7 +1,7 @@
 Cogen - `Co`de `gen`erator
 =
 
-A code generator for SQL
+A code generator from SQL to any language
 
 ## Example
 

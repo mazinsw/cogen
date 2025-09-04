@@ -1,10 +1,24 @@
 {
   "name": "@mazinsw/cogen",
-  "version": "1.1.0",
-  "description": "A code generator for SQL",
+  "version": "2.0.1",
+  "description": "A code generator from SQL to any language",
   "repository": {
+    "type": "git",
     "url": "git+https://github.com/mazinsw/cogen.git"
   },
+  "keywords": [
+    "code",
+    "generator",
+    "sql",
+    "modeling",
+    "template",
+    "cli",
+    "terminal",
+    "console",
+    "parser",
+    "command-line",
+    "entity"
+  ],
   "author": "Francimar Alves <mazinsw@gmail.com>",
   "license": "MIT",
   "main": "./dist/main/main.js",
