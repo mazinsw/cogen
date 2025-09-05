@@ -377,6 +377,7 @@ property:
   | K_NON_NULL
   | K_NOT_NULL
   | K_NULL
+  | K_NUMBER
   | K_OPTION
   | K_OPTIONAL
   | K_PASSWORD

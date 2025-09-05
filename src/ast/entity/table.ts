@@ -13,6 +13,7 @@ import { makeIndexedFields } from '@/util/uniform';
 
 export class Table extends CommentedNode {
   public fields: Field[];
+  public descriptor?: Field | null;
   public constraints: Constraint[];
   public indexedFields: Map<string, CommonField>;
   public indexes: Index[];
@@ -215,6 +216,14 @@ export class Table extends CommentedNode {
   }
 
   public getDescriptor(): Field | null {
+    if (this.descriptor !== undefined) {
+      return this.descriptor;
+    }
+    this.descriptor = this.getInternalDescriptor() || null;
+    return this.descriptor;
+  }
+
+  private getInternalDescriptor(): Field | undefined {
     let descField: Field;
     for (const field of this.getFields()) {
       if (field.isDescriptor()) {

@@ -81,6 +81,14 @@ describe('Runner', () => {
     expect(result).toBe('name\nage\n');
   });
 
+  it('negative priority expression', async () => {
+    const result = await runTemplateText(
+      'CREATE TABLE Users (name TEXT, age INT);',
+      '$[field.each(~(text|enum))]\n$[field]\n$[field.end]',
+    );
+    expect(result).toBe('age\n');
+  });
+
   it('each field option', async () => {
     const result = await runTemplateText(
       'CREATE TABLE Users (active ENUM("Y", "N"), gender ENUM("male", "female"));',

@@ -30,6 +30,7 @@ export enum Expression {
   PROPERTY_MASKED,
   PROPERTY_NON_FIRST,
   PROPERTY_NULL,
+  PROPERTY_NUMBER,
   PROPERTY_OPTION,
   PROPERTY_OPTIONAL,
   PROPERTY_PASSWORD,
@@ -82,28 +83,23 @@ export class ExpressionCondition extends Condition {
 
   public check(context: SourceContext): boolean {
     const leftOk =
-      this.expression === undefined
+      (this.expression === undefined
         ? !this.left || this.left.check(context)
-        : this.test(context);
+        : !!this.test(context)) === !this.negate;
     if (this.operator === Operator.OR && leftOk) {
       return true;
     }
     if (this.operator === Operator.OR) {
-      return !this.right || this.right.check(context);
+      return !this.right || this.right.check(context) === !this.negate;
     }
     // and short circuit
     if (!leftOk) {
       return false;
     }
-    return !this.right || this.right.check(context);
+    return !this.right || this.right.check(context) === !this.negate;
   }
 
   public test(context: SourceContext): boolean {
-    const result = this.directTest(context);
-    return this.negate ? !result : result;
-  }
-
-  public directTest(context: SourceContext): boolean {
     const getSelectedIndex = () =>
       context.index ||
       (!!context.field &&
@@ -182,6 +178,8 @@ export class ExpressionCondition extends Condition {
           : false;
       case Expression.PROPERTY_NULL:
         return !!context.field && !context.field.isNotNull();
+      case Expression.PROPERTY_NUMBER:
+        return context.field?.getType().isNumeric();
       case Expression.PROPERTY_OPTIONAL:
         return (
           !!context.field &&
@@ -198,7 +196,9 @@ export class ExpressionCondition extends Condition {
           ? context.table.is(CommentedNode.Attribute.INFORMATION)
           : !!context.field?.is(CommentedNode.Attribute.INFORMATION);
       case Expression.PROPERTY_DESCRIPTOR:
-        return !!context.field && context.field.isDescriptor();
+        return (
+          !!context.field && context.table.getDescriptor() === context.field
+        );
       case Expression.PROPERTY_SEARCHABLE:
         return (
           !!context.field &&

@@ -9241,6 +9241,7 @@ export class TemplateParser extends Parser {
         case TemplateParser.K_NON_NULL:
         case TemplateParser.K_NOT_NULL:
         case TemplateParser.K_NULL:
+        case TemplateParser.K_NUMBER:
         case TemplateParser.K_OPTION:
         case TemplateParser.K_OPTIONAL:
         case TemplateParser.K_PACKAGE:
@@ -9353,6 +9354,7 @@ export class TemplateParser extends Parser {
         case TemplateParser.K_NON_NULL:
         case TemplateParser.K_NOT_NULL:
         case TemplateParser.K_NULL:
+        case TemplateParser.K_NUMBER:
         case TemplateParser.K_OPTION:
         case TemplateParser.K_OPTIONAL:
         case TemplateParser.K_PASSWORD:
@@ -9827,47 +9829,48 @@ export class TemplateParser extends Parser {
         _la = this._input.LA(1);
         if (
           !(
-            ((_la & ~0x1f) === 0 &&
-              ((1 << _la) &
-                ((1 << TemplateParser.K_ALL) |
-                  (1 << TemplateParser.K_ARRAY) |
-                  (1 << TemplateParser.K_CONSTRAINT) |
-                  (1 << TemplateParser.K_DEFAULT) |
-                  (1 << TemplateParser.K_DESCRIPTOR) |
-                  (1 << TemplateParser.K_FEW_FIELDS))) !==
+            (((_la - 4) & ~0x1f) === 0 &&
+              ((1 << (_la - 4)) &
+                ((1 << (TemplateParser.K_ALL - 4)) |
+                  (1 << (TemplateParser.K_ARRAY - 4)) |
+                  (1 << (TemplateParser.K_CONSTRAINT - 4)) |
+                  (1 << (TemplateParser.K_DEFAULT - 4)) |
+                  (1 << (TemplateParser.K_DESCRIPTOR - 4)) |
+                  (1 << (TemplateParser.K_FEW_FIELDS - 4)) |
+                  (1 << (TemplateParser.K_FIRST - 4)) |
+                  (1 << (TemplateParser.K_FOREIGN - 4)))) !==
                 0) ||
-            (((_la - 32) & ~0x1f) === 0 &&
-              ((1 << (_la - 32)) &
-                ((1 << (TemplateParser.K_FIRST - 32)) |
-                  (1 << (TemplateParser.K_FOREIGN - 32)) |
-                  (1 << (TemplateParser.K_FULLTEXT - 32)) |
-                  (1 << (TemplateParser.K_IGNORED - 32)) |
-                  (1 << (TemplateParser.K_IMAGE - 32)) |
-                  (1 << (TemplateParser.K_INDEX - 32)) |
-                  (1 << (TemplateParser.K_INFO - 32)) |
-                  (1 << (TemplateParser.K_MANY - 32)) |
-                  (1 << (TemplateParser.K_MASKED - 32)) |
-                  (1 << (TemplateParser.K_NON_FIRST - 32)) |
-                  (1 << (TemplateParser.K_NON_NULL - 32)) |
-                  (1 << (TemplateParser.K_NOT_NULL - 32)) |
-                  (1 << (TemplateParser.K_NULL - 32)))) !==
+            (((_la - 36) & ~0x1f) === 0 &&
+              ((1 << (_la - 36)) &
+                ((1 << (TemplateParser.K_FULLTEXT - 36)) |
+                  (1 << (TemplateParser.K_IGNORED - 36)) |
+                  (1 << (TemplateParser.K_IMAGE - 36)) |
+                  (1 << (TemplateParser.K_INDEX - 36)) |
+                  (1 << (TemplateParser.K_INFO - 36)) |
+                  (1 << (TemplateParser.K_MANY - 36)) |
+                  (1 << (TemplateParser.K_MASKED - 36)) |
+                  (1 << (TemplateParser.K_NON_FIRST - 36)) |
+                  (1 << (TemplateParser.K_NON_NULL - 36)) |
+                  (1 << (TemplateParser.K_NOT_NULL - 36)) |
+                  (1 << (TemplateParser.K_NULL - 36)) |
+                  (1 << (TemplateParser.K_NUMBER - 36)) |
+                  (1 << (TemplateParser.K_OPTION - 36)) |
+                  (1 << (TemplateParser.K_OPTIONAL - 36)))) !==
                 0) ||
-            (((_la - 66) & ~0x1f) === 0 &&
-              ((1 << (_la - 66)) &
-                ((1 << (TemplateParser.K_OPTION - 66)) |
-                  (1 << (TemplateParser.K_OPTIONAL - 66)) |
-                  (1 << (TemplateParser.K_PASSWORD - 66)) |
-                  (1 << (TemplateParser.K_PLURALIZABLE - 66)) |
-                  (1 << (TemplateParser.K_PRIMARY - 66)) |
-                  (1 << (TemplateParser.K_RADIO - 66)) |
-                  (1 << (TemplateParser.K_REFERENCE - 66)) |
-                  (1 << (TemplateParser.K_REPEATED - 66)) |
-                  (1 << (TemplateParser.K_REQUIRED - 66)) |
-                  (1 << (TemplateParser.K_SEARCHABLE - 66)) |
-                  (1 << (TemplateParser.K_SINGLE - 66)) |
-                  (1 << (TemplateParser.K_UNIQUE - 66)) |
-                  (1 << (TemplateParser.K_UNPLURALIZABLE - 66)) |
-                  (1 << (TemplateParser.K_UNSIGNED - 66)))) !==
+            (((_la - 70) & ~0x1f) === 0 &&
+              ((1 << (_la - 70)) &
+                ((1 << (TemplateParser.K_PASSWORD - 70)) |
+                  (1 << (TemplateParser.K_PLURALIZABLE - 70)) |
+                  (1 << (TemplateParser.K_PRIMARY - 70)) |
+                  (1 << (TemplateParser.K_RADIO - 70)) |
+                  (1 << (TemplateParser.K_REFERENCE - 70)) |
+                  (1 << (TemplateParser.K_REPEATED - 70)) |
+                  (1 << (TemplateParser.K_REQUIRED - 70)) |
+                  (1 << (TemplateParser.K_SEARCHABLE - 70)) |
+                  (1 << (TemplateParser.K_SINGLE - 70)) |
+                  (1 << (TemplateParser.K_UNIQUE - 70)) |
+                  (1 << (TemplateParser.K_UNPLURALIZABLE - 70)) |
+                  (1 << (TemplateParser.K_UNSIGNED - 70)))) !==
                 0)
           )
         ) {
@@ -10184,7 +10187,7 @@ export class TemplateParser extends Parser {
     "\x17  ,,DDLL\x07\x02\x0E\x0E%%--MM__\x0E\x02\f\r\x14\x14\x1E\x1E\'\'/" +
     "/55;;??FGIJYY``\x13\x02\x07\x07\f\r\x10\x10\x14\x15$$\'),.004688;<??B" +
     'DVWYY``cd\x07\x02\r\r\x16\x16//GGII\x16\x02\x06\x07\x0E\x0E\x14\x14\x17' +
-    '\x17\x1F\x1F""%&+.7799=>@ADEHHKLNPRRTU__ab\n\x02\b\v\x11\x13\x18\x18' +
+    '\x17\x1F\x1F""%&+.7799=>@BDEHHKLNPRRTU__ab\n\x02\b\v\x11\x13\x18\x18' +
     '\x1C\x1C##13XX[^\x02\u0995\x02\u012D\x03\x02\x02\x02\x04\u0135\x03\x02' +
     '\x02\x02\x06\u0160\x03\x02\x02\x02\b\u0162\x03\x02\x02\x02\n\u0179\x03' +
     '\x02\x02\x02\f\u0190\x03\x02\x02\x02\x0E\u01A6\x03\x02\x02\x02\x10\u01BC' +
@@ -19653,6 +19656,9 @@ export class PropertyContext extends ParserRuleContext {
   }
   public K_NULL(): TerminalNode | undefined {
     return this.tryGetToken(TemplateParser.K_NULL, 0);
+  }
+  public K_NUMBER(): TerminalNode | undefined {
+    return this.tryGetToken(TemplateParser.K_NUMBER, 0);
   }
   public K_OPTION(): TerminalNode | undefined {
     return this.tryGetToken(TemplateParser.K_OPTION, 0);

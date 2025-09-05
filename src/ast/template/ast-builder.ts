@@ -1323,8 +1323,8 @@ export class ASTBuilder implements TemplateParserListener {
 
   enterNegativePriorityCondition(_: NegativePriorityConditionContext) {
     const condition = this.stack.peek() as ExpressionCondition;
+    condition.negate = true;
     const priorityCondition = new ExpressionCondition();
-    priorityCondition.negate = true;
     condition.left = priorityCondition;
     this.stack.push(priorityCondition);
   }
@@ -1392,6 +1392,8 @@ export class ASTBuilder implements TemplateParserListener {
           return (condition.expression = Expression.PROPERTY_REPEATED);
         case !!property.K_NULL():
           return (condition.expression = Expression.PROPERTY_NULL);
+        case !!property.K_NUMBER():
+          return (condition.expression = Expression.PROPERTY_NUMBER);
         case !!property.K_OPTIONAL():
           return (condition.expression = Expression.PROPERTY_OPTIONAL);
         case !!property.K_REQUIRED():
