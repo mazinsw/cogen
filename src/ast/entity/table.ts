@@ -181,10 +181,17 @@ export class Table extends CommentedNode {
     return !!this.getUniqueIndex(field);
   }
 
-  public getForeignKeys(): ForeignKey[] {
+  public getForeignKeys(tableName?: string): ForeignKey[] {
+    const tableNameLC = tableName?.toLocaleLowerCase();
     const list: ForeignKey[] = [];
     for (const constraint of this.constraints) {
       if (!(constraint instanceof ForeignKey)) {
+        continue;
+      }
+      if (
+        tableNameLC &&
+        constraint.getTableName().toLocaleLowerCase() !== tableNameLC
+      ) {
         continue;
       }
       list.push(constraint);

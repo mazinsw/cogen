@@ -5,6 +5,8 @@ import { EnumType } from '@/ast/entity/enum-type';
 import { FulltextIndex } from '@/ast/entity/fulltext-index';
 import { PrimaryKey } from '@/ast/entity/primary-key';
 import { SourceContext, SourceType } from '@/ast/entity/source';
+import { getGenderChar } from '@/util/gender';
+import { despluralize } from '@/util/plural';
 
 export enum Expression {
   ATTRIBUTE_COMMENT,
@@ -17,7 +19,9 @@ export enum Expression {
   PROPERTY_ARRAY,
   PROPERTY_CONSTRAINT,
   PROPERTY_DEFAULT,
+  PROPERTY_DEPENDS,
   PROPERTY_DESCRIPTOR,
+  PROPERTY_FEMININE,
   PROPERTY_FEW_FIELDS,
   PROPERTY_FIRST,
   PROPERTY_FOREIGN,
@@ -27,6 +31,7 @@ export enum Expression {
   PROPERTY_INDEX,
   PROPERTY_INFO,
   PROPERTY_MANY,
+  PROPERTY_MASCULINE,
   PROPERTY_MASKED,
   PROPERTY_NON_FIRST,
   PROPERTY_NULL,
@@ -159,6 +164,40 @@ export class ExpressionCondition extends Condition {
 
       case Expression.PROPERTY_ALL:
         return true;
+      case Expression.PROPERTY_MASCULINE: {
+        const genderChar = asTable()
+          ? table.getAttribute(CommentedNode.Attribute.GENDER) ||
+            getGenderChar(
+              table
+                .getNormalizedAndDespluralizedName(context.config)
+                .toLocaleLowerCase(),
+            )
+          : context.field?.getAttribute(CommentedNode.Attribute.GENDER) ||
+            getGenderChar(
+              despluralize(
+                context.field?.name || '',
+                context.config.getDictionary(),
+              ).toLocaleLowerCase(),
+            );
+        return genderChar.toLocaleLowerCase() === 'o';
+      }
+      case Expression.PROPERTY_FEMININE: {
+        const genderChar = asTable()
+          ? table.getAttribute(CommentedNode.Attribute.GENDER) ||
+            getGenderChar(
+              table
+                .getNormalizedAndDespluralizedName(context.config)
+                .toLocaleLowerCase(),
+            )
+          : context.field?.getAttribute(CommentedNode.Attribute.GENDER) ||
+            getGenderChar(
+              despluralize(
+                context.field?.name || '',
+                context.config.getDictionary(),
+              ).toLocaleLowerCase(),
+            );
+        return genderChar.toLocaleLowerCase() === 'a';
+      }
       case Expression.PROPERTY_REFERENCE:
         return !!context.field && !!table.findForeignKey(context.field.name);
       case Expression.PROPERTY_SELF_REFERENCE:
@@ -197,6 +236,14 @@ export class ExpressionCondition extends Condition {
         return asTable()
           ? table.is(CommentedNode.Attribute.INFORMATION)
           : !!context.field?.is(CommentedNode.Attribute.INFORMATION);
+      case Expression.PROPERTY_DEPENDS:
+        const parentTable =
+          context.tableStack[Math.min(1, context.tableStack.length - 1)];
+        return asTable()
+          ? table.getForeignKeys(parentTable.name).length > 0
+          : table
+              .getForeignKeys(parentTable.name)
+              .some((item) => item.exists(context.field?.name || ''));
       case Expression.PROPERTY_DESCRIPTOR:
         return !!context.field && table.getDescriptor() === context.field;
       case Expression.PROPERTY_SEARCHABLE:

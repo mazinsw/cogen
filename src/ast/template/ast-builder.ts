@@ -1498,6 +1498,8 @@ export class ASTBuilder implements TemplateParserListener {
           return (condition.expression = Expression.PROPERTY_INFO);
         case !!property.K_IGNORED():
           return (condition.expression = Expression.PROPERTY_IGNORED);
+        case !!property.K_DEPENDS():
+          return (condition.expression = Expression.PROPERTY_DEPENDS);
         case !!property.K_DESCRIPTOR():
           return (condition.expression = Expression.PROPERTY_DESCRIPTOR);
         case !!property.K_SEARCHABLE():
@@ -1516,6 +1518,8 @@ export class ASTBuilder implements TemplateParserListener {
           return (condition.expression = Expression.PROPERTY_FULLTEXT);
         case !!property.K_RADIO():
           return (condition.expression = Expression.PROPERTY_RADIO);
+        case !!property.K_MASCULINE():
+          return (condition.expression = Expression.PROPERTY_MASCULINE);
         case !!property.K_MASKED():
           return (condition.expression = Expression.PROPERTY_MASKED);
         case !!property.K_PASSWORD():
@@ -1528,6 +1532,8 @@ export class ASTBuilder implements TemplateParserListener {
           return (condition.expression = Expression.PROPERTY_IMAGE);
         case !!property.K_OPTION():
           return (condition.expression = Expression.PROPERTY_OPTION);
+        case !!property.K_FEMININE():
+          return (condition.expression = Expression.PROPERTY_FEMININE);
         case !!property.K_FEW_FIELDS():
           return (condition.expression = Expression.PROPERTY_FEW_FIELDS);
         case !!property.K_MANY():

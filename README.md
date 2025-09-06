@@ -72,7 +72,7 @@ export class MyTable {
 commands:
 - `$[table]` database table name
   - `$[table.unix]` Table name in unix format
-  - `$[table.unix.replace(s$)]` Remove plural from table name after converto name to unix format
+  - `$[table.unix.replace(s$)]` Remove plural from table name after convert to unix format
   - `$[table.unix.plural]` database table name on plural
   - `$[table.norm]` Table name normalized and despluralized
   - `$[table.norm.default]` Table name normalized without despluralize
@@ -89,7 +89,16 @@ commands:
   - `$[table.inherited]`  defined package for table
   - `$[table.path]`  defined path for class file
   - `$[table.order]` left zero padded table order
-  - `$[table.if(attribute)]` table condition, attributes: comment, inherited, package, path, unpluralizable, pluralizable, index, unique
+  - `$[table.if(attribute)]` table condition, attributes:
+    - comment
+    - depends: check if current table depends on its parent
+    - index
+    - inherited
+    - package
+    - path
+    - pluralizable
+    - unique
+    - unpluralizable
   - `$[table.exists(type|attribute)]` check if the table contains a field with matching type or attribute
     example: `$[table.~exists(comment)]` check if table doesn't have a commentary
   - `$[table..match(regex)]` test if regex match parent table name
@@ -182,10 +191,12 @@ commands:
     - date
     - datetime
     - default
+    - depends: check if field references its parent table
     - description
     - descriptor
     - double
     - enum
+    - feminine
     - few_fields
     - first
     - float
@@ -193,6 +204,7 @@ commands:
     - info
     - integer
     - many
+    - masculine
     - masked
     - non_first
     - non_null

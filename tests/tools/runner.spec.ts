@@ -155,4 +155,31 @@ describe('Runner', () => {
       'is simply dummy text of the printing and typesetting industry. Lorem\nIpsum has been the industrys standard dummy text ever since the 1500s,\nwhen an unknown printer took a galley of type and scrambled it to make a\ntype specimen book. It has survived not only five centuries, but also\nthe leap into electronic typesetting, remaining essentially unchanged.\n',
     );
   });
+
+  it('gender condition check', async () => {
+    const result = await runTemplateText(
+      'CREATE TABLE Cadeiras (tipo TEXT COMMENT "[G:o]") COMMENT = "[G:a]";' +
+        'CREATE TABLE Bancos (agencia TEXT COMMENT "[G:a]") COMMENT = "[G:o]";',
+      'Table $[table] is $[table.if(masculine)]masculine$[table.end]$[table.if(feminine)]feminine$[table.end]' +
+        ': $[field.each]$[field] is $[field.if(masculine)]masculine$[field.end]$[field.if(feminine)]feminine$[field.end], $[field.end]\n\n',
+    );
+    expect(result).toBe(
+      'Table Cadeiras is feminine: tipo is masculine, \n' +
+        'Table Bancos is masculine: agencia is feminine, \n',
+    );
+  });
+
+  it('check parent dependency', async () => {
+    const result = await runTemplateText(
+      'CREATE TABLE Users (id INT, name TEXT, PRIMARY KEY(id));' +
+        'CREATE TABLE Posts (user_id INT, content TEXT, INDEX (user_id), ' +
+        '  CONSTRAINT FOREIGN KEY (user_id) REFERENCES Users(id)' +
+        ');' +
+        'CREATE TABLE Comments (post_id INT, content TEXT, INDEX (post_id), ' +
+        '  CONSTRAINT FOREIGN KEY (post_id) REFERENCES Posts(id)' +
+        ');',
+      '$[table.each(depends)]$[field.each(reference&depends)]$[table.] <- $[table].$[field]$[field.end]\n\n$[table.end]',
+    );
+    expect(result).toBe('Users <- Posts.user_id\nPosts <- Comments.post_id\n');
+  });
 });
