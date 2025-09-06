@@ -48,7 +48,7 @@ export class FieldBaseConstant extends Constant {
               despluralize(
                 context.field.name,
                 context.config.getDictionary(),
-              ).toLocaleLowerCase(),
+              ).toLowerCase(),
             );
           text = recase(this.caseSample, text);
           break;

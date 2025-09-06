@@ -138,7 +138,6 @@ import {
   ReferenceIfStmtContext,
   ReferenceMatchStmtContext,
   ReferenceReverseEachStmtContext,
-  RegexContext,
   ReplacePropContext,
   TableContainsStmtContext,
   TableEachStmtContext,
@@ -452,8 +451,9 @@ export class ASTBuilder implements TemplateParserListener {
     }
     return new ReplaceCommand(
       constant,
-      ctx.regex(0).text,
-      ctx.tryGetRuleContext(1, RegexContext)?.text,
+      ctx.pattern().text,
+      ctx.replacement()?.text,
+      ctx.flags()?.text,
     );
   }
 

@@ -35,9 +35,9 @@ export class DataSource extends Source {
     if (!name) {
       return -1;
     }
-    const nameLC = name.toLocaleLowerCase();
+    const nameLC = name.toLowerCase();
     for (const [index, table] of this.getTables().entries()) {
-      if (table.name.toLocaleLowerCase() === nameLC) {
+      if (table.name.toLowerCase() === nameLC) {
         return index;
       }
     }

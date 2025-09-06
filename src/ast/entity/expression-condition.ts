@@ -136,16 +136,16 @@ export class ExpressionCondition extends Condition {
 
     const isPluralizable = () =>
       asTable()
-        ? table.name.toLocaleLowerCase() ===
+        ? table.name.toLowerCase() ===
           (
             table.getNormalizedAndDespluralizedName(context.config) + 's'
-          ).toLocaleLowerCase()
+          ).toLowerCase()
         : !!context.field &&
-          context.field?.name.toLocaleLowerCase() ===
+          context.field?.name.toLowerCase() ===
             (
               context.field?.getNormalizedAndDespluralizedName(context.config) +
               's'
-            ).toLocaleLowerCase();
+            ).toLowerCase();
 
     switch (this.expression) {
       case Expression.ATTRIBUTE_COMMENT:
@@ -170,16 +170,16 @@ export class ExpressionCondition extends Condition {
             getGenderChar(
               table
                 .getNormalizedAndDespluralizedName(context.config)
-                .toLocaleLowerCase(),
+                .toLowerCase(),
             )
           : context.field?.getAttribute(CommentedNode.Attribute.GENDER) ||
             getGenderChar(
               despluralize(
                 context.field?.name || '',
                 context.config.getDictionary(),
-              ).toLocaleLowerCase(),
+              ).toLowerCase(),
             );
-        return genderChar.toLocaleLowerCase() === 'o';
+        return genderChar.toLowerCase() === 'o';
       }
       case Expression.PROPERTY_FEMININE: {
         const genderChar = asTable()
@@ -187,16 +187,16 @@ export class ExpressionCondition extends Condition {
             getGenderChar(
               table
                 .getNormalizedAndDespluralizedName(context.config)
-                .toLocaleLowerCase(),
+                .toLowerCase(),
             )
           : context.field?.getAttribute(CommentedNode.Attribute.GENDER) ||
             getGenderChar(
               despluralize(
                 context.field?.name || '',
                 context.config.getDictionary(),
-              ).toLocaleLowerCase(),
+              ).toLowerCase(),
             );
-        return genderChar.toLocaleLowerCase() === 'a';
+        return genderChar.toLowerCase() === 'a';
       }
       case Expression.PROPERTY_REFERENCE:
         return !!context.field && !!table.findForeignKey(context.field.name);

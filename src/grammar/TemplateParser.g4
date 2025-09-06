@@ -265,7 +265,9 @@ fieldProps: DOT fieldProp;
 
 constraintStmt: OPEN constraintLevel DOT+ K_NAME replaceProp? CLOSE;
 
-replaceProp: DOT REPLACE_OPEN regex (',' regex)? REGEX_CLOSE;
+replaceProp: DOT REPLACE_OPEN
+  pattern (REPLACEMENT_OPEN replacement? (FLAGS_OPEN flags)?)?
+  (PATTERN_CLOSE | REPLACEMENT_CLOSE | FLAGS_CLOSE);
 
 allLevels: tableLevel | fieldLevel | constraintLevel;
 
@@ -295,11 +297,21 @@ fieldLevel: K_FIELD | K_DESCRIPTOR | K_IMAGE | K_PRIMARY | K_OPTION;
 
 constraintLevel: K_CONSTRAINT | K_INDEX | K_UNIQUE | K_PRIMARY_KEY | K_FOREIGN;
 
-regex: regexSyntax;
-regexSyntax:
+pattern:
+    PATTERN
+  | PATTERN pattern
+  | PATTERN_OPEN pattern PATTERN_CLOSE pattern?
+  ;
+
+replacement: REPLACEMENT;
+
+flags: REGEX_FLAGS?;
+
+regex:
     REGEX
-  | regexSyntax REGEX_GROUP
-  | REGEX_GROUP regexSyntax;
+  | REGEX regex
+  | REGEX_OPEN regex REGEX_CLOSE regex?
+  ;
 
 word: WORD;
 

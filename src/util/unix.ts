@@ -12,9 +12,9 @@ export function unixTransform(input: string): string {
       if (isLowerCase(ch)) {
         lastIsUpper = false;
       }
-      result += ch.toLocaleLowerCase();
+      result += ch.toLowerCase();
     } else if (isUpperCase(ch)) {
-      result += '_' + ch.toLocaleLowerCase();
+      result += '_' + ch.toLowerCase();
       lastIsUpper = true;
     } else {
       result += ch;

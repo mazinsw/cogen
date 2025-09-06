@@ -110,12 +110,36 @@ describe('Runner', () => {
     expect(result).toBe('file_image');
   });
 
+  it('replace with upper and lower case transform', async () => {
+    const result = await runTemplateText(
+      'CREATE TABLE producs_for_CUSTOMERS ();',
+      '$[table.replace((.+)_(.+)_(.+),\\U$1_\\E$2_\\L$3)]',
+    );
+    expect(result).toBe('PRODUCS_for_customers');
+  });
+
   it('replace multiple case insensitive', async () => {
     const result = await runTemplateText(
       'CREATE TABLE Users_users_USERS ();',
       '$[table.replace(_Users)]',
     );
     expect(result).toBe('Users');
+  });
+
+  it('clear regex flags', async () => {
+    const result = await runTemplateText(
+      'CREATE TABLE _users_users_Users ();',
+      '$[table.replace(_users,,)]',
+    );
+    expect(result).toBe('_users_Users');
+  });
+
+  it('override regex flags', async () => {
+    const result = await runTemplateText(
+      'CREATE TABLE _users_users_Users ();',
+      '$[table.replace(_users,,i)]',
+    );
+    expect(result).toBe('_users_Users');
   });
 
   it('keep new single new lines', async () => {

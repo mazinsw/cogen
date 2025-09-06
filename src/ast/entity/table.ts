@@ -88,9 +88,9 @@ export class Table extends CommentedNode {
   }
 
   public find(name: string): Field | null {
-    const nameLC = name.toLocaleLowerCase();
+    const nameLC = name.toLowerCase();
     for (const field of this.fields) {
-      if (field.name.toLocaleLowerCase() === nameLC) return field;
+      if (field.name.toLowerCase() === nameLC) return field;
     }
     return null;
   }
@@ -111,21 +111,20 @@ export class Table extends CommentedNode {
   }
 
   public findIndex(field: Field): Index | null {
-    const fieldNameLC = field.name.toLocaleLowerCase();
+    const fieldNameLC = field.name.toLowerCase();
     for (const index of this.indexes) {
       for (const oField of index.getFields()) {
-        if (oField.getName().toLocaleLowerCase() === fieldNameLC) return index;
+        if (oField.getName().toLowerCase() === fieldNameLC) return index;
       }
     }
     return null;
   }
 
   public findConstraint(fieldName: string) {
-    const fieldNameLC = fieldName.toLocaleLowerCase();
+    const fieldNameLC = fieldName.toLowerCase();
     for (const constraint of this.constraints) {
       for (const oField of constraint.getFields()) {
-        if (oField.getName().toLocaleLowerCase() === fieldNameLC)
-          return constraint;
+        if (oField.getName().toLowerCase() === fieldNameLC) return constraint;
       }
     }
     return null;
@@ -163,13 +162,13 @@ export class Table extends CommentedNode {
   }
 
   public getUniqueIndex(field: Field): Index | null {
-    const fieldNameLC = field.name.toLocaleLowerCase();
+    const fieldNameLC = field.name.toLowerCase();
     for (const constraint of this.constraints) {
       if (!(constraint instanceof UniqueKey)) {
         continue;
       }
       for (const oField of constraint.getFields()) {
-        if (oField.getName().toLocaleLowerCase() === fieldNameLC) {
+        if (oField.getName().toLowerCase() === fieldNameLC) {
           return constraint;
         }
       }
@@ -182,7 +181,7 @@ export class Table extends CommentedNode {
   }
 
   public getForeignKeys(tableName?: string): ForeignKey[] {
-    const tableNameLC = tableName?.toLocaleLowerCase();
+    const tableNameLC = tableName?.toLowerCase();
     const list: ForeignKey[] = [];
     for (const constraint of this.constraints) {
       if (!(constraint instanceof ForeignKey)) {
@@ -190,7 +189,7 @@ export class Table extends CommentedNode {
       }
       if (
         tableNameLC &&
-        constraint.getTableName().toLocaleLowerCase() !== tableNameLC
+        constraint.getTableName().toLowerCase() !== tableNameLC
       ) {
         continue;
       }

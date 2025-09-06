@@ -6,9 +6,9 @@
 
 lexer grammar TemplateLexer;
 
-OPEN: '$[' -> pushMode(INSIDE);
-
 TEXT: ( ~'$' | '$' {this._input.LA(1) !== '['.charCodeAt(0)}? )+;
+
+OPEN: '$[' -> pushMode(INSIDE);
 
 mode INSIDE;
 
@@ -114,10 +114,6 @@ K_UNSIGNED: U N S I G N E D;
 K_UPDATE: U P D A T E;
 K_WIDTH: W I D T H;
 
-MATCH_OPEN: K_MATCH LPAR -> pushMode(REGEX_MODE);
-FINDS_OPEN: K_FINDS LPAR -> pushMode(REGEX_MODE);
-REPLACE_OPEN: K_REPLACE LPAR -> pushMode(REGEX_MODE);
-
 DOT: '.';
 LPAR: '(';
 RPAR: ')';
@@ -154,10 +150,38 @@ fragment X : [xX];
 fragment Y : [yY];
 fragment Z : [zZ];
 
+MATCH_OPEN: K_MATCH LPAR -> pushMode(REGEX_MODE);
+FINDS_OPEN: K_FINDS LPAR -> pushMode(REGEX_MODE);
+REPLACE_OPEN: K_REPLACE LPAR -> pushMode(PATTERN_MODE);
+
 mode REGEX_MODE;
 
 REGEX_CLOSE: ')' -> popMode;
 
-COMMA: ',';
-REGEX: (~('(' | ')' | ',') | '\\,' )+;
-REGEX_GROUP: '(' REGEX ')';
+REGEX: (~('(' | ')') | '\\(' | '\\)' )+;
+
+REGEX_OPEN: '(' -> pushMode(REGEX_MODE);
+
+mode PATTERN_MODE;
+
+PATTERN_CLOSE: ')' -> popMode;
+
+PATTERN: (~('(' | ')' | ',') | '\\,' | '\\)' | '\\(' )+;
+
+PATTERN_OPEN: '(' -> pushMode(PATTERN_MODE);
+
+REPLACEMENT_OPEN: ',' -> popMode, pushMode(REPLACEMENT_MODE);
+
+mode REPLACEMENT_MODE;
+
+REPLACEMENT_CLOSE: ')' -> popMode;
+
+REPLACEMENT: (~(')' | ',') | '\\,' | '\\)' )+;
+
+FLAGS_OPEN: ',' -> popMode, pushMode(FLAGS_MODE);
+
+mode FLAGS_MODE;
+
+FLAGS_CLOSE: ')' -> popMode;
+
+REGEX_FLAGS: ('g' | 'i' | 'm' | 'u' | 'y')+;

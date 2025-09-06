@@ -143,8 +143,10 @@ import { TextContentContext } from './TemplateParser';
 import { TableLevelContext } from './TemplateParser';
 import { FieldLevelContext } from './TemplateParser';
 import { ConstraintLevelContext } from './TemplateParser';
+import { PatternContext } from './TemplateParser';
+import { ReplacementContext } from './TemplateParser';
+import { FlagsContext } from './TemplateParser';
 import { RegexContext } from './TemplateParser';
-import { RegexSyntaxContext } from './TemplateParser';
 import { WordContext } from './TemplateParser';
 import { TablePropContext } from './TemplateParser';
 import { FieldPropContext } from './TemplateParser';
@@ -1745,6 +1747,39 @@ export interface TemplateParserListener extends ParseTreeListener {
   exitConstraintLevel?: (ctx: ConstraintLevelContext) => void;
 
   /**
+   * Enter a parse tree produced by `TemplateParser.pattern`.
+   * @param ctx the parse tree
+   */
+  enterPattern?: (ctx: PatternContext) => void;
+  /**
+   * Exit a parse tree produced by `TemplateParser.pattern`.
+   * @param ctx the parse tree
+   */
+  exitPattern?: (ctx: PatternContext) => void;
+
+  /**
+   * Enter a parse tree produced by `TemplateParser.replacement`.
+   * @param ctx the parse tree
+   */
+  enterReplacement?: (ctx: ReplacementContext) => void;
+  /**
+   * Exit a parse tree produced by `TemplateParser.replacement`.
+   * @param ctx the parse tree
+   */
+  exitReplacement?: (ctx: ReplacementContext) => void;
+
+  /**
+   * Enter a parse tree produced by `TemplateParser.flags`.
+   * @param ctx the parse tree
+   */
+  enterFlags?: (ctx: FlagsContext) => void;
+  /**
+   * Exit a parse tree produced by `TemplateParser.flags`.
+   * @param ctx the parse tree
+   */
+  exitFlags?: (ctx: FlagsContext) => void;
+
+  /**
    * Enter a parse tree produced by `TemplateParser.regex`.
    * @param ctx the parse tree
    */
@@ -1754,17 +1789,6 @@ export interface TemplateParserListener extends ParseTreeListener {
    * @param ctx the parse tree
    */
   exitRegex?: (ctx: RegexContext) => void;
-
-  /**
-   * Enter a parse tree produced by `TemplateParser.regexSyntax`.
-   * @param ctx the parse tree
-   */
-  enterRegexSyntax?: (ctx: RegexSyntaxContext) => void;
-  /**
-   * Exit a parse tree produced by `TemplateParser.regexSyntax`.
-   * @param ctx the parse tree
-   */
-  exitRegexSyntax?: (ctx: RegexSyntaxContext) => void;
 
   /**
    * Enter a parse tree produced by `TemplateParser.word`.

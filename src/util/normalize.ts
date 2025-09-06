@@ -33,12 +33,12 @@ export function normalize(
       if (j > name.length) {
         break;
       }
-      ch = ch.toLocaleUpperCase();
+      ch = ch.toUpperCase();
       str = ch;
       lastCaseIsUpper = false;
       i = j - 1;
     } else if (((!result && !lastWord) || lastIsVector) && isLowerCase(ch)) {
-      ch = ch.toLocaleUpperCase();
+      ch = ch.toUpperCase();
       str = ch;
     }
     if (ch.match(/\d/)) {
@@ -107,7 +107,7 @@ export function normalize(
 function upperFix(input: string): string {
   let word = input;
   if (canUpper(word)) {
-    word = word.toLocaleUpperCase();
+    word = word.toUpperCase();
   }
   return word;
 }

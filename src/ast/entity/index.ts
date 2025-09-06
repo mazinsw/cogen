@@ -15,9 +15,9 @@ export class Index extends NamedNode {
   }
 
   public find(name: string): OrderField | null {
-    const nameLC = name.toLocaleLowerCase();
+    const nameLC = name.toLowerCase();
     for (const orderField of this.getFields()) {
-      if (orderField.getName().toLocaleLowerCase() === nameLC) {
+      if (orderField.getName().toLowerCase() === nameLC) {
         return orderField;
       }
     }

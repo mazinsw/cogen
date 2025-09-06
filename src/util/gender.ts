@@ -1,5 +1,5 @@
 export function isVowel(letter: string): boolean {
-  return 'aeiou'.includes(letter.toLocaleLowerCase());
+  return /[aeiou]/i.test(letter);
 }
 
 export function getGenderChar(name: string): string {

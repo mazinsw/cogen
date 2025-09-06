@@ -8,9 +8,8 @@ export class FieldContainsCondition extends Condition {
 
   public check(context: SourceContext): boolean {
     return (
-      context.field.name
-        .toLocaleLowerCase()
-        .includes(this.word.toLocaleLowerCase()) === !this.inverted
+      context.field.name.toLowerCase().includes(this.word.toLowerCase()) ===
+      !this.inverted
     );
   }
 }

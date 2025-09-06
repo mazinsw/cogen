@@ -42,7 +42,7 @@ export function recase(wordcase: string, input: string, upperDb?: string) {
   let entry = input;
   let result = entry;
   if (canUpper(entry, upperDb)) {
-    entry = entry.toLocaleUpperCase();
+    entry = entry.toUpperCase();
   }
   if (
     isLowerCase(wordcase[0]) &&
@@ -52,13 +52,13 @@ export function recase(wordcase: string, input: string, upperDb?: string) {
     result = camelCase(entry);
   else if (isLowerCase(wordcase[0])) result = result.toLowerCase();
   else if (wordcase.length > 1 && isUpperCase(wordcase[1]))
-    result = result.toLocaleUpperCase();
+    result = result.toUpperCase();
   else if (
     wordcase.length > 1 &&
     isUpperCase(wordcase[0]) &&
     isLowerCase(wordcase[1])
   )
-    result = result.substring(0, 1).toLocaleUpperCase() + result.substring(1);
+    result = result.substring(0, 1).toUpperCase() + result.substring(1);
   else result = entry;
   return result;
 }
@@ -67,22 +67,22 @@ export function canUpper(entry: string, db?: string): boolean {
   if (!db) {
     return false;
   }
-  return db.includes('|' + entry.toLocaleUpperCase() + '|');
+  return db.includes('|' + entry.toUpperCase() + '|');
 }
 
 export function isLowerCase(entry: string): boolean {
-  return entry === entry.toLocaleLowerCase();
+  return entry === entry.toLowerCase();
 }
 
 export function isUpperCase(entry: string): boolean {
-  return entry === entry.toLocaleUpperCase();
+  return entry === entry.toUpperCase();
 }
 
 export function camelCase(titleCase: string): string {
   let camelCase = '';
   for (let i = 0; i < titleCase.length; i++) {
     if (isUpperCase(titleCase[i])) {
-      camelCase += titleCase[i].toLocaleLowerCase();
+      camelCase += titleCase[i].toLowerCase();
     } else {
       camelCase += titleCase.substring(i);
       break;
@@ -97,7 +97,7 @@ export function firstLetters(typeName: string) {
   for (let i = 0; i < typeName.length; i++) {
     const ch = typeName[i];
     if (isUpperCase(ch) && !lastIsUpperCase) {
-      prefix += ch.toLocaleLowerCase();
+      prefix += ch.toLowerCase();
       lastIsUpperCase = true;
     } else if (isLowerCase(ch)) {
       lastIsUpperCase = false;

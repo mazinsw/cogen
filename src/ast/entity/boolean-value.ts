@@ -10,7 +10,7 @@ export class BooleanValue extends Value {
 
   public static fromString(value: string) {
     return new this(
-      !['false', '0', 'n'].includes(value.toLocaleLowerCase()) && value !== '',
+      !['false', '0', 'n'].includes(value.toLowerCase()) && value !== '',
     );
   }
 

@@ -44,7 +44,7 @@ export class TableBaseConstant extends Constant {
             getGenderChar(
               table
                 .getNormalizedAndDespluralizedName(context.config)
-                .toLocaleLowerCase(),
+                .toLowerCase(),
             );
           text = recase(this.caseSample, text);
           break;

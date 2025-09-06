@@ -102,7 +102,7 @@ export class Configuration {
       this.templatePath = props.get('templatePath');
     this.lang = props.get('lang', 'pt-BR');
     let defaultDict = 'oes|aes/3/ao;is/2/l/4;res|ses/2/;es|as|os|ds/1/;ns/2/m';
-    if (['en', 'en-us'].includes(this.lang.toLocaleLowerCase())) {
+    if (['en', 'en-us'].includes(this.lang.toLowerCase())) {
       defaultDict = 'ies/3/y;s/1/';
     }
     this.setDictionary(props.get('dict.' + this.lang, defaultDict));
