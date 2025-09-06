@@ -144,6 +144,7 @@ import { TableLevelContext } from './TemplateParser';
 import { FieldLevelContext } from './TemplateParser';
 import { ConstraintLevelContext } from './TemplateParser';
 import { RegexContext } from './TemplateParser';
+import { RegexSyntaxContext } from './TemplateParser';
 import { WordContext } from './TemplateParser';
 import { TablePropContext } from './TemplateParser';
 import { FieldPropContext } from './TemplateParser';
@@ -1753,6 +1754,17 @@ export interface TemplateParserListener extends ParseTreeListener {
    * @param ctx the parse tree
    */
   exitRegex?: (ctx: RegexContext) => void;
+
+  /**
+   * Enter a parse tree produced by `TemplateParser.regexSyntax`.
+   * @param ctx the parse tree
+   */
+  enterRegexSyntax?: (ctx: RegexSyntaxContext) => void;
+  /**
+   * Exit a parse tree produced by `TemplateParser.regexSyntax`.
+   * @param ctx the parse tree
+   */
+  exitRegexSyntax?: (ctx: RegexSyntaxContext) => void;
 
   /**
    * Enter a parse tree produced by `TemplateParser.word`.

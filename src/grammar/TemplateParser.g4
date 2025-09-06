@@ -295,7 +295,12 @@ fieldLevel: K_FIELD | K_DESCRIPTOR | K_IMAGE | K_PRIMARY | K_OPTION;
 
 constraintLevel: K_CONSTRAINT | K_INDEX | K_UNIQUE | K_PRIMARY_KEY | K_FOREIGN;
 
-regex: REGEX;
+regex: regexSyntax;
+regexSyntax:
+    REGEX
+  | regexSyntax REGEX_GROUP
+  | REGEX_GROUP regexSyntax;
+
 word: WORD;
 
 tableProp:

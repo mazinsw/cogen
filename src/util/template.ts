@@ -16,6 +16,7 @@ export async function runTemplateText(
     runner.getConfiguration().legacy = true;
   }
   const dataSource = new DataSource(runner.getConfiguration(), inputText);
+  dataSource.setLogger({ addMessage: console.log });
   await dataSource.load(true);
   runner.dataSource = dataSource;
 
@@ -23,11 +24,13 @@ export async function runTemplateText(
     runner.getConfiguration(),
     options?.filename || '$[table.unix]',
   );
+  filenameTemplateSource.setLogger({ addMessage: console.log });
   await filenameTemplateSource.load(true);
   const contentTemplateSource = new TemplateSource(
     runner.getConfiguration(),
     templateText,
   );
+  contentTemplateSource.setLogger({ addMessage: console.log });
   await runner.generate(
     filenameTemplateSource,
     contentTemplateSource,

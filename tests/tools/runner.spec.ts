@@ -102,6 +102,14 @@ describe('Runner', () => {
     expect(result).toBe('image_file');
   });
 
+  it('replace with capture', async () => {
+    const result = await runTemplateText(
+      'CREATE TABLE Users (link_url TEXT, image_url TEXT COMMENT "[I]");',
+      '$[image.replace((.+)_url,file_$1)]',
+    );
+    expect(result).toBe('file_image');
+  });
+
   it('keep new single new lines', async () => {
     const result = await runTemplateText(
       'CREATE TABLE Users (name TEXT, age INT);',
@@ -181,5 +189,13 @@ describe('Runner', () => {
       '$[table.each(depends)]$[field.each(reference&depends)]$[table.] <- $[table].$[field]$[field.end]\n\n$[table.end]',
     );
     expect(result).toBe('Users <- Posts.user_id\nPosts <- Comments.post_id\n');
+  });
+
+  it('check parent dependency', async () => {
+    const result = await runTemplateText(
+      'CREATE TABLE Users_Comments () COMMENT = "AA[*]/_ôBB";',
+      '$[table.comment.replace(\\[\\*\\]/_ô)]',
+    );
+    expect(result).toBe('AABB');
   });
 });

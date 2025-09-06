@@ -159,4 +159,5 @@ mode REGEX_MODE;
 REGEX_CLOSE: ')' -> popMode;
 
 COMMA: ',';
-REGEX: [A-Za-z0-9_*.+^$| ]+;
+REGEX: (~('(' | ')' | ',') | '\\,' )+;
+REGEX_GROUP: '(' REGEX ')';
