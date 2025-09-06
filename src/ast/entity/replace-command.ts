@@ -21,7 +21,10 @@ export class ReplaceCommand extends Command {
         },
       },
     });
-    output = output.replace(new RegExp(this.subject), this.replacement || '');
+    output = output.replace(
+      new RegExp(this.subject, 'gi'),
+      this.replacement || '',
+    );
     context.output.appendContents(output);
   }
 }

@@ -110,6 +110,14 @@ describe('Runner', () => {
     expect(result).toBe('file_image');
   });
 
+  it('replace multiple case insensitive', async () => {
+    const result = await runTemplateText(
+      'CREATE TABLE Users_users_USERS ();',
+      '$[table.replace(_Users)]',
+    );
+    expect(result).toBe('Users');
+  });
+
   it('keep new single new lines', async () => {
     const result = await runTemplateText(
       'CREATE TABLE Users (name TEXT, age INT);',
