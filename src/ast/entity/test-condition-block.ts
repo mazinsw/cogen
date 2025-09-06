@@ -9,10 +9,11 @@ export abstract class TestConditionBlock extends ConditionBlock {
   public execute(context: SourceContext): void {
     const checkContext = this.buildTestContext(context);
     const checked = !this.condition || this.condition.check(checkContext);
+    const newDeepContext = { ...context, tableStack: checkContext.tableStack };
     if (checked) {
-      super.execute(context);
+      super.execute(newDeepContext);
     } else {
-      this.elseCondition?.execute(context);
+      this.elseCondition?.execute(newDeepContext);
     }
   }
 }

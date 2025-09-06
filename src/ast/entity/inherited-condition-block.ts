@@ -4,14 +4,16 @@ import { TestConditionBlock } from '@/ast/entity/test-condition-block';
 
 export class InheritedConditionBlock extends TestConditionBlock {
   public buildTestContext(context: SourceContext): SourceContext {
+    const index = Math.min(this.parentLevel, context.tableStack.length - 1);
+    const contextTable = context.tableStack[index];
     const tablePosition = context.data.findTableIndex(
-      context.table.getAttribute(Table.Attribute.INHERITED),
+      contextTable.getAttribute(Table.Attribute.INHERITED),
     );
     const table = context.data.tables[tablePosition];
     return {
       ...context,
       type: SourceType.INHERITED,
-      table,
+      tableStack: [table, ...context.tableStack],
       position: tablePosition,
     };
   }

@@ -76,42 +76,43 @@ export class ExpressionCondition extends Condition {
     public left?: Condition,
     public operator?: Operator,
     public right?: Condition,
-    public negate?: boolean,
+    inverted?: boolean,
   ) {
     super();
+    this.inverted = inverted;
   }
 
   public check(context: SourceContext): boolean {
     const leftOk =
       (this.expression === undefined
         ? !this.left || this.left.check(context)
-        : !!this.test(context)) === !this.negate;
+        : !!this.test(context)) === !this.inverted;
     if (this.operator === Operator.OR && leftOk) {
       return true;
     }
     if (this.operator === Operator.OR) {
-      return !this.right || this.right.check(context) === !this.negate;
+      return !this.right || this.right.check(context) === !this.inverted;
     }
     // and short circuit
     if (!leftOk) {
       return false;
     }
-    return !this.right || this.right.check(context) === !this.negate;
+    return !this.right || this.right.check(context) === !this.inverted;
   }
 
   public test(context: SourceContext): boolean {
+    const table = context.tableStack[0];
     const getSelectedIndex = () =>
       context.index ||
       (!!context.field &&
         ((context.type === SourceType.FOREIGN &&
-          context.table.findForeignKey(context.field.name)) ||
+          table.findForeignKey(context.field.name)) ||
           (context.type === SourceType.CONSTRAINT &&
-            context.table.findConstraint(context.field.name)) ||
+            table.findConstraint(context.field.name)) ||
           (context.type === SourceType.INDEX &&
-            context.table.findIndex(context.field)) ||
-          (context.type === SourceType.PRIMARY &&
-            context.table.getPrimaryKey()) ||
-          context.table.getUniqueIndex(context.field)));
+            table.findIndex(context.field)) ||
+          (context.type === SourceType.PRIMARY && table.getPrimaryKey()) ||
+          table.getUniqueIndex(context.field)));
 
     const asIndex = () =>
       [
@@ -129,10 +130,9 @@ export class ExpressionCondition extends Condition {
 
     const isPluralizable = () =>
       asTable()
-        ? context.table.name.toLocaleLowerCase() ===
+        ? table.name.toLocaleLowerCase() ===
           (
-            context.table.getNormalizedAndDespluralizedName(context.config) +
-            's'
+            table.getNormalizedAndDespluralizedName(context.config) + 's'
           ).toLocaleLowerCase()
         : !!context.field &&
           context.field?.name.toLocaleLowerCase() ===
@@ -147,30 +147,25 @@ export class ExpressionCondition extends Condition {
         return context.type === SourceType.COMMENT
           ? true
           : asTable()
-            ? !!context.table.parsedComment
+            ? !!table.parsedComment
             : !!context.field?.parsedComment;
       case Expression.ATTRIBUTE_INHERITED:
-        return context.table.is(CommentedNode.Attribute.INHERITED);
+        return table.is(CommentedNode.Attribute.INHERITED);
       case Expression.ATTRIBUTE_PACKAGE:
-        return context.table.is(CommentedNode.Attribute.PACKAGE);
+        return table.is(CommentedNode.Attribute.PACKAGE);
       case Expression.ATTRIBUTE_PATH:
-        return (
-          context.table.getAttributes(CommentedNode.Attribute.PACKAGE).length >=
-          2
-        );
+        return table.getAttributes(CommentedNode.Attribute.PACKAGE).length >= 2;
 
       case Expression.PROPERTY_ALL:
         return true;
       case Expression.PROPERTY_REFERENCE:
-        return (
-          !!context.field && !!context.table.findForeignKey(context.field.name)
-        );
+        return !!context.field && !!table.findForeignKey(context.field.name);
       case Expression.PROPERTY_PRIMARY:
         return context.type === SourceType.UNIQUE
           ? context.index instanceof PrimaryKey
-          : !!context.field && context.table.isPrimaryKeyField(context.field);
+          : !!context.field && table.isPrimaryKeyField(context.field);
       case Expression.PROPERTY_REPEATED:
-        const commonField = context.table.indexedFields.get(
+        const commonField = table.indexedFields.get(
           context.field?.getNormalizedName(),
         );
         return commonField
@@ -193,36 +188,31 @@ export class ExpressionCondition extends Condition {
         return !!context.field && !!context.field.getValue();
       case Expression.PROPERTY_INFO:
         return asTable()
-          ? context.table.is(CommentedNode.Attribute.INFORMATION)
+          ? table.is(CommentedNode.Attribute.INFORMATION)
           : !!context.field?.is(CommentedNode.Attribute.INFORMATION);
       case Expression.PROPERTY_DESCRIPTOR:
-        return (
-          !!context.field && context.table.getDescriptor() === context.field
-        );
+        return !!context.field && table.getDescriptor() === context.field;
       case Expression.PROPERTY_SEARCHABLE:
         return (
           !!context.field &&
           context.field.is(CommentedNode.Attribute.DESCRIPTOR)
         );
       case Expression.PROPERTY_INDEX:
-        return asTable()
-          ? context.table.indexes.length > 0
-          : !!getSelectedIndex();
+        return asTable() ? table.indexes.length > 0 : !!getSelectedIndex();
       case Expression.PROPERTY_CONSTRAINT:
-        const hasPrimaryKey = context.table.getPrimaryKey() != null;
+        const hasPrimaryKey = table.getPrimaryKey() != null;
         return (
-          (context.table.constraints.length > 1 && hasPrimaryKey) ||
-          (context.table.constraints.length > 0 && !hasPrimaryKey)
+          (table.constraints.length > 1 && hasPrimaryKey) ||
+          (table.constraints.length > 0 && !hasPrimaryKey)
         );
       case Expression.PROPERTY_FOREIGN:
         return asTable()
-          ? context.table.getForeignKeys().length > 0
-          : !!context.field &&
-              !!context.table.findForeignKey(context.field.name);
+          ? table.getForeignKeys().length > 0
+          : !!context.field && !!table.findForeignKey(context.field.name);
       case Expression.PROPERTY_UNIQUE:
         return asTable()
-          ? context.table.getUniqueKeys(true).length > 0
-          : !!context.field && !!context.table.isUnique(context.field);
+          ? table.getUniqueKeys(true).length > 0
+          : !!context.field && !!table.isUnique(context.field);
       case Expression.PROPERTY_UNPLURALIZABLE:
         return !isPluralizable();
       case Expression.PROPERTY_PLURALIZABLE:
@@ -247,9 +237,7 @@ export class ExpressionCondition extends Condition {
           !!context.field && context.field.is(CommentedNode.Attribute.PASSWORD)
         );
       case Expression.PROPERTY_ARRAY:
-        return context.table.indexedFields.has(
-          context.field?.getNormalizedName(),
-        );
+        return table.indexedFields.has(context.field?.getNormalizedName());
       case Expression.PROPERTY_IMAGE:
         return (
           !!context.field && context.field.is(CommentedNode.Attribute.IMAGE)

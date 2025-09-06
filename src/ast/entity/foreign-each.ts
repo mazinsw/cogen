@@ -10,11 +10,13 @@ export class ForeignEach extends LoopBlock {
     position: number,
     runPosition: number,
   ): SourceContext {
+    const index = Math.min(this.parentLevel, context.tableStack.length - 1);
+    const table = context.tableStack[index];
     const orderField = this.foreign.fields[position];
-    const field = context.table.find(orderField.name);
+    const field = table.find(orderField.name);
     if (!field) {
       throw new Error(
-        `Field ${orderField.name} not found in table ${context.table.name} from foreign key ${this.foreign.name}`,
+        `Field ${orderField.name} not found in table ${table.name} from foreign key ${this.foreign.name}`,
       );
     }
     return {
@@ -27,11 +29,13 @@ export class ForeignEach extends LoopBlock {
   }
 
   public getLength(context: SourceContext): number {
+    const index = Math.min(this.parentLevel, context.tableStack.length - 1);
+    const table = context.tableStack[index];
     this.foreign =
       (context.type === SourceType.FOREIGN
         ? (context.index as ForeignKey)
         : null) ||
-      (context.field && context.table.findForeignKey(context.field.name));
+      (context.field && table.findForeignKey(context.field.name));
     return this.foreign?.fields.length ?? 0;
   }
 }

@@ -44,6 +44,7 @@ enum Property {
 
 export class Constant extends Node {
   static readonly Property = Property;
+  public parentLevel: number = 0;
 
   protected properties: Property[];
 

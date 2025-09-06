@@ -58,7 +58,7 @@ describe('TemplateParser', () => {
       ),
     );
     const root = parser.template();
-    expect(root.toStringTree(parser)).toContain('replaceStmt');
+    expect(root.toStringTree(parser)).toContain('fieldElseEndStmt');
   });
 
   it('parse migration template file', async () => {

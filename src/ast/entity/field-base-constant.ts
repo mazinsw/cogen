@@ -15,6 +15,8 @@ export class FieldBaseConstant extends Constant {
     if (!context.field) {
       return;
     }
+    const index = Math.min(this.parentLevel, context.tableStack.length - 1);
+    const table = context.tableStack[index];
     let array = false;
     let image = context.type === SourceType.IMAGE;
     let option = context.type === SourceType.OPTION;
@@ -36,7 +38,7 @@ export class FieldBaseConstant extends Constant {
           text = context.field.getAttribute(Field.Attribute.MASK);
           break;
         case Constant.Property.ORDER:
-          const digits = `${context.table.fields.length}`.length;
+          const digits = `${table.fields.length}`.length;
           text = `${context.position}`.padStart(digits, '0');
           break;
         case Constant.Property.GENDER:
@@ -215,13 +217,13 @@ export class FieldBaseConstant extends Constant {
             break;
           }
           text = (
-            context.table.indexedFields
+            table.indexedFields
               .get(context.field.getNormalizedName())
               ?.fields.indexOf(context.field) ?? ''
           ).toString();
           break;
         case Constant.Property.NUMBER:
-          const commonField = context.table.indexedFields.get(
+          const commonField = table.indexedFields.get(
             context.field.getNormalizedName(),
           );
           text = commonField
@@ -236,8 +238,8 @@ export class FieldBaseConstant extends Constant {
           break;
         case Constant.Property.COUNT:
           text = (
-            context.table.indexedFields.get(context.field.getNormalizedName())
-              ?.size ?? ''
+            table.indexedFields.get(context.field.getNormalizedName())?.size ??
+            ''
           ).toString();
           break;
         case Constant.Property.ON:
@@ -245,16 +247,14 @@ export class FieldBaseConstant extends Constant {
           break;
         case Constant.Property.DELETE:
           text =
-            context.table
-              .findForeignKey(context.field.name)
-              ?.getDeleteActionText() || 'NO ACTION';
+            table.findForeignKey(context.field.name)?.getDeleteActionText() ||
+            'NO ACTION';
           text = recase(this.caseSample, text);
           break;
         case Constant.Property.UPDATE:
           text =
-            context.table
-              .findForeignKey(context.field.name)
-              ?.getUpdateActionText() || 'NO ACTION';
+            table.findForeignKey(context.field.name)?.getUpdateActionText() ||
+            'NO ACTION';
           text = recase(this.caseSample, text);
           break;
         case Constant.Property.WIDTH:
@@ -268,8 +268,8 @@ export class FieldBaseConstant extends Constant {
         case Constant.Property.FOLDER:
           text =
             context.field.getAttribute(Field.Attribute.IMAGE, 1) ||
-            context.table.getAttribute(Table.Attribute.UNIX_NAMES) ||
-            unixTransform(context.table.getNormalizedName(context.config));
+            table.getAttribute(Table.Attribute.UNIX_NAMES) ||
+            unixTransform(table.getNormalizedName(context.config));
           break;
       }
     }

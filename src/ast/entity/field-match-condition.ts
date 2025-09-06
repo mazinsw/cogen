@@ -7,6 +7,8 @@ export class FieldMatchCondition extends Condition {
   }
 
   public check(context: SourceContext): boolean {
-    return new RegExp(this.regex, 'i').test(context.field.name);
+    return (
+      new RegExp(this.regex, 'i').test(context.field.name) === !this.inverted
+    );
   }
 }

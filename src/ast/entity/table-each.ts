@@ -36,7 +36,12 @@ export class TableEach extends LoopBlock {
       ? context.data.tables.length - position - 1
       : position;
     const table = context.data.tables[relativePosition];
-    return { ...context, table, type: SourceType.TABLE, position: runPosition };
+    return {
+      ...context,
+      tableStack: [table, ...context.tableStack],
+      type: SourceType.TABLE,
+      position: runPosition,
+    };
   }
 
   public getLength(context: SourceContext): number {

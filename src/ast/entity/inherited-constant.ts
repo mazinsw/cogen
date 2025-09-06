@@ -4,14 +4,16 @@ import { TableBaseConstant } from '@/ast/entity/table-base-constant';
 
 export class InheritedConstant extends TableBaseConstant {
   public execute(context: SourceContext): void {
+    const index = Math.min(this.parentLevel, context.tableStack.length - 1);
+    const contextTable = context.tableStack[index];
     const tablePosition = context.data.findTableIndex(
-      context.table.getAttribute(Table.Attribute.INHERITED),
+      contextTable.getAttribute(Table.Attribute.INHERITED),
     );
     const table = context.data.tables[tablePosition];
     super.execute({
       ...context,
       type: SourceType.INHERITED,
-      table,
+      tableStack: [table, ...context.tableStack],
       position: tablePosition,
     });
   }

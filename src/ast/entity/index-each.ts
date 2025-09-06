@@ -10,11 +10,13 @@ export class IndexEach extends LoopBlock {
     position: number,
     runPosition: number,
   ): SourceContext {
+    const index = Math.min(this.parentLevel, context.tableStack.length - 1);
+    const table = context.tableStack[index];
     const orderField = this.index.fields[position];
-    const field = context.table.find(orderField.name);
+    const field = table.find(orderField.name);
     if (!field) {
       throw new Error(
-        `Field ${orderField.name} not found in table ${context.table.name} from index ${this.index.name}`,
+        `Field ${orderField.name} not found in table ${table.name} from index ${this.index.name}`,
       );
     }
     return {
@@ -27,9 +29,11 @@ export class IndexEach extends LoopBlock {
   }
 
   public getLength(context: SourceContext): number {
+    const index = Math.min(this.parentLevel, context.tableStack.length - 1);
+    const table = context.tableStack[index];
     this.index =
       (context.type === SourceType.INDEX ? context.index : null) ||
-      (context.field && context.table.findIndex(context.field));
+      (context.field && table.findIndex(context.field));
     return this.index?.fields.length || 0;
   }
 }

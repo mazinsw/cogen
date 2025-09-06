@@ -37,6 +37,7 @@ describe('Runner', () => {
     const result = await runTemplateText(
       'CREATE TABLE Users (); CREATE TABLE Products ();',
       '$[table.each]$[table.if(~first)], $[table.end]$$[table.unix]$[table.end]',
+      { filename: 'single' },
     );
     expect(result).toBe('$users, $products');
   });
@@ -55,6 +56,34 @@ describe('Runner', () => {
       '$[field.each(~int)]$[field]$[field.end]',
     );
     expect(result).toBe('name');
+  });
+
+  it('access parent level table', async () => {
+    const result = await runTemplateText(
+      'CREATE TABLE Users (id INT, name TEXT, PRIMARY KEY(id));' +
+        'CREATE TABLE Posts (user_id INT, content TEXT, INDEX (user_id), ' +
+        '  CONSTRAINT FOREIGN KEY (user_id) REFERENCES Users(id)' +
+        ');' +
+        'CREATE TABLE Comments (post_id INT, content TEXT, INDEX (post_id), ' +
+        '  CONSTRAINT FOREIGN KEY (post_id) REFERENCES Posts(id)' +
+        ');',
+      '$[field.each(reference)]$[reference.~match(users)]$[table..norm].$[field] -> $[table.norm]$[reference.end]$[field.end]',
+    );
+    expect(result).toBe('comments.post_id -> posts');
+  });
+
+  it('match parent level table', async () => {
+    const result = await runTemplateText(
+      'CREATE TABLE Users (id INT, name TEXT, PRIMARY KEY(id));' +
+        'CREATE TABLE Posts (user_id INT, content TEXT, INDEX (user_id), ' +
+        '  CONSTRAINT FOREIGN KEY (user_id) REFERENCES Users(id)' +
+        ');' +
+        'CREATE TABLE Comments (post_id INT, content TEXT, INDEX (post_id), ' +
+        '  CONSTRAINT FOREIGN KEY (post_id) REFERENCES Posts(id)' +
+        ');',
+      '$[field.each(reference)]$[reference.match(posts)]$[table.] > $[table]$[table..match(comments)] < $[table]$[table.end]$[reference.end]$[field.end]',
+    );
+    expect(result).toBe('Comments > Posts < Comments');
   });
 
   it('replace field name over loop', async () => {

@@ -14,7 +14,7 @@ export class InheritedEach extends LoopBlock {
     const field = table.fields[position];
     return {
       ...context,
-      table,
+      tableStack: [table, ...context.tableStack],
       field,
       type: SourceType.INHERITED,
       position: runPosition,
@@ -22,11 +22,13 @@ export class InheritedEach extends LoopBlock {
   }
 
   public getLength(context: SourceContext): number {
+    const index = Math.min(this.parentLevel, context.tableStack.length - 1);
+    const contextTable = context.tableStack[index];
     this.tablePosition =
       context.type === SourceType.INHERITED
-        ? context.data.tables.indexOf(context.table)
+        ? context.data.tables.indexOf(contextTable)
         : context.data.findTableIndex(
-            context.table.getAttribute(Table.Attribute.INHERITED),
+            contextTable.getAttribute(Table.Attribute.INHERITED),
           );
     const table = context.data.tables[this.tablePosition];
     return table?.fields.length ?? 0;

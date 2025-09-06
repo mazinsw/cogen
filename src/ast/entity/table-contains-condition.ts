@@ -7,8 +7,10 @@ export class TableContainsCondition extends Condition {
   }
 
   public check(context: SourceContext): boolean {
-    return context.table.name
-      .toLocaleLowerCase()
-      .includes(this.word.toLocaleLowerCase());
+    return (
+      context.tableStack[0].name
+        .toLocaleLowerCase()
+        .includes(this.word.toLocaleLowerCase()) === !this.inverted
+    );
   }
 }

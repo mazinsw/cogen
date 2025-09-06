@@ -16,7 +16,7 @@ export class ReferenceEach extends LoopBlock {
     const field = table.fields[relativePosition];
     return {
       ...context,
-      table,
+      tableStack: [table, ...context.tableStack],
       field,
       type: SourceType.FIELD,
       position: runPosition,
@@ -24,11 +24,16 @@ export class ReferenceEach extends LoopBlock {
   }
 
   public getLength(context: SourceContext): number {
+    const index = Math.min(this.parentLevel, context.tableStack.length - 1);
+    const contextTable = context.tableStack[index];
     const referenceName =
       context.type === SourceType.REFERENCE
-        ? context.table.name
-        : context.table.getReference(context.field.name);
+        ? contextTable.name
+        : contextTable.getReference(context.field.name);
     this.tablePosition = context.data.findTableIndex(referenceName);
+    if (this.tablePosition < 0) {
+      return 0;
+    }
     const table = context.data.tables[this.tablePosition];
     return table?.fields.length ?? 0;
   }

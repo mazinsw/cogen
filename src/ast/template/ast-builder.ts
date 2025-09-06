@@ -139,7 +139,7 @@ import {
   ReferenceMatchStmtContext,
   ReferenceReverseEachStmtContext,
   RegexContext,
-  ReplaceStmtContext,
+  ReplacePropContext,
   TableContainsStmtContext,
   TableEachStmtContext,
   TableElseContainsStmtContext,
@@ -282,6 +282,7 @@ export class ASTBuilder implements TemplateParserListener {
   exitTableStmt(ctx: TableStmtContext) {
     const block = this.stack.peek() as Block;
     const constant = this.makeTableConstantFromLevel(ctx.tableLevel());
+    constant.parentLevel = ctx.DOT().length;
     ctx.tableProps().forEach((prop) => {
       switch (true) {
         case !!prop.tableProp().K_UNIX():
@@ -331,12 +332,13 @@ export class ASTBuilder implements TemplateParserListener {
           break;
       }
     });
-    block.addStatement(constant);
+    block.addStatement(this.addReplaceStmt(constant, ctx.replaceProp()));
   }
 
   exitFieldStmt(ctx: FieldStmtContext) {
     const block = this.stack.peek() as Block;
     const constant = this.makeFieldConstantFromLevel(ctx.fieldLevel());
+    constant.parentLevel = ctx.DOT().length;
     ctx.fieldProps().forEach((prop) => {
       switch (true) {
         case !!prop.fieldProp().K_UNIX():
@@ -431,7 +433,7 @@ export class ASTBuilder implements TemplateParserListener {
           break;
       }
     });
-    block.addStatement(constant);
+    block.addStatement(this.addReplaceStmt(constant, ctx.replaceProp()));
   }
 
   exitConstraintStmt(ctx: ConstraintStmtContext) {
@@ -439,35 +441,26 @@ export class ASTBuilder implements TemplateParserListener {
     const constant = this.makeConstraintConstantFromLevel(
       ctx.constraintLevel(),
     );
+    constant.parentLevel = ctx.DOT().length;
     constant.addProperty(Constant.Property.NAME);
-    block.addStatement(constant);
+    block.addStatement(this.addReplaceStmt(constant, ctx.replaceProp()));
   }
 
-  exitReplaceStmt(ctx: ReplaceStmtContext) {
-    const block = this.stack.peek() as Block;
-    let constant: Constant;
-    if (ctx.allLevels().tableLevel()) {
-      constant = this.makeTableConstantFromLevel(ctx.allLevels().tableLevel());
+  addReplaceStmt(constant: Constant, ctx?: ReplacePropContext) {
+    if (!ctx) {
+      return constant;
     }
-    if (ctx.allLevels().fieldLevel()) {
-      constant = this.makeFieldConstantFromLevel(ctx.allLevels().fieldLevel());
-    }
-    if (ctx.allLevels().constraintLevel()) {
-      constant = this.makeConstraintConstantFromLevel(
-        ctx.allLevels().constraintLevel(),
-      );
-    }
-    const command = new ReplaceCommand(
+    return new ReplaceCommand(
       constant,
       ctx.regex(0).text,
       ctx.tryGetRuleContext(1, RegexContext)?.text,
     );
-    block.addStatement(command);
   }
 
-  enterFieldIfStmt(_: FieldIfStmtContext) {
+  enterFieldIfStmt(ctx: FieldIfStmtContext) {
     const block = this.stack.peek() as Block;
     const conditionBlock = new FieldConditionBlock();
+    conditionBlock.parentLevel = ctx.DOT().length - 2;
     block.addStatement(conditionBlock);
     this.stack.push(conditionBlock);
   }
@@ -476,10 +469,12 @@ export class ASTBuilder implements TemplateParserListener {
     this.stack.pop();
   }
 
-  enterFieldExistsStmt(_: FieldExistsStmtContext) {
+  enterFieldExistsStmt(ctx: FieldExistsStmtContext) {
     const block = this.stack.peek() as Block;
     const conditionBlock = new FieldConditionBlock();
+    conditionBlock.parentLevel = ctx.DOT().length - 2;
     conditionBlock.condition = new TableExistsCondition();
+    conditionBlock.condition.inverted = !!ctx.NOT();
     block.addStatement(conditionBlock);
     this.stack.push(conditionBlock);
   }
@@ -491,7 +486,9 @@ export class ASTBuilder implements TemplateParserListener {
   enterFieldMatchStmt(ctx: FieldMatchStmtContext) {
     const block = this.stack.peek() as Block;
     const conditionBlock = new FieldConditionBlock();
+    conditionBlock.parentLevel = ctx.DOT().length - 2;
     conditionBlock.condition = new FieldMatchCondition(ctx.regex().text);
+    conditionBlock.condition.inverted = !!ctx.NOT();
     block.addStatement(conditionBlock);
     this.stack.push(conditionBlock);
   }
@@ -503,7 +500,9 @@ export class ASTBuilder implements TemplateParserListener {
   enterFieldContainsStmt(ctx: FieldContainsStmtContext) {
     const block = this.stack.peek() as Block;
     const conditionBlock = new FieldConditionBlock();
+    conditionBlock.parentLevel = ctx.DOT().length - 2;
     conditionBlock.condition = new FieldContainsCondition(ctx.word().text);
+    conditionBlock.condition.inverted = !!ctx.NOT();
     block.addStatement(conditionBlock);
     this.stack.push(conditionBlock);
   }
@@ -535,17 +534,20 @@ export class ASTBuilder implements TemplateParserListener {
     this.stack.pop();
   }
 
-  enterFieldElseIfStmt(_: FieldElseIfStmtContext) {
+  enterFieldElseIfStmt(ctx: FieldElseIfStmtContext) {
     const testConditionBlock = this.stack.pop() as TestConditionBlock;
     const conditionBlock = new FieldConditionBlock();
+    conditionBlock.parentLevel = ctx.DOT().length - 2;
     testConditionBlock.elseCondition = conditionBlock;
     this.stack.push(conditionBlock);
   }
 
-  enterFieldElseExistsStmt(_: FieldElseExistsStmtContext) {
+  enterFieldElseExistsStmt(ctx: FieldElseExistsStmtContext) {
     const testConditionBlock = this.stack.pop() as TestConditionBlock;
     const conditionBlock = new FieldConditionBlock();
+    conditionBlock.parentLevel = ctx.DOT().length - 2;
     conditionBlock.condition = new TableExistsCondition();
+    conditionBlock.condition.inverted = !!ctx.NOT();
     testConditionBlock.elseCondition = conditionBlock;
     this.stack.push(conditionBlock);
   }
@@ -553,7 +555,9 @@ export class ASTBuilder implements TemplateParserListener {
   enterFieldElseMatchStmt(ctx: FieldElseMatchStmtContext) {
     const testConditionBlock = this.stack.pop() as TestConditionBlock;
     const conditionBlock = new FieldConditionBlock();
+    conditionBlock.parentLevel = ctx.DOT().length - 2;
     conditionBlock.condition = new FieldMatchCondition(ctx.regex().text);
+    conditionBlock.condition.inverted = !!ctx.NOT();
     testConditionBlock.elseCondition = conditionBlock;
     this.stack.push(conditionBlock);
   }
@@ -561,7 +565,9 @@ export class ASTBuilder implements TemplateParserListener {
   enterFieldElseContainsStmt(ctx: FieldElseContainsStmtContext) {
     const testConditionBlock = this.stack.pop() as TestConditionBlock;
     const conditionBlock = new FieldConditionBlock();
+    conditionBlock.parentLevel = ctx.DOT().length - 2;
     conditionBlock.condition = new FieldContainsCondition(ctx.word().text);
+    conditionBlock.condition.inverted = !!ctx.NOT();
     testConditionBlock.elseCondition = conditionBlock;
     this.stack.push(conditionBlock);
   }
@@ -581,16 +587,18 @@ export class ASTBuilder implements TemplateParserListener {
     this.stack.push(loop);
   }
 
-  enterFieldElseEndStmt(_: FieldElseEndStmtContext) {
+  enterFieldElseEndStmt(ctx: FieldElseEndStmtContext) {
     const testConditionBlock = this.stack.pop() as TestConditionBlock;
     const conditionBlock = new FieldConditionBlock();
+    conditionBlock.parentLevel = ctx.DOT().length - 1;
     testConditionBlock.elseCondition = conditionBlock;
     this.stack.push(conditionBlock);
   }
 
-  enterDescriptorIfStmt(_: DescriptorIfStmtContext) {
+  enterDescriptorIfStmt(ctx: DescriptorIfStmtContext) {
     const block = this.stack.peek() as Block;
     const conditionBlock = new DescriptorConditionBlock();
+    conditionBlock.parentLevel = ctx.DOT().length - 2;
     block.addStatement(conditionBlock);
     this.stack.push(conditionBlock);
   }
@@ -602,7 +610,9 @@ export class ASTBuilder implements TemplateParserListener {
   enterDescriptorMatchStmt(ctx: DescriptorMatchStmtContext) {
     const block = this.stack.peek() as Block;
     const conditionBlock = new DescriptorConditionBlock();
+    conditionBlock.parentLevel = ctx.DOT().length - 2;
     conditionBlock.condition = new FieldMatchCondition(ctx.regex().text);
+    conditionBlock.condition.inverted = !!ctx.NOT();
     block.addStatement(conditionBlock);
     this.stack.push(conditionBlock);
   }
@@ -614,7 +624,9 @@ export class ASTBuilder implements TemplateParserListener {
   enterDescriptorContainsStmt(ctx: DescriptorContainsStmtContext) {
     const block = this.stack.peek() as Block;
     const conditionBlock = new DescriptorConditionBlock();
+    conditionBlock.parentLevel = ctx.DOT().length - 2;
     conditionBlock.condition = new FieldContainsCondition(ctx.word().text);
+    conditionBlock.condition.inverted = !!ctx.NOT();
     block.addStatement(conditionBlock);
     this.stack.push(conditionBlock);
   }
@@ -623,9 +635,10 @@ export class ASTBuilder implements TemplateParserListener {
     this.stack.pop();
   }
 
-  enterDescriptorElseIfStmt(_: DescriptorElseIfStmtContext) {
+  enterDescriptorElseIfStmt(ctx: DescriptorElseIfStmtContext) {
     const testConditionBlock = this.stack.pop() as TestConditionBlock;
     const conditionBlock = new DescriptorConditionBlock();
+    conditionBlock.parentLevel = ctx.DOT().length - 2;
     testConditionBlock.elseCondition = conditionBlock;
     this.stack.push(conditionBlock);
   }
@@ -633,7 +646,9 @@ export class ASTBuilder implements TemplateParserListener {
   enterDescriptorElseMatchStmt(ctx: DescriptorElseMatchStmtContext) {
     const testConditionBlock = this.stack.pop() as TestConditionBlock;
     const conditionBlock = new DescriptorConditionBlock();
+    conditionBlock.parentLevel = ctx.DOT().length - 2;
     conditionBlock.condition = new FieldMatchCondition(ctx.regex().text);
+    conditionBlock.condition.inverted = !!ctx.NOT();
     testConditionBlock.elseCondition = conditionBlock;
     this.stack.push(conditionBlock);
   }
@@ -641,21 +656,25 @@ export class ASTBuilder implements TemplateParserListener {
   enterDescriptorElseContainsStmt(ctx: DescriptorElseContainsStmtContext) {
     const testConditionBlock = this.stack.pop() as TestConditionBlock;
     const conditionBlock = new DescriptorConditionBlock();
+    conditionBlock.parentLevel = ctx.DOT().length - 2;
     conditionBlock.condition = new FieldContainsCondition(ctx.word().text);
+    conditionBlock.condition.inverted = !!ctx.NOT();
     testConditionBlock.elseCondition = conditionBlock;
     this.stack.push(conditionBlock);
   }
 
-  enterDescriptorElseEndStmt(_: DescriptorElseEndStmtContext) {
+  enterDescriptorElseEndStmt(ctx: DescriptorElseEndStmtContext) {
     const testConditionBlock = this.stack.pop() as TestConditionBlock;
     const conditionBlock = new DescriptorConditionBlock();
+    conditionBlock.parentLevel = ctx.DOT().length - 1;
     testConditionBlock.elseCondition = conditionBlock;
     this.stack.push(conditionBlock);
   }
 
-  enterReferenceIfStmt(_: ReferenceIfStmtContext) {
+  enterReferenceIfStmt(ctx: ReferenceIfStmtContext) {
     const block = this.stack.peek() as Block;
     const conditionBlock = new ReferenceConditionBlock();
+    conditionBlock.parentLevel = ctx.DOT().length - 2;
     block.addStatement(conditionBlock);
     this.stack.push(conditionBlock);
   }
@@ -664,10 +683,12 @@ export class ASTBuilder implements TemplateParserListener {
     this.stack.pop();
   }
 
-  enterReferenceExistsStmt(_: ReferenceExistsStmtContext) {
+  enterReferenceExistsStmt(ctx: ReferenceExistsStmtContext) {
     const block = this.stack.peek() as Block;
     const conditionBlock = new ReferenceConditionBlock();
+    conditionBlock.parentLevel = ctx.DOT().length - 2;
     conditionBlock.condition = new TableExistsCondition();
+    conditionBlock.condition.inverted = !!ctx.NOT();
     block.addStatement(conditionBlock);
     this.stack.push(conditionBlock);
   }
@@ -679,7 +700,9 @@ export class ASTBuilder implements TemplateParserListener {
   enterReferenceFindsStmt(ctx: ReferenceFindsStmtContext) {
     const block = this.stack.peek() as Block;
     const conditionBlock = new ReferenceConditionBlock();
+    conditionBlock.parentLevel = ctx.DOT().length - 2;
     conditionBlock.condition = new TableFindsCondition(ctx.regex().text);
+    conditionBlock.condition.inverted = !!ctx.NOT();
     block.addStatement(conditionBlock);
     this.stack.push(conditionBlock);
   }
@@ -691,7 +714,9 @@ export class ASTBuilder implements TemplateParserListener {
   enterReferenceMatchStmt(ctx: ReferenceMatchStmtContext) {
     const block = this.stack.peek() as Block;
     const conditionBlock = new ReferenceConditionBlock();
+    conditionBlock.parentLevel = ctx.DOT().length - 2;
     conditionBlock.condition = new TableMatchCondition(ctx.regex().text);
+    conditionBlock.condition.inverted = !!ctx.NOT();
     block.addStatement(conditionBlock);
     this.stack.push(conditionBlock);
   }
@@ -703,7 +728,9 @@ export class ASTBuilder implements TemplateParserListener {
   enterReferenceContainsStmt(ctx: ReferenceContainsStmtContext) {
     const block = this.stack.peek() as Block;
     const conditionBlock = new ReferenceConditionBlock();
+    conditionBlock.parentLevel = ctx.DOT().length - 2;
     conditionBlock.condition = new TableContainsCondition(ctx.word().text);
+    conditionBlock.condition.inverted = !!ctx.NOT();
     block.addStatement(conditionBlock);
     this.stack.push(conditionBlock);
   }
@@ -735,17 +762,20 @@ export class ASTBuilder implements TemplateParserListener {
     this.stack.pop();
   }
 
-  enterReferenceElseIfStmt(_: ReferenceElseIfStmtContext) {
+  enterReferenceElseIfStmt(ctx: ReferenceElseIfStmtContext) {
     const testConditionBlock = this.stack.pop() as TestConditionBlock;
     const conditionBlock = new ReferenceConditionBlock();
+    conditionBlock.parentLevel = ctx.DOT().length - 2;
     testConditionBlock.elseCondition = conditionBlock;
     this.stack.push(conditionBlock);
   }
 
-  enterReferenceElseExistsStmt(_: ReferenceElseExistsStmtContext) {
+  enterReferenceElseExistsStmt(ctx: ReferenceElseExistsStmtContext) {
     const testConditionBlock = this.stack.pop() as TestConditionBlock;
     const conditionBlock = new ReferenceConditionBlock();
+    conditionBlock.parentLevel = ctx.DOT().length - 2;
     conditionBlock.condition = new TableExistsCondition();
+    conditionBlock.condition.inverted = !!ctx.NOT();
     testConditionBlock.elseCondition = conditionBlock;
     this.stack.push(conditionBlock);
   }
@@ -753,7 +783,9 @@ export class ASTBuilder implements TemplateParserListener {
   enterReferenceElseFindsStmt(ctx: ReferenceElseFindsStmtContext) {
     const testConditionBlock = this.stack.pop() as TestConditionBlock;
     const conditionBlock = new ReferenceConditionBlock();
+    conditionBlock.parentLevel = ctx.DOT().length - 2;
     conditionBlock.condition = new TableFindsCondition(ctx.regex().text);
+    conditionBlock.condition.inverted = !!ctx.NOT();
     testConditionBlock.elseCondition = conditionBlock;
     this.stack.push(conditionBlock);
   }
@@ -761,7 +793,9 @@ export class ASTBuilder implements TemplateParserListener {
   enterReferenceElseMatchStmt(ctx: ReferenceElseMatchStmtContext) {
     const testConditionBlock = this.stack.pop() as TestConditionBlock;
     const conditionBlock = new ReferenceConditionBlock();
+    conditionBlock.parentLevel = ctx.DOT().length - 2;
     conditionBlock.condition = new TableMatchCondition(ctx.regex().text);
+    conditionBlock.condition.inverted = !!ctx.NOT();
     testConditionBlock.elseCondition = conditionBlock;
     this.stack.push(conditionBlock);
   }
@@ -769,7 +803,9 @@ export class ASTBuilder implements TemplateParserListener {
   enterReferenceElseContainsStmt(ctx: ReferenceElseContainsStmtContext) {
     const testConditionBlock = this.stack.pop() as TestConditionBlock;
     const conditionBlock = new ReferenceConditionBlock();
+    conditionBlock.parentLevel = ctx.DOT().length - 2;
     conditionBlock.condition = new TableContainsCondition(ctx.word().text);
+    conditionBlock.condition.inverted = !!ctx.NOT();
     testConditionBlock.elseCondition = conditionBlock;
     this.stack.push(conditionBlock);
   }
@@ -789,16 +825,18 @@ export class ASTBuilder implements TemplateParserListener {
     this.stack.push(loop);
   }
 
-  enterReferenceElseEndStmt(_: ReferenceElseEndStmtContext) {
+  enterReferenceElseEndStmt(ctx: ReferenceElseEndStmtContext) {
     const testConditionBlock = this.stack.pop() as TestConditionBlock;
     const conditionBlock = new ReferenceConditionBlock();
+    conditionBlock.parentLevel = ctx.DOT().length - 1;
     testConditionBlock.elseCondition = conditionBlock;
     this.stack.push(conditionBlock);
   }
 
-  enterTableIfStmt(_: TableIfStmtContext) {
+  enterTableIfStmt(ctx: TableIfStmtContext) {
     const block = this.stack.peek() as Block;
     const conditionBlock = new TableConditionBlock();
+    conditionBlock.parentLevel = ctx.DOT().length - 2;
     block.addStatement(conditionBlock);
     this.stack.push(conditionBlock);
   }
@@ -807,10 +845,12 @@ export class ASTBuilder implements TemplateParserListener {
     this.stack.pop();
   }
 
-  enterTableExistsStmt(_: TableExistsStmtContext) {
+  enterTableExistsStmt(ctx: TableExistsStmtContext) {
     const block = this.stack.peek() as Block;
     const conditionBlock = new TableConditionBlock();
+    conditionBlock.parentLevel = ctx.DOT().length - 2;
     conditionBlock.condition = new TableExistsCondition();
+    conditionBlock.condition.inverted = !!ctx.NOT();
     block.addStatement(conditionBlock);
     this.stack.push(conditionBlock);
   }
@@ -822,7 +862,9 @@ export class ASTBuilder implements TemplateParserListener {
   enterTableFindsStmt(ctx: TableFindsStmtContext) {
     const block = this.stack.peek() as Block;
     const conditionBlock = new TableConditionBlock();
+    conditionBlock.parentLevel = ctx.DOT().length - 2;
     conditionBlock.condition = new TableFindsCondition(ctx.regex().text);
+    conditionBlock.condition.inverted = !!ctx.NOT();
     block.addStatement(conditionBlock);
     this.stack.push(conditionBlock);
   }
@@ -834,7 +876,9 @@ export class ASTBuilder implements TemplateParserListener {
   enterTableMatchStmt(ctx: TableMatchStmtContext) {
     const block = this.stack.peek() as Block;
     const conditionBlock = new TableConditionBlock();
+    conditionBlock.parentLevel = ctx.DOT().length - 2;
     conditionBlock.condition = new TableMatchCondition(ctx.regex().text);
+    conditionBlock.condition.inverted = !!ctx.NOT();
     block.addStatement(conditionBlock);
     this.stack.push(conditionBlock);
   }
@@ -846,7 +890,9 @@ export class ASTBuilder implements TemplateParserListener {
   enterTableContainsStmt(ctx: TableContainsStmtContext) {
     const block = this.stack.peek() as Block;
     const conditionBlock = new TableConditionBlock();
+    conditionBlock.parentLevel = ctx.DOT().length - 2;
     conditionBlock.condition = new TableContainsCondition(ctx.word().text);
+    conditionBlock.condition.inverted = !!ctx.NOT();
     block.addStatement(conditionBlock);
     this.stack.push(conditionBlock);
   }
@@ -866,17 +912,20 @@ export class ASTBuilder implements TemplateParserListener {
     this.stack.pop();
   }
 
-  enterTableElseIfStmt(_: TableElseIfStmtContext) {
+  enterTableElseIfStmt(ctx: TableElseIfStmtContext) {
     const testConditionBlock = this.stack.pop() as TestConditionBlock;
     const conditionBlock = new TableConditionBlock();
+    conditionBlock.parentLevel = ctx.DOT().length - 2;
     testConditionBlock.elseCondition = conditionBlock;
     this.stack.push(conditionBlock);
   }
 
-  enterTableElseExistsStmt(_: TableElseExistsStmtContext) {
+  enterTableElseExistsStmt(ctx: TableElseExistsStmtContext) {
     const testConditionBlock = this.stack.pop() as TestConditionBlock;
     const conditionBlock = new TableConditionBlock();
+    conditionBlock.parentLevel = ctx.DOT().length - 2;
     conditionBlock.condition = new TableExistsCondition();
+    conditionBlock.condition.inverted = !!ctx.NOT();
     testConditionBlock.elseCondition = conditionBlock;
     this.stack.push(conditionBlock);
   }
@@ -884,7 +933,9 @@ export class ASTBuilder implements TemplateParserListener {
   enterTableElseFindsStmt(ctx: TableElseFindsStmtContext) {
     const testConditionBlock = this.stack.pop() as TestConditionBlock;
     const conditionBlock = new TableConditionBlock();
+    conditionBlock.parentLevel = ctx.DOT().length - 2;
     conditionBlock.condition = new TableFindsCondition(ctx.regex().text);
+    conditionBlock.condition.inverted = !!ctx.NOT();
     testConditionBlock.elseCondition = conditionBlock;
     this.stack.push(conditionBlock);
   }
@@ -892,7 +943,9 @@ export class ASTBuilder implements TemplateParserListener {
   enterTableElseMatchStmt(ctx: TableElseMatchStmtContext) {
     const testConditionBlock = this.stack.pop() as TestConditionBlock;
     const conditionBlock = new TableConditionBlock();
+    conditionBlock.parentLevel = ctx.DOT().length - 2;
     conditionBlock.condition = new TableMatchCondition(ctx.regex().text);
+    conditionBlock.condition.inverted = !!ctx.NOT();
     testConditionBlock.elseCondition = conditionBlock;
     this.stack.push(conditionBlock);
   }
@@ -900,7 +953,9 @@ export class ASTBuilder implements TemplateParserListener {
   enterTableElseContainsStmt(ctx: TableElseContainsStmtContext) {
     const testConditionBlock = this.stack.pop() as TestConditionBlock;
     const conditionBlock = new TableConditionBlock();
+    conditionBlock.parentLevel = ctx.DOT().length - 2;
     conditionBlock.condition = new TableContainsCondition(ctx.word().text);
+    conditionBlock.condition.inverted = !!ctx.NOT();
     testConditionBlock.elseCondition = conditionBlock;
     this.stack.push(conditionBlock);
   }
@@ -912,16 +967,18 @@ export class ASTBuilder implements TemplateParserListener {
     this.stack.push(loop);
   }
 
-  enterTableElseEndStmt(_: TableElseEndStmtContext) {
+  enterTableElseEndStmt(ctx: TableElseEndStmtContext) {
     const testConditionBlock = this.stack.pop() as TestConditionBlock;
     const conditionBlock = new TableConditionBlock();
+    conditionBlock.parentLevel = ctx.DOT().length - 1;
     testConditionBlock.elseCondition = conditionBlock;
     this.stack.push(conditionBlock);
   }
 
-  enterInheritedIfStmt(_: InheritedIfStmtContext) {
+  enterInheritedIfStmt(ctx: InheritedIfStmtContext) {
     const block = this.stack.peek() as Block;
     const conditionBlock = new InheritedConditionBlock();
+    conditionBlock.parentLevel = ctx.DOT().length - 2;
     block.addStatement(conditionBlock);
     this.stack.push(conditionBlock);
   }
@@ -930,10 +987,12 @@ export class ASTBuilder implements TemplateParserListener {
     this.stack.pop();
   }
 
-  enterInheritedExistsStmt(_: InheritedExistsStmtContext) {
+  enterInheritedExistsStmt(ctx: InheritedExistsStmtContext) {
     const block = this.stack.peek() as Block;
     const conditionBlock = new InheritedConditionBlock();
+    conditionBlock.parentLevel = ctx.DOT().length - 2;
     conditionBlock.condition = new TableExistsCondition();
+    conditionBlock.condition.inverted = !!ctx.NOT();
     block.addStatement(conditionBlock);
     this.stack.push(conditionBlock);
   }
@@ -945,7 +1004,9 @@ export class ASTBuilder implements TemplateParserListener {
   enterInheritedFindsStmt(ctx: InheritedFindsStmtContext) {
     const block = this.stack.peek() as Block;
     const conditionBlock = new InheritedConditionBlock();
+    conditionBlock.parentLevel = ctx.DOT().length - 2;
     conditionBlock.condition = new TableFindsCondition(ctx.regex().text);
+    conditionBlock.condition.inverted = !!ctx.NOT();
     block.addStatement(conditionBlock);
     this.stack.push(conditionBlock);
   }
@@ -957,7 +1018,9 @@ export class ASTBuilder implements TemplateParserListener {
   enterInheritedMatchStmt(ctx: InheritedMatchStmtContext) {
     const block = this.stack.peek() as Block;
     const conditionBlock = new InheritedConditionBlock();
+    conditionBlock.parentLevel = ctx.DOT().length - 2;
     conditionBlock.condition = new TableMatchCondition(ctx.regex().text);
+    conditionBlock.condition.inverted = !!ctx.NOT();
     block.addStatement(conditionBlock);
     this.stack.push(conditionBlock);
   }
@@ -969,7 +1032,9 @@ export class ASTBuilder implements TemplateParserListener {
   enterInheritedContainsStmt(ctx: InheritedContainsStmtContext) {
     const block = this.stack.peek() as Block;
     const conditionBlock = new InheritedConditionBlock();
+    conditionBlock.parentLevel = ctx.DOT().length - 2;
     conditionBlock.condition = new TableContainsCondition(ctx.word().text);
+    conditionBlock.condition.inverted = !!ctx.NOT();
     block.addStatement(conditionBlock);
     this.stack.push(conditionBlock);
   }
@@ -989,17 +1054,20 @@ export class ASTBuilder implements TemplateParserListener {
     this.stack.pop();
   }
 
-  enterInheritedElseIfStmt(_: InheritedElseIfStmtContext) {
+  enterInheritedElseIfStmt(ctx: InheritedElseIfStmtContext) {
     const testConditionBlock = this.stack.pop() as TestConditionBlock;
     const conditionBlock = new InheritedConditionBlock();
+    conditionBlock.parentLevel = ctx.DOT().length - 2;
     testConditionBlock.elseCondition = conditionBlock;
     this.stack.push(conditionBlock);
   }
 
-  enterInheritedElseExistsStmt(_: InheritedElseExistsStmtContext) {
+  enterInheritedElseExistsStmt(ctx: InheritedElseExistsStmtContext) {
     const testConditionBlock = this.stack.pop() as TestConditionBlock;
     const conditionBlock = new InheritedConditionBlock();
+    conditionBlock.parentLevel = ctx.DOT().length - 2;
     conditionBlock.condition = new TableExistsCondition();
+    conditionBlock.condition.inverted = !!ctx.NOT();
     testConditionBlock.elseCondition = conditionBlock;
     this.stack.push(conditionBlock);
   }
@@ -1007,7 +1075,9 @@ export class ASTBuilder implements TemplateParserListener {
   enterInheritedElseFindsStmt(ctx: InheritedElseFindsStmtContext) {
     const testConditionBlock = this.stack.pop() as TestConditionBlock;
     const conditionBlock = new InheritedConditionBlock();
+    conditionBlock.parentLevel = ctx.DOT().length - 2;
     conditionBlock.condition = new TableFindsCondition(ctx.regex().text);
+    conditionBlock.condition.inverted = !!ctx.NOT();
     testConditionBlock.elseCondition = conditionBlock;
     this.stack.push(conditionBlock);
   }
@@ -1015,7 +1085,9 @@ export class ASTBuilder implements TemplateParserListener {
   enterInheritedElseMatchStmt(ctx: InheritedElseMatchStmtContext) {
     const testConditionBlock = this.stack.pop() as TestConditionBlock;
     const conditionBlock = new InheritedConditionBlock();
+    conditionBlock.parentLevel = ctx.DOT().length - 2;
     conditionBlock.condition = new TableMatchCondition(ctx.regex().text);
+    conditionBlock.condition.inverted = !!ctx.NOT();
     testConditionBlock.elseCondition = conditionBlock;
     this.stack.push(conditionBlock);
   }
@@ -1023,7 +1095,9 @@ export class ASTBuilder implements TemplateParserListener {
   enterInheritedElseContainsStmt(ctx: InheritedElseContainsStmtContext) {
     const testConditionBlock = this.stack.pop() as TestConditionBlock;
     const conditionBlock = new InheritedConditionBlock();
+    conditionBlock.parentLevel = ctx.DOT().length - 2;
     conditionBlock.condition = new TableContainsCondition(ctx.word().text);
+    conditionBlock.condition.inverted = !!ctx.NOT();
     testConditionBlock.elseCondition = conditionBlock;
     this.stack.push(conditionBlock);
   }
@@ -1035,16 +1109,18 @@ export class ASTBuilder implements TemplateParserListener {
     this.stack.push(loop);
   }
 
-  enterInheritedElseEndStmt(_: InheritedElseEndStmtContext) {
+  enterInheritedElseEndStmt(ctx: InheritedElseEndStmtContext) {
     const testConditionBlock = this.stack.pop() as TestConditionBlock;
     const conditionBlock = new InheritedConditionBlock();
+    conditionBlock.parentLevel = ctx.DOT().length - 1;
     testConditionBlock.elseCondition = conditionBlock;
     this.stack.push(conditionBlock);
   }
 
-  enterConstraintIfStmt(_: ConstraintIfStmtContext) {
+  enterConstraintIfStmt(ctx: ConstraintIfStmtContext) {
     const block = this.stack.peek() as Block;
     const conditionBlock = new ConstraintConditionBlock();
+    conditionBlock.parentLevel = ctx.DOT().length - 2;
     block.addStatement(conditionBlock);
     this.stack.push(conditionBlock);
   }
@@ -1064,9 +1140,10 @@ export class ASTBuilder implements TemplateParserListener {
     this.stack.pop();
   }
 
-  enterConstraintElseIfStmt(_: ConstraintElseIfStmtContext) {
+  enterConstraintElseIfStmt(ctx: ConstraintElseIfStmtContext) {
     const testConditionBlock = this.stack.pop() as TestConditionBlock;
     const conditionBlock = new ConstraintConditionBlock();
+    conditionBlock.parentLevel = ctx.DOT().length - 2;
     testConditionBlock.elseCondition = conditionBlock;
     this.stack.push(conditionBlock);
   }
@@ -1078,16 +1155,18 @@ export class ASTBuilder implements TemplateParserListener {
     this.stack.push(loop);
   }
 
-  enterConstraintElseEndStmt(_: ConstraintElseEndStmtContext) {
+  enterConstraintElseEndStmt(ctx: ConstraintElseEndStmtContext) {
     const testConditionBlock = this.stack.pop() as TestConditionBlock;
     const conditionBlock = new ConstraintConditionBlock();
+    conditionBlock.parentLevel = ctx.DOT().length - 1;
     testConditionBlock.elseCondition = conditionBlock;
     this.stack.push(conditionBlock);
   }
 
-  enterIndexIfStmt(_: IndexIfStmtContext) {
+  enterIndexIfStmt(ctx: IndexIfStmtContext) {
     const block = this.stack.peek() as Block;
     const conditionBlock = new IndexConditionBlock();
+    conditionBlock.parentLevel = ctx.DOT().length - 2;
     block.addStatement(conditionBlock);
     this.stack.push(conditionBlock);
   }
@@ -1107,9 +1186,10 @@ export class ASTBuilder implements TemplateParserListener {
     this.stack.pop();
   }
 
-  enterIndexElseIfStmt(_: IndexElseIfStmtContext) {
+  enterIndexElseIfStmt(ctx: IndexElseIfStmtContext) {
     const testConditionBlock = this.stack.pop() as TestConditionBlock;
     const conditionBlock = new IndexConditionBlock();
+    conditionBlock.parentLevel = ctx.DOT().length - 2;
     testConditionBlock.elseCondition = conditionBlock;
     this.stack.push(conditionBlock);
   }
@@ -1121,16 +1201,18 @@ export class ASTBuilder implements TemplateParserListener {
     this.stack.push(loop);
   }
 
-  enterIndexElseEndStmt(_: IndexElseEndStmtContext) {
+  enterIndexElseEndStmt(ctx: IndexElseEndStmtContext) {
     const testConditionBlock = this.stack.pop() as TestConditionBlock;
     const conditionBlock = new IndexConditionBlock();
+    conditionBlock.parentLevel = ctx.DOT().length - 1;
     testConditionBlock.elseCondition = conditionBlock;
     this.stack.push(conditionBlock);
   }
 
-  enterUniqueIfStmt(_: UniqueIfStmtContext) {
+  enterUniqueIfStmt(ctx: UniqueIfStmtContext) {
     const block = this.stack.peek() as Block;
     const conditionBlock = new UniqueConditionBlock();
+    conditionBlock.parentLevel = ctx.DOT().length - 2;
     block.addStatement(conditionBlock);
     this.stack.push(conditionBlock);
   }
@@ -1150,9 +1232,10 @@ export class ASTBuilder implements TemplateParserListener {
     this.stack.pop();
   }
 
-  enterUniqueElseIfStmt(_: UniqueElseIfStmtContext) {
+  enterUniqueElseIfStmt(ctx: UniqueElseIfStmtContext) {
     const testConditionBlock = this.stack.pop() as TestConditionBlock;
     const conditionBlock = new UniqueConditionBlock();
+    conditionBlock.parentLevel = ctx.DOT().length - 2;
     testConditionBlock.elseCondition = conditionBlock;
     this.stack.push(conditionBlock);
   }
@@ -1164,16 +1247,18 @@ export class ASTBuilder implements TemplateParserListener {
     this.stack.push(loop);
   }
 
-  enterUniqueElseEndStmt(_: UniqueElseEndStmtContext) {
+  enterUniqueElseEndStmt(ctx: UniqueElseEndStmtContext) {
     const testConditionBlock = this.stack.pop() as TestConditionBlock;
     const conditionBlock = new UniqueConditionBlock();
+    conditionBlock.parentLevel = ctx.DOT().length - 1;
     testConditionBlock.elseCondition = conditionBlock;
     this.stack.push(conditionBlock);
   }
 
-  enterPrimaryIfStmt(_: PrimaryIfStmtContext) {
+  enterPrimaryIfStmt(ctx: PrimaryIfStmtContext) {
     const block = this.stack.peek() as Block;
     const conditionBlock = new PrimaryConditionBlock();
+    conditionBlock.parentLevel = ctx.DOT().length - 2;
     block.addStatement(conditionBlock);
     this.stack.push(conditionBlock);
   }
@@ -1193,9 +1278,10 @@ export class ASTBuilder implements TemplateParserListener {
     this.stack.pop();
   }
 
-  enterPrimaryElseIfStmt(_: PrimaryElseIfStmtContext) {
+  enterPrimaryElseIfStmt(ctx: PrimaryElseIfStmtContext) {
     const testConditionBlock = this.stack.pop() as TestConditionBlock;
     const conditionBlock = new PrimaryConditionBlock();
+    conditionBlock.parentLevel = ctx.DOT().length - 2;
     testConditionBlock.elseCondition = conditionBlock;
     this.stack.push(conditionBlock);
   }
@@ -1207,16 +1293,18 @@ export class ASTBuilder implements TemplateParserListener {
     this.stack.push(loop);
   }
 
-  enterPrimaryElseEndStmt(_: PrimaryElseEndStmtContext) {
+  enterPrimaryElseEndStmt(ctx: PrimaryElseEndStmtContext) {
     const testConditionBlock = this.stack.pop() as TestConditionBlock;
     const conditionBlock = new PrimaryConditionBlock();
+    conditionBlock.parentLevel = ctx.DOT().length - 1;
     testConditionBlock.elseCondition = conditionBlock;
     this.stack.push(conditionBlock);
   }
 
-  enterForeignIfStmt(_: ForeignIfStmtContext) {
+  enterForeignIfStmt(ctx: ForeignIfStmtContext) {
     const block = this.stack.peek() as Block;
     const conditionBlock = new ForeignConditionBlock();
+    conditionBlock.parentLevel = ctx.DOT().length - 2;
     block.addStatement(conditionBlock);
     this.stack.push(conditionBlock);
   }
@@ -1236,9 +1324,10 @@ export class ASTBuilder implements TemplateParserListener {
     this.stack.pop();
   }
 
-  enterForeignElseIfStmt(_: ForeignElseIfStmtContext) {
+  enterForeignElseIfStmt(ctx: ForeignElseIfStmtContext) {
     const testConditionBlock = this.stack.pop() as TestConditionBlock;
     const conditionBlock = new ForeignConditionBlock();
+    conditionBlock.parentLevel = ctx.DOT().length - 2;
     testConditionBlock.elseCondition = conditionBlock;
     this.stack.push(conditionBlock);
   }
@@ -1250,9 +1339,10 @@ export class ASTBuilder implements TemplateParserListener {
     this.stack.push(loop);
   }
 
-  enterForeignElseEndStmt(_: ForeignElseEndStmtContext) {
+  enterForeignElseEndStmt(ctx: ForeignElseEndStmtContext) {
     const testConditionBlock = this.stack.pop() as TestConditionBlock;
     const conditionBlock = new ForeignConditionBlock();
+    conditionBlock.parentLevel = ctx.DOT().length - 1;
     testConditionBlock.elseCondition = conditionBlock;
     this.stack.push(conditionBlock);
   }
@@ -1323,7 +1413,7 @@ export class ASTBuilder implements TemplateParserListener {
 
   enterNegativePriorityCondition(_: NegativePriorityConditionContext) {
     const condition = this.stack.peek() as ExpressionCondition;
-    condition.negate = true;
+    condition.inverted = true;
     const priorityCondition = new ExpressionCondition();
     condition.left = priorityCondition;
     this.stack.push(priorityCondition);
@@ -1359,7 +1449,7 @@ export class ASTBuilder implements TemplateParserListener {
 
   enterNegativeExpression(_: NegativeExpressionContext) {
     const condition = this.stack.peek() as ExpressionCondition;
-    condition.negate = true;
+    condition.inverted = true;
   }
 
   enterExpression(ctx: ExpressionContext) {

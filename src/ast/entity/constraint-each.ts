@@ -10,11 +10,13 @@ export class ConstraintEach extends LoopBlock {
     position: number,
     runPosition: number,
   ): SourceContext {
+    const index = Math.min(this.parentLevel, context.tableStack.length - 1);
+    const table = context.tableStack[index];
     const orderField = this.constraint.fields[position];
-    const field = context.table.find(orderField.name);
+    const field = table.find(orderField.name);
     if (!field) {
       throw new Error(
-        `Field ${orderField.name} not found in table ${context.table.name} from constraint ${this.constraint.name}`,
+        `Field ${orderField.name} not found in table ${table.name} from constraint ${this.constraint.name}`,
       );
     }
     return {
@@ -27,9 +29,11 @@ export class ConstraintEach extends LoopBlock {
   }
 
   public getLength(context: SourceContext): number {
+    const index = Math.min(this.parentLevel, context.tableStack.length - 1);
+    const table = context.tableStack[index];
     this.constraint =
       (context.type === SourceType.CONSTRAINT ? context.index : null) ||
-      (context.field && context.table.findForeignKey(context.field.name));
+      (context.field && table.findForeignKey(context.field.name));
     return this.constraint?.fields.length ?? 0;
   }
 }

@@ -7,8 +7,10 @@ export class TableFindsCondition extends Condition {
   }
 
   public check(context: SourceContext): boolean {
-    return context.table.fields.some((field) =>
-      new RegExp(this.regex, 'i').test(field.name),
+    return (
+      context.tableStack[0].fields.some((field) =>
+        new RegExp(this.regex, 'i').test(field.name),
+      ) === !this.inverted
     );
   }
 }

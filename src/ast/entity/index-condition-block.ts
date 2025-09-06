@@ -3,6 +3,11 @@ import { TestConditionBlock } from '@/ast/entity/test-condition-block';
 
 export class IndexConditionBlock extends TestConditionBlock {
   public buildTestContext(context: SourceContext): SourceContext {
-    return { ...context, type: SourceType.INDEX };
+    const index = Math.min(this.parentLevel, context.tableStack.length - 1);
+    const tableStack =
+      index === 0
+        ? context.tableStack
+        : [context.tableStack[index], ...context.tableStack];
+    return { ...context, tableStack, type: SourceType.INDEX };
   }
 }

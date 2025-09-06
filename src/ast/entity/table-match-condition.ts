@@ -7,6 +7,8 @@ export class TableMatchCondition extends Condition {
   }
 
   public check(context: SourceContext): boolean {
-    return new RegExp(this.regex, 'i').test(context.table.name);
+    // table parent level already unshifted into context
+    const table = context.tableStack[0];
+    return new RegExp(this.regex, 'i').test(table.name) === !this.inverted;
   }
 }

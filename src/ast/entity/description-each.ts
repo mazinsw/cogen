@@ -20,9 +20,11 @@ export class DescriptionEach extends LoopBlock {
   }
 
   public getLength(context: SourceContext): number {
+    const index = Math.min(this.parentLevel, context.tableStack.length - 1);
+    const table = context.tableStack[index];
     const comment =
       context.type === SourceType.TABLE
-        ? context.table.parsedComment
+        ? table.parsedComment
         : context.field?.parsedComment;
     this.comments = wrapText(comment || '', 72);
     return this.comments.length;

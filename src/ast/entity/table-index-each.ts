@@ -7,14 +7,21 @@ export class TableIndexEach extends LoopBlock {
     position: number,
     runPosition: number,
   ): SourceContext {
+    const tableIndex = Math.min(
+      this.parentLevel,
+      context.tableStack.length - 1,
+    );
+    const table = context.tableStack[tableIndex];
     const relativePosition = this.reverse
-      ? context.table.indexes.length - position - 1
+      ? table.indexes.length - position - 1
       : position;
-    const index = context.table.indexes[relativePosition];
+    const index = table.indexes[relativePosition];
     return { ...context, index, type: SourceType.INDEX, position: runPosition };
   }
 
   public getLength(context: SourceContext): number {
-    return context.table.indexes.length;
+    const index = Math.min(this.parentLevel, context.tableStack.length - 1);
+    const table = context.tableStack[index];
+    return table.indexes.length;
   }
 }

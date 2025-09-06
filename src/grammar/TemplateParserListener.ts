@@ -120,12 +120,12 @@ import { CommentEachStmtContext } from './TemplateParser';
 import { DescriptionEachStmtContext } from './TemplateParser';
 import { OptionEachStmtContext } from './TemplateParser';
 import { ConstantContext } from './TemplateParser';
-import { ReplaceStmtContext } from './TemplateParser';
 import { TableStmtContext } from './TemplateParser';
 import { TablePropsContext } from './TemplateParser';
 import { FieldStmtContext } from './TemplateParser';
 import { FieldPropsContext } from './TemplateParser';
 import { ConstraintStmtContext } from './TemplateParser';
+import { ReplacePropContext } from './TemplateParser';
 import { AllLevelsContext } from './TemplateParser';
 import { EachConditionContext } from './TemplateParser';
 import { TestConditionContext } from './TemplateParser';
@@ -1487,17 +1487,6 @@ export interface TemplateParserListener extends ParseTreeListener {
   exitConstant?: (ctx: ConstantContext) => void;
 
   /**
-   * Enter a parse tree produced by `TemplateParser.replaceStmt`.
-   * @param ctx the parse tree
-   */
-  enterReplaceStmt?: (ctx: ReplaceStmtContext) => void;
-  /**
-   * Exit a parse tree produced by `TemplateParser.replaceStmt`.
-   * @param ctx the parse tree
-   */
-  exitReplaceStmt?: (ctx: ReplaceStmtContext) => void;
-
-  /**
    * Enter a parse tree produced by `TemplateParser.tableStmt`.
    * @param ctx the parse tree
    */
@@ -1551,6 +1540,17 @@ export interface TemplateParserListener extends ParseTreeListener {
    * @param ctx the parse tree
    */
   exitConstraintStmt?: (ctx: ConstraintStmtContext) => void;
+
+  /**
+   * Enter a parse tree produced by `TemplateParser.replaceProp`.
+   * @param ctx the parse tree
+   */
+  enterReplaceProp?: (ctx: ReplacePropContext) => void;
+  /**
+   * Exit a parse tree produced by `TemplateParser.replaceProp`.
+   * @param ctx the parse tree
+   */
+  exitReplaceProp?: (ctx: ReplacePropContext) => void;
 
   /**
    * Enter a parse tree produced by `TemplateParser.allLevels`.

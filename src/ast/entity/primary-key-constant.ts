@@ -3,11 +3,16 @@ import { SourceContext, SourceType } from '@/ast/entity/source';
 
 export class PrimaryKeyConstant extends FieldBaseConstant {
   public execute(context: SourceContext): void {
-    const index = context.table.getPrimaryKey();
+    const tableIndex = Math.min(
+      this.parentLevel,
+      context.tableStack.length - 1,
+    );
+    const table = context.tableStack[tableIndex];
+    const index = table.getPrimaryKey();
     const field =
       index === context.index
         ? context.field
-        : context.table.find(index.fields[0].name);
+        : table.find(index.fields[0].name);
     super.execute({
       ...context,
       field,
@@ -16,7 +21,7 @@ export class PrimaryKeyConstant extends FieldBaseConstant {
       position:
         field === context.field
           ? context.position
-          : context.table.fields.indexOf(field),
+          : table.fields.indexOf(field),
     });
   }
 }

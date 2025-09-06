@@ -4,9 +4,11 @@ import { SourceContext, SourceType } from '@/ast/entity/source';
 
 export class ImageConstant extends FieldBaseConstant {
   public execute(context: SourceContext): void {
+    const index = Math.min(this.parentLevel, context.tableStack.length - 1);
+    const table = context.tableStack[index];
     const field = context.field?.is(Field.Attribute.IMAGE)
       ? context.field
-      : context.table.getImage();
+      : table.getImage();
     super.execute({
       ...context,
       field,
@@ -14,7 +16,7 @@ export class ImageConstant extends FieldBaseConstant {
       position:
         field === context.field
           ? context.position
-          : context.table.fields.indexOf(field),
+          : table.fields.indexOf(field),
     });
   }
 }

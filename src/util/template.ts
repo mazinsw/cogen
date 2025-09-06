@@ -21,7 +21,7 @@ export async function runTemplateText(
 
   const filenameTemplateSource = new TemplateSource(
     runner.getConfiguration(),
-    options?.filename || 'filename',
+    options?.filename || '$[table.unix]',
   );
   await filenameTemplateSource.load(true);
   const contentTemplateSource = new TemplateSource(
@@ -34,6 +34,13 @@ export async function runTemplateText(
     options?.onWriteFile,
   );
   await contentTemplateSource.load(true);
-  await runner.generate(filenameTemplateSource, contentTemplateSource);
-  return runner.contents;
+  let contents = '';
+  await runner.generate(
+    filenameTemplateSource,
+    contentTemplateSource,
+    async () => {
+      contents += runner.contents;
+    },
+  );
+  return contents;
 }

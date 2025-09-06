@@ -1,10 +1,8 @@
 import { Command } from '@/ast/entity/command';
 import { Constant } from '@/ast/entity/constant';
-import { OutputWriter, SourceContext } from '@/ast/entity/source';
+import { SourceContext } from '@/ast/entity/source';
 
-export class ReplaceCommand extends Command implements OutputWriter {
-  private output: string;
-
+export class ReplaceCommand extends Command {
   constructor(
     constant: Constant,
     protected subject: string,
@@ -14,16 +12,16 @@ export class ReplaceCommand extends Command implements OutputWriter {
   }
 
   public execute(context: SourceContext): void {
-    this.output = '';
-    this.constant.execute({ ...context, output: this });
-    this.output = this.output.replace(
-      new RegExp(this.subject),
-      this.replacement || '',
-    );
-    context.output.appendContents(this.output);
-  }
-
-  appendContents(text: string): void {
-    this.output += text;
+    let output = '';
+    this.constant.execute({
+      ...context,
+      output: {
+        appendContents(text) {
+          output += text;
+        },
+      },
+    });
+    output = output.replace(new RegExp(this.subject), this.replacement || '');
+    context.output.appendContents(output);
   }
 }

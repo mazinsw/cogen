@@ -111,7 +111,7 @@ export class Runner {
           destFile = '';
           filenameTemplateSource.execute({
             type: SourceType.TABLE,
-            table,
+            tableStack: [table],
             field,
             output: {
               appendContents(text) {
@@ -147,7 +147,7 @@ export class Runner {
         this.contents = '';
         contentTemplateSource.execute({
           type: SourceType.TABLE,
-          table,
+          tableStack: [table],
           field,
           output: this,
           data: this.dataSource,

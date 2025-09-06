@@ -30,7 +30,7 @@ export enum SourceType {
 
 export class SourceContext {
   type: SourceType;
-  table: Table;
+  tableStack: Table[];
   field: Field;
   index?: Index;
   option?: string;

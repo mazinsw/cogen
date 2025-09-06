@@ -21,8 +21,10 @@ export class TableConstraintEach extends LoopBlock {
   }
 
   public getLength(context: SourceContext): number {
+    const index = Math.min(this.parentLevel, context.tableStack.length - 1);
+    const table = context.tableStack[index];
     this.constraints = [];
-    context.table.constraints.forEach((constraint) => {
+    table.constraints.forEach((constraint) => {
       if (
         context.type === SourceType.FOREIGN &&
         !(constraint instanceof ForeignKey)

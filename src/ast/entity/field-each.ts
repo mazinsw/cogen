@@ -31,10 +31,12 @@ export class FieldEach extends LoopBlock {
         runPosition,
       );
     }
+    const index = Math.min(this.parentLevel, context.tableStack.length - 1);
+    const table = context.tableStack[index];
     const relativePosition = this.reverse
-      ? context.table.fields.length - position - 1
+      ? table.fields.length - position - 1
       : position;
-    const field = context.table.fields[relativePosition];
+    const field = table.fields[relativePosition];
     return {
       ...context,
       field,
@@ -44,11 +46,13 @@ export class FieldEach extends LoopBlock {
   }
 
   public getLength(context: SourceContext): number {
+    const index = Math.min(this.parentLevel, context.tableStack.length - 1);
+    const table = context.tableStack[index];
     if (
       !(this.condition instanceof ExpressionCondition) ||
       !context.config.legacy
     ) {
-      return context.table.fields.length;
+      return table.fields.length;
     }
     const expressionCondition = this.condition as ExpressionCondition;
     if (expressionCondition.expression === Expression.PROPERTY_OPTION) {
@@ -63,6 +67,6 @@ export class FieldEach extends LoopBlock {
       this.legacyDescription = new DescriptionEach();
       return this.legacyDescription.getLength(context);
     }
-    return context.table.fields.length;
+    return table.fields.length;
   }
 }
