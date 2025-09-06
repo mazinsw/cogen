@@ -41,6 +41,7 @@ export enum Expression {
   PROPERTY_REPEATED,
   PROPERTY_REQUIRED,
   PROPERTY_SEARCHABLE,
+  PROPERTY_SELF_REFERENCE,
   PROPERTY_SINGLE,
   PROPERTY_UNIQUE,
   PROPERTY_UNPLURALIZABLE,
@@ -160,6 +161,12 @@ export class ExpressionCondition extends Condition {
         return true;
       case Expression.PROPERTY_REFERENCE:
         return !!context.field && !!table.findForeignKey(context.field.name);
+      case Expression.PROPERTY_SELF_REFERENCE:
+        return (
+          !!context.field &&
+          table.findForeignKey(context.field.name)?.getTableName() ===
+            table.name
+        );
       case Expression.PROPERTY_PRIMARY:
         return context.type === SourceType.UNIQUE
           ? context.index instanceof PrimaryKey

@@ -4,15 +4,15 @@ describe('Runner', () => {
   it('example sql to class', async () => {
     const result = await runTemplateText(
       `CREATE TABLE MyTable (\n` +
-        `    name TEXT COMMENT 'Field comment[S]',\n` +
-        `    age BOOL NOT NULL DEFAULT 0 COMMENT 'Field comment[F:false]'\n` +
+        `  name TEXT COMMENT 'Field comment[S]',\n` +
+        `  age BOOL NOT NULL DEFAULT 0 COMMENT 'Field comment[F:false]'\n` +
         `) COMMENT = 'Table comment[N:My Table|My tables]';\n`,
 
       `/** $[table.comment] */\n` +
         `export class $[Table.norm] {\n` +
         `$[field.each]\n` +
-        `    /** $[field.comment] */\n` +
-        `    private $[field.norm]: $[field.if(boolean)]boolean$[field.else]string$[field.end];\n` +
+        `  /** $[field.comment] */\n` +
+        `  private $[field.norm]: $[field.if(boolean)]boolean$[field.else]string$[field.end];\n` +
         `$[field.end]\n` +
         `}\n`,
       {
@@ -25,10 +25,10 @@ describe('Runner', () => {
     expect(result).toBe(
       `/** Table comment */\n` +
         `export class MyTable {\n` +
-        `    /** Field comment */\n` +
-        `    private name: string;\n` +
-        `    /** Field comment */\n` +
-        `    private age: boolean;\n` +
+        `  /** Field comment */\n` +
+        `  private name: string;\n` +
+        `  /** Field comment */\n` +
+        `  private age: boolean;\n` +
         `}\n`,
     );
   });

@@ -1534,6 +1534,8 @@ export class ASTBuilder implements TemplateParserListener {
           return (condition.expression = Expression.PROPERTY_MANY);
         case !!property.K_SINGLE():
           return (condition.expression = Expression.PROPERTY_SINGLE);
+        case !!property.K_SELF_REFERENCE():
+          return (condition.expression = Expression.PROPERTY_SELF_REFERENCE);
         case !!property.K_FIRST():
           return (condition.expression = Expression.PROPERTY_FIRST);
         default: // K_NON_FIRST
