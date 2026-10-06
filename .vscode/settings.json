@@ -6,6 +6,6 @@
     "source.organizeImports": "explicit"
   },
   "typescript.preferences.importModuleSpecifier": "non-relative",
-  "jestrunner.jestCommand": "yarn test",
+  "jestrunner.jestCommand": "npm test",
   "jestrunner.changeDirectoryToWorkspaceRoot": false
 }

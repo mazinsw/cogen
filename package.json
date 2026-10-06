@@ -22,9 +22,7 @@
   "author": "Francimar Alves <mazinsw@gmail.com>",
   "license": "MIT",
   "main": "./dist/main/main.js",
-  "bin": {
-    "cogen": "dist/main/cli.js"
-  },
+  "bin": "dist/main/cli.js",
   "scripts": {
     "clean": "rimraf coverage dist tmp",
     "build": "tsc -d -p tsconfig.release.json && tsc-alias -p tsconfig.release.json",
@@ -37,15 +35,15 @@
     "test:cover": "jest --coverage",
     "test:watch": "jest --watch",
     "test:debug": "node --inspect-brk=9229 node_modules/.bin/jest -i",
-    "grammar": "yarn grammar:sql && yarn grammar:template",
-    "grammar:sql": "yarn grammar:sql:lexer && yarn grammar:sql:parser",
-    "grammar:template": "yarn grammar:template:lexer && yarn grammar:template:parser",
+    "grammar": "npm run grammar:sql && npm run grammar:template",
+    "grammar:sql": "npm run grammar:sql:lexer && npm run grammar:sql:parser",
+    "grammar:template": "npm run grammar:template:lexer && npm run grammar:template:parser",
     "grammar:run": "antlr4ts -encoding UTF-8 -listener -no-visitor -package grammar",
-    "grammar:sql:lexer": "yarn grammar:run src/grammar/SQLLexer.g4",
-    "grammar:sql:parser": "yarn grammar:run src/grammar/SQLParser.g4",
-    "grammar:template:lexer": "yarn grammar:run src/grammar/TemplateLexer.g4",
-    "grammar:template:parser": "yarn grammar:run src/grammar/TemplateParser.g4",
-    "prepublishOnly": "yarn build"
+    "grammar:sql:lexer": "npm run grammar:run src/grammar/SQLLexer.g4",
+    "grammar:sql:parser": "npm run grammar:run src/grammar/SQLParser.g4",
+    "grammar:template:lexer": "npm run grammar:run src/grammar/TemplateLexer.g4",
+    "grammar:template:parser": "npm run grammar:run src/grammar/TemplateParser.g4",
+    "prepublishOnly": "npm run build"
   },
   "dependencies": {
     "antlr4ts": "^0.5.0-alpha.4",
