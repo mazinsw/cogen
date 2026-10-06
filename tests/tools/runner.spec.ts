@@ -1,6 +1,7 @@
 import { DataSource } from '@/ast/entity/data-source';
 import { TemplateSource } from '@/ast/entity/templace-source';
 import { Runner } from '@/tools/runner';
+import { Configuration } from '@/util/configuration';
 import { runTemplateText } from '@/util/template';
 import * as fs from 'node:fs';
 import * as os from 'node:os';
@@ -328,5 +329,43 @@ describe('Runner', () => {
       { tableFilter: (table) => table.getName() === 'Products' },
     );
     expect(result).toBe('products:users,products,');
+  });
+
+  describe('filter and exclude tables from configuration', () => {
+    const input =
+      'CREATE TABLE Users (); CREATE TABLE Products (); CREATE TABLE Orders ();';
+    const template = '$[table.unix]:$[table.each]$[table.unix],$[table.end];';
+
+    it('generate only tables in filter', async () => {
+      const configuration = new Configuration().setFilterTables('products');
+      const result = await runTemplateText(input, template, { configuration });
+      expect(result).toBe('products:users,products,orders,;');
+    });
+
+    it('skip tables in exclude', async () => {
+      const configuration = new Configuration().setExcludeTables(
+        'users,orders',
+      );
+      const result = await runTemplateText(input, template, { configuration });
+      expect(result).toBe('products:users,products,orders,;');
+    });
+
+    it('exclude wins over filter', async () => {
+      const configuration = new Configuration()
+        .setFilterTables('users,products')
+        .setExcludeTables('users');
+      const result = await runTemplateText(input, template, { configuration });
+      expect(result).toBe('products:users,products,orders,;');
+    });
+
+    it('match table names case-insensitively', async () => {
+      const configuration = new Configuration().setFilterTables(
+        'PRODUCTS, orders',
+      );
+      const result = await runTemplateText(input, template, { configuration });
+      expect(result).toBe(
+        'products:users,products,orders,;orders:users,products,orders,;',
+      );
+    });
   });
 });

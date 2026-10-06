@@ -264,12 +264,44 @@ commands:
 ### Usage: `cogen [options] input.sql`
 #### Options:
  - (`-d` | `--despluralize`) `"match1|match2/slice_end/[replacement[/min_length]];ms|ls/1/s/4"`: set the despluralization database rules
+ - (`-e` | `--exclude`) `my_table,other_table`: skip generation for these tables
  - (`-f` | `--file` | `-i` | `--input`) `input.sql`: set the input sql file
+ - (`--filter`) `my_table,other_table`: generate only for these tables
  - (`-h` | `--help`): show this help
  - (`-l` | `--legacy`): use legacy loops instead of as filter
  - (`-o` | `--output`) `storage/generated`: set the output directory
  - (`-p` | `--project`) `cogen.properties`: read a project from file
- - (`-s` | `--silent`): run without print anything
+ - (`-s` | `--silent`): run without printing anything
  - (`-t` | `--template`) `scripts/template/`: set the template input directory
  - (`-u` | `--uppercase`) `"|USA|W3C|"`: set the uppercase database names
  - (`-w` | `--write`) `cogen.properties`: save configuration to file when finishes
+
+### Generating only some tables
+
+Use `--filter` and `--exclude` to choose which tables produce output. Both take a comma separated list of table names:
+
+```sh
+# generate files only for the users and products tables
+cogen -t templates/ -o src/ --filter users,products schema.sql
+
+# generate files for every table except migrations and sessions
+cogen -t templates/ -o src/ --exclude migrations,sessions schema.sql
+
+# combine both: filter first, then remove excluded tables
+cogen -t templates/ -o src/ --filter users,products,orders --exclude orders schema.sql
+```
+
+- Table names are matched case-insensitively, spaces around names are ignored.
+- When a table is in both lists, `--exclude` wins.
+- Repeating an option appends to its list: `--filter users --filter products` is the same as `--filter users,products`.
+- Only the generated files are restricted. All tables are still parsed and visible to templates, so `$[table.each]` loops and foreign key references keep working.
+- Templates whose filename has no `$[...]` (generated once, not per table) are still generated, as long as at least one table is selected.
+- Project files (`-p` / `-w`) support the same lists with the `filter` and `exclude` keys:
+
+```properties
+inputFile=schema.sql
+templatePath=templates/
+outputPath=src/
+filter=users,products
+exclude=migrations
+```

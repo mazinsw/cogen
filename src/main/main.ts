@@ -60,6 +60,17 @@ export class Main implements LogListener {
           config.setDictionary(args[i + 1]);
           i++;
           break;
+        case '--filter':
+          if (i + 1 >= args.length) return this.showHelp(3, cmd);
+          config.setFilterTables(args[i + 1]);
+          i++;
+          break;
+        case '-e':
+        case '--exclude':
+          if (i + 1 >= args.length) return this.showHelp(3, cmd);
+          config.setExcludeTables(args[i + 1]);
+          i++;
+          break;
         case '-w':
         case '--write':
           if (i + 1 >= args.length) return this.showHelp(3, cmd);
@@ -108,12 +119,18 @@ export class Main implements LogListener {
     console.log(
       '\t(-d|--despluralize) "match1|match2/slice_end/[replacement[/min_length]];ms|ls/1/s/4": set the despluralization database rules',
     );
+    console.log(
+      '\t(-e|--exclude) my_table,other_table: skip generation for these tables',
+    );
     console.log('\t(-f|--file|-i|--input) input.sql: set the input sql file');
+    console.log(
+      '\t(--filter) my_table,other_table: generate only for these tables',
+    );
     console.log('\t(-h|--help): show this help');
     console.log('\t(-l|--legacy): use legacy loops instead of as filter');
     console.log('\t(-o|--output) storage/generated: set the output directory');
     console.log('\t(-p|--project) cogen.properties: read a project from file');
-    console.log('\t(-s|--silent): run without print anything');
+    console.log('\t(-s|--silent): run without printing anything');
     console.log(
       '\t(-t|--template) scripts/template/: set the template input directory',
     );

@@ -110,7 +110,10 @@ export class Runner {
     let tableIndex = -1;
     for (const table of this.dataSource.getTables()) {
       tableIndex++;
-      if (this.tableFilter && !this.tableFilter(table)) {
+      if (
+        !this.configuration.acceptsTable(table.getName()) ||
+        (this.tableFilter && !this.tableFilter(table))
+      ) {
         continue;
       }
       let fieldIndex = -1;

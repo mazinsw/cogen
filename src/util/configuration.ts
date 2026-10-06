@@ -10,6 +10,10 @@ export class Configuration {
   private upperWords: string;
   private templatePath: string;
   private dictionary: string[];
+  /** lowercase table names to generate, empty means all tables */
+  private filterTables: string[] = [];
+  /** lowercase table names to skip on generation */
+  private excludeTables: string[] = [];
 
   constructor() {
     this.setProjectFile('config.properties');
@@ -81,6 +85,35 @@ export class Configuration {
     return this;
   }
 
+  public getFilterTables() {
+    return this.filterTables;
+  }
+
+  /** append comma separated table names to generate */
+  public setFilterTables(tables: string) {
+    this.filterTables.push(...parseTableList(tables));
+    return this;
+  }
+
+  public getExcludeTables() {
+    return this.excludeTables;
+  }
+
+  /** append comma separated table names to skip */
+  public setExcludeTables(tables: string) {
+    this.excludeTables.push(...parseTableList(tables));
+    return this;
+  }
+
+  /** check whether the table must be generated, exclude wins over filter */
+  public acceptsTable(tableName: string): boolean {
+    const name = (tableName || '').toLowerCase();
+    if (this.filterTables.length > 0 && !this.filterTables.includes(name)) {
+      return false;
+    }
+    return !this.excludeTables.includes(name);
+  }
+
   public rebasePath(filePath: string): string {
     return path
       .resolve(filePath)
@@ -107,6 +140,8 @@ export class Configuration {
     }
     this.setDictionary(props.get('dict.' + this.lang, defaultDict));
     this.setUpperWords(props.get('upperWords'));
+    if (props.has('filter')) this.setFilterTables(props.get('filter'));
+    if (props.has('exclude')) this.setExcludeTables(props.get('exclude'));
   }
 
   public async save() {
@@ -115,6 +150,17 @@ export class Configuration {
     props.set('outputPath', this.outputPath);
     props.set('templatePath', this.templatePath);
     props.set('upperWords', this.getUpperWords());
+    if (this.filterTables.length > 0)
+      props.set('filter', this.filterTables.join(','));
+    if (this.excludeTables.length > 0)
+      props.set('exclude', this.excludeTables.join(','));
     await props.save();
   }
+}
+
+function parseTableList(tables: string): string[] {
+  return (tables || '')
+    .split(',')
+    .map((name) => name.trim().toLowerCase())
+    .filter((name) => name.length > 0);
 }
