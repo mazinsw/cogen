@@ -1,0 +1,10 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Cogen (Ruby)",
+  "scopeName": "source.cogen.ruby",
+  "patterns": [
+    {
+      "include": "source.ruby"
+    }
+  ]
+}

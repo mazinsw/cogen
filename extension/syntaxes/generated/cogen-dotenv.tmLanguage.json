@@ -1,0 +1,10 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Cogen (Environment)",
+  "scopeName": "source.cogen.dotenv",
+  "patterns": [
+    {
+      "include": "source.dotenv"
+    }
+  ]
+}

@@ -1,0 +1,1225 @@
+{
+  "name": "cogen-templates",
+  "displayName": "Cogen Templates",
+  "description": "Syntax highlighting, diagnostics, navigation, completion and preview for cogen templates (*.cgn)",
+  "version": "0.1.0",
+  "publisher": "mazinsw",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mazinsw/cogen.git",
+    "directory": "extension"
+  },
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Snippets"
+  ],
+  "main": "./dist/extension.js",
+  "scripts": {
+    "gen": "node scripts/gen-languages.mjs && node scripts/gen-vocabulary.mjs",
+    "build": "npm run gen && node esbuild.mjs",
+    "watch": "node esbuild.mjs --watch",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "node ../node_modules/jest/bin/jest.js -c jest.config.json",
+    "package": "npm run build && vsce package --no-dependencies",
+    "vscode:prepublish": "npm run build",
+    "test:integration": "npm run build && node test/integration/run.mjs"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.85.0",
+    "@vscode/test-electron": "^3.1.0",
+    "@vscode/vsce": "^4.0.0",
+    "esbuild": "^0.28.2",
+    "vscode-oniguruma": "^2.0.1",
+    "vscode-textmate": "^9.3.2"
+  },
+  "contributes": {
+    "commands": [
+      {
+        "command": "cogen.preview",
+        "title": "Preview for Table…",
+        "category": "Cogen",
+        "icon": "$(open-preview)"
+      },
+      {
+        "command": "cogen.previewRefresh",
+        "title": "Refresh Preview",
+        "category": "Cogen",
+        "icon": "$(refresh)"
+      }
+    ],
+    "menus": {
+      "editor/title": [
+        {
+          "command": "cogen.preview",
+          "when": "resourceLangId =~ /^cogen-/",
+          "group": "navigation"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "cogen.preview",
+          "when": "editorLangId =~ /^cogen-/"
+        },
+        {
+          "command": "cogen.previewRefresh",
+          "when": "editorLangId =~ /^cogen-/"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Cogen",
+      "properties": {
+        "cogen.templatePaths": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [],
+          "markdownDescription": "Folders (relative to the workspace folder) whose files are treated as cogen templates even without the `.cgn` suffix, e.g. `scripts/template`."
+        },
+        "cogen.projectFile": {
+          "type": "string",
+          "default": "",
+          "markdownDescription": "Project properties file used by the preview (`inputFile`, `templatePath`, `lang`, ...). When empty, the nearest `cogen.properties` above the template is used."
+        },
+        "cogen.inputFile": {
+          "type": "string",
+          "default": "",
+          "markdownDescription": "Modeling SQL file used by the preview when no project file defines `inputFile`."
+        },
+        "cogen.legacy": {
+          "type": "boolean",
+          "default": false,
+          "description": "Use legacy loops in the preview."
+        }
+      }
+    },
+    "languages": [
+      {
+        "id": "cogen-ts",
+        "aliases": [
+          "Cogen (TypeScript)"
+        ],
+        "extensions": [
+          ".ts.cgn",
+          ".mts.cgn",
+          ".cts.cgn"
+        ],
+        "configuration": "./language-configuration/cogen-ts.json",
+        "icon": {
+          "light": "./images/cogen.svg",
+          "dark": "./images/cogen.svg"
+        }
+      },
+      {
+        "id": "cogen-tsx",
+        "aliases": [
+          "Cogen (TypeScript React)"
+        ],
+        "extensions": [
+          ".tsx.cgn"
+        ],
+        "configuration": "./language-configuration/cogen-tsx.json",
+        "icon": {
+          "light": "./images/cogen.svg",
+          "dark": "./images/cogen.svg"
+        }
+      },
+      {
+        "id": "cogen-js",
+        "aliases": [
+          "Cogen (JavaScript)"
+        ],
+        "extensions": [
+          ".js.cgn",
+          ".mjs.cgn",
+          ".cjs.cgn"
+        ],
+        "configuration": "./language-configuration/cogen-js.json",
+        "icon": {
+          "light": "./images/cogen.svg",
+          "dark": "./images/cogen.svg"
+        }
+      },
+      {
+        "id": "cogen-jsx",
+        "aliases": [
+          "Cogen (JavaScript React)"
+        ],
+        "extensions": [
+          ".jsx.cgn"
+        ],
+        "configuration": "./language-configuration/cogen-jsx.json",
+        "icon": {
+          "light": "./images/cogen.svg",
+          "dark": "./images/cogen.svg"
+        }
+      },
+      {
+        "id": "cogen-json",
+        "aliases": [
+          "Cogen (JSON)"
+        ],
+        "extensions": [
+          ".json.cgn"
+        ],
+        "configuration": "./language-configuration/cogen-json.json",
+        "icon": {
+          "light": "./images/cogen.svg",
+          "dark": "./images/cogen.svg"
+        }
+      },
+      {
+        "id": "cogen-jsonc",
+        "aliases": [
+          "Cogen (JSON with Comments)"
+        ],
+        "extensions": [
+          ".jsonc.cgn"
+        ],
+        "configuration": "./language-configuration/cogen-jsonc.json",
+        "icon": {
+          "light": "./images/cogen.svg",
+          "dark": "./images/cogen.svg"
+        }
+      },
+      {
+        "id": "cogen-yaml",
+        "aliases": [
+          "Cogen (YAML)"
+        ],
+        "extensions": [
+          ".yaml.cgn",
+          ".yml.cgn"
+        ],
+        "configuration": "./language-configuration/cogen-yaml.json",
+        "icon": {
+          "light": "./images/cogen.svg",
+          "dark": "./images/cogen.svg"
+        }
+      },
+      {
+        "id": "cogen-toml",
+        "aliases": [
+          "Cogen (TOML)"
+        ],
+        "extensions": [
+          ".toml.cgn"
+        ],
+        "configuration": "./language-configuration/cogen-toml.json",
+        "icon": {
+          "light": "./images/cogen.svg",
+          "dark": "./images/cogen.svg"
+        }
+      },
+      {
+        "id": "cogen-xml",
+        "aliases": [
+          "Cogen (XML)"
+        ],
+        "extensions": [
+          ".xml.cgn",
+          ".xsd.cgn",
+          ".xsl.cgn"
+        ],
+        "configuration": "./language-configuration/cogen-xml.json",
+        "icon": {
+          "light": "./images/cogen.svg",
+          "dark": "./images/cogen.svg"
+        }
+      },
+      {
+        "id": "cogen-dotenv",
+        "aliases": [
+          "Cogen (Environment)"
+        ],
+        "extensions": [
+          ".env.cgn"
+        ],
+        "configuration": "./language-configuration/cogen-dotenv.json",
+        "icon": {
+          "light": "./images/cogen.svg",
+          "dark": "./images/cogen.svg"
+        }
+      },
+      {
+        "id": "cogen-sql",
+        "aliases": [
+          "Cogen (SQL)"
+        ],
+        "extensions": [
+          ".sql.cgn"
+        ],
+        "configuration": "./language-configuration/cogen-sql.json",
+        "icon": {
+          "light": "./images/cogen.svg",
+          "dark": "./images/cogen.svg"
+        }
+      },
+      {
+        "id": "cogen-prisma",
+        "aliases": [
+          "Cogen (Prisma)"
+        ],
+        "extensions": [
+          ".prisma.cgn"
+        ],
+        "configuration": "./language-configuration/cogen-prisma.json",
+        "icon": {
+          "light": "./images/cogen.svg",
+          "dark": "./images/cogen.svg"
+        }
+      },
+      {
+        "id": "cogen-graphql",
+        "aliases": [
+          "Cogen (GraphQL)"
+        ],
+        "extensions": [
+          ".graphql.cgn",
+          ".gql.cgn"
+        ],
+        "configuration": "./language-configuration/cogen-graphql.json",
+        "icon": {
+          "light": "./images/cogen.svg",
+          "dark": "./images/cogen.svg"
+        }
+      },
+      {
+        "id": "cogen-html",
+        "aliases": [
+          "Cogen (HTML)"
+        ],
+        "extensions": [
+          ".html.cgn",
+          ".htm.cgn"
+        ],
+        "configuration": "./language-configuration/cogen-html.json",
+        "icon": {
+          "light": "./images/cogen.svg",
+          "dark": "./images/cogen.svg"
+        }
+      },
+      {
+        "id": "cogen-markdown",
+        "aliases": [
+          "Cogen (Markdown)"
+        ],
+        "extensions": [
+          ".md.cgn",
+          ".markdown.cgn"
+        ],
+        "configuration": "./language-configuration/cogen-markdown.json",
+        "icon": {
+          "light": "./images/cogen.svg",
+          "dark": "./images/cogen.svg"
+        }
+      },
+      {
+        "id": "cogen-svg",
+        "aliases": [
+          "Cogen (SVG)"
+        ],
+        "extensions": [
+          ".svg.cgn"
+        ],
+        "configuration": "./language-configuration/cogen-svg.json",
+        "icon": {
+          "light": "./images/cogen.svg",
+          "dark": "./images/cogen.svg"
+        }
+      },
+      {
+        "id": "cogen-css",
+        "aliases": [
+          "Cogen (CSS)"
+        ],
+        "extensions": [
+          ".css.cgn"
+        ],
+        "configuration": "./language-configuration/cogen-css.json",
+        "icon": {
+          "light": "./images/cogen.svg",
+          "dark": "./images/cogen.svg"
+        }
+      },
+      {
+        "id": "cogen-scss",
+        "aliases": [
+          "Cogen (SCSS)"
+        ],
+        "extensions": [
+          ".scss.cgn"
+        ],
+        "configuration": "./language-configuration/cogen-scss.json",
+        "icon": {
+          "light": "./images/cogen.svg",
+          "dark": "./images/cogen.svg"
+        }
+      },
+      {
+        "id": "cogen-less",
+        "aliases": [
+          "Cogen (Less)"
+        ],
+        "extensions": [
+          ".less.cgn"
+        ],
+        "configuration": "./language-configuration/cogen-less.json",
+        "icon": {
+          "light": "./images/cogen.svg",
+          "dark": "./images/cogen.svg"
+        }
+      },
+      {
+        "id": "cogen-edge",
+        "aliases": [
+          "Cogen (Edge)"
+        ],
+        "extensions": [
+          ".edge.cgn"
+        ],
+        "configuration": "./language-configuration/cogen-edge.json",
+        "icon": {
+          "light": "./images/cogen.svg",
+          "dark": "./images/cogen.svg"
+        }
+      },
+      {
+        "id": "cogen-blade",
+        "aliases": [
+          "Cogen (Blade)"
+        ],
+        "extensions": [
+          ".blade.php.cgn"
+        ],
+        "configuration": "./language-configuration/cogen-blade.json",
+        "icon": {
+          "light": "./images/cogen.svg",
+          "dark": "./images/cogen.svg"
+        }
+      },
+      {
+        "id": "cogen-handlebars",
+        "aliases": [
+          "Cogen (Handlebars)"
+        ],
+        "extensions": [
+          ".hbs.cgn",
+          ".handlebars.cgn"
+        ],
+        "configuration": "./language-configuration/cogen-handlebars.json",
+        "icon": {
+          "light": "./images/cogen.svg",
+          "dark": "./images/cogen.svg"
+        }
+      },
+      {
+        "id": "cogen-ejs",
+        "aliases": [
+          "Cogen (EJS)"
+        ],
+        "extensions": [
+          ".ejs.cgn"
+        ],
+        "configuration": "./language-configuration/cogen-ejs.json",
+        "icon": {
+          "light": "./images/cogen.svg",
+          "dark": "./images/cogen.svg"
+        }
+      },
+      {
+        "id": "cogen-nunjucks",
+        "aliases": [
+          "Cogen (Nunjucks)"
+        ],
+        "extensions": [
+          ".njk.cgn"
+        ],
+        "configuration": "./language-configuration/cogen-nunjucks.json",
+        "icon": {
+          "light": "./images/cogen.svg",
+          "dark": "./images/cogen.svg"
+        }
+      },
+      {
+        "id": "cogen-twig",
+        "aliases": [
+          "Cogen (Twig)"
+        ],
+        "extensions": [
+          ".twig.cgn"
+        ],
+        "configuration": "./language-configuration/cogen-twig.json",
+        "icon": {
+          "light": "./images/cogen.svg",
+          "dark": "./images/cogen.svg"
+        }
+      },
+      {
+        "id": "cogen-vue",
+        "aliases": [
+          "Cogen (Vue)"
+        ],
+        "extensions": [
+          ".vue.cgn"
+        ],
+        "configuration": "./language-configuration/cogen-vue.json",
+        "icon": {
+          "light": "./images/cogen.svg",
+          "dark": "./images/cogen.svg"
+        }
+      },
+      {
+        "id": "cogen-svelte",
+        "aliases": [
+          "Cogen (Svelte)"
+        ],
+        "extensions": [
+          ".svelte.cgn"
+        ],
+        "configuration": "./language-configuration/cogen-svelte.json",
+        "icon": {
+          "light": "./images/cogen.svg",
+          "dark": "./images/cogen.svg"
+        }
+      },
+      {
+        "id": "cogen-php",
+        "aliases": [
+          "Cogen (PHP)"
+        ],
+        "extensions": [
+          ".php.cgn"
+        ],
+        "configuration": "./language-configuration/cogen-php.json",
+        "icon": {
+          "light": "./images/cogen.svg",
+          "dark": "./images/cogen.svg"
+        }
+      },
+      {
+        "id": "cogen-java",
+        "aliases": [
+          "Cogen (Java)"
+        ],
+        "extensions": [
+          ".java.cgn"
+        ],
+        "configuration": "./language-configuration/cogen-java.json",
+        "icon": {
+          "light": "./images/cogen.svg",
+          "dark": "./images/cogen.svg"
+        }
+      },
+      {
+        "id": "cogen-kotlin",
+        "aliases": [
+          "Cogen (Kotlin)"
+        ],
+        "extensions": [
+          ".kt.cgn",
+          ".kts.cgn"
+        ],
+        "configuration": "./language-configuration/cogen-kotlin.json",
+        "icon": {
+          "light": "./images/cogen.svg",
+          "dark": "./images/cogen.svg"
+        }
+      },
+      {
+        "id": "cogen-csharp",
+        "aliases": [
+          "Cogen (C#)"
+        ],
+        "extensions": [
+          ".cs.cgn"
+        ],
+        "configuration": "./language-configuration/cogen-csharp.json",
+        "icon": {
+          "light": "./images/cogen.svg",
+          "dark": "./images/cogen.svg"
+        }
+      },
+      {
+        "id": "cogen-go",
+        "aliases": [
+          "Cogen (Go)"
+        ],
+        "extensions": [
+          ".go.cgn"
+        ],
+        "configuration": "./language-configuration/cogen-go.json",
+        "icon": {
+          "light": "./images/cogen.svg",
+          "dark": "./images/cogen.svg"
+        }
+      },
+      {
+        "id": "cogen-python",
+        "aliases": [
+          "Cogen (Python)"
+        ],
+        "extensions": [
+          ".py.cgn"
+        ],
+        "configuration": "./language-configuration/cogen-python.json",
+        "icon": {
+          "light": "./images/cogen.svg",
+          "dark": "./images/cogen.svg"
+        }
+      },
+      {
+        "id": "cogen-ruby",
+        "aliases": [
+          "Cogen (Ruby)"
+        ],
+        "extensions": [
+          ".rb.cgn"
+        ],
+        "configuration": "./language-configuration/cogen-ruby.json",
+        "icon": {
+          "light": "./images/cogen.svg",
+          "dark": "./images/cogen.svg"
+        }
+      },
+      {
+        "id": "cogen-rust",
+        "aliases": [
+          "Cogen (Rust)"
+        ],
+        "extensions": [
+          ".rs.cgn"
+        ],
+        "configuration": "./language-configuration/cogen-rust.json",
+        "icon": {
+          "light": "./images/cogen.svg",
+          "dark": "./images/cogen.svg"
+        }
+      },
+      {
+        "id": "cogen-dart",
+        "aliases": [
+          "Cogen (Dart)"
+        ],
+        "extensions": [
+          ".dart.cgn"
+        ],
+        "configuration": "./language-configuration/cogen-dart.json",
+        "icon": {
+          "light": "./images/cogen.svg",
+          "dark": "./images/cogen.svg"
+        }
+      },
+      {
+        "id": "cogen-swift",
+        "aliases": [
+          "Cogen (Swift)"
+        ],
+        "extensions": [
+          ".swift.cgn"
+        ],
+        "configuration": "./language-configuration/cogen-swift.json",
+        "icon": {
+          "light": "./images/cogen.svg",
+          "dark": "./images/cogen.svg"
+        }
+      },
+      {
+        "id": "cogen-c",
+        "aliases": [
+          "Cogen (C)"
+        ],
+        "extensions": [
+          ".c.cgn",
+          ".h.cgn"
+        ],
+        "configuration": "./language-configuration/cogen-c.json",
+        "icon": {
+          "light": "./images/cogen.svg",
+          "dark": "./images/cogen.svg"
+        }
+      },
+      {
+        "id": "cogen-cpp",
+        "aliases": [
+          "Cogen (C++)"
+        ],
+        "extensions": [
+          ".cpp.cgn",
+          ".cc.cgn",
+          ".hpp.cgn"
+        ],
+        "configuration": "./language-configuration/cogen-cpp.json",
+        "icon": {
+          "light": "./images/cogen.svg",
+          "dark": "./images/cogen.svg"
+        }
+      },
+      {
+        "id": "cogen-shell",
+        "aliases": [
+          "Cogen (Shell)"
+        ],
+        "extensions": [
+          ".sh.cgn",
+          ".bash.cgn"
+        ],
+        "configuration": "./language-configuration/cogen-shell.json",
+        "icon": {
+          "light": "./images/cogen.svg",
+          "dark": "./images/cogen.svg"
+        }
+      },
+      {
+        "id": "cogen-dockerfile",
+        "aliases": [
+          "Cogen (Dockerfile)"
+        ],
+        "extensions": [
+          ".dockerfile.cgn"
+        ],
+        "configuration": "./language-configuration/cogen-dockerfile.json",
+        "icon": {
+          "light": "./images/cogen.svg",
+          "dark": "./images/cogen.svg"
+        }
+      },
+      {
+        "id": "cogen-plain",
+        "aliases": [
+          "Cogen (Plain)"
+        ],
+        "extensions": [
+          ".cgn"
+        ],
+        "configuration": "./language-configuration/cogen-plain.json",
+        "icon": {
+          "light": "./images/cogen.svg",
+          "dark": "./images/cogen.svg"
+        }
+      }
+    ],
+    "grammars": [
+      {
+        "language": "cogen-ts",
+        "scopeName": "source.cogen.ts",
+        "path": "./syntaxes/generated/cogen-ts.tmLanguage.json"
+      },
+      {
+        "language": "cogen-tsx",
+        "scopeName": "source.cogen.tsx",
+        "path": "./syntaxes/generated/cogen-tsx.tmLanguage.json"
+      },
+      {
+        "language": "cogen-js",
+        "scopeName": "source.cogen.js",
+        "path": "./syntaxes/generated/cogen-js.tmLanguage.json"
+      },
+      {
+        "language": "cogen-jsx",
+        "scopeName": "source.cogen.jsx",
+        "path": "./syntaxes/generated/cogen-jsx.tmLanguage.json"
+      },
+      {
+        "language": "cogen-json",
+        "scopeName": "source.cogen.json",
+        "path": "./syntaxes/generated/cogen-json.tmLanguage.json"
+      },
+      {
+        "language": "cogen-jsonc",
+        "scopeName": "source.cogen.jsonc",
+        "path": "./syntaxes/generated/cogen-jsonc.tmLanguage.json"
+      },
+      {
+        "language": "cogen-yaml",
+        "scopeName": "source.cogen.yaml",
+        "path": "./syntaxes/generated/cogen-yaml.tmLanguage.json"
+      },
+      {
+        "language": "cogen-toml",
+        "scopeName": "source.cogen.toml",
+        "path": "./syntaxes/generated/cogen-toml.tmLanguage.json"
+      },
+      {
+        "language": "cogen-xml",
+        "scopeName": "source.cogen.xml",
+        "path": "./syntaxes/generated/cogen-xml.tmLanguage.json"
+      },
+      {
+        "language": "cogen-dotenv",
+        "scopeName": "source.cogen.dotenv",
+        "path": "./syntaxes/generated/cogen-dotenv.tmLanguage.json"
+      },
+      {
+        "language": "cogen-sql",
+        "scopeName": "source.cogen.sql",
+        "path": "./syntaxes/generated/cogen-sql.tmLanguage.json"
+      },
+      {
+        "language": "cogen-prisma",
+        "scopeName": "source.cogen.prisma",
+        "path": "./syntaxes/generated/cogen-prisma.tmLanguage.json"
+      },
+      {
+        "language": "cogen-graphql",
+        "scopeName": "source.cogen.graphql",
+        "path": "./syntaxes/generated/cogen-graphql.tmLanguage.json"
+      },
+      {
+        "language": "cogen-html",
+        "scopeName": "source.cogen.html",
+        "path": "./syntaxes/generated/cogen-html.tmLanguage.json",
+        "embeddedLanguages": {
+          "source.css": "css",
+          "source.js": "javascript"
+        }
+      },
+      {
+        "language": "cogen-markdown",
+        "scopeName": "source.cogen.markdown",
+        "path": "./syntaxes/generated/cogen-markdown.tmLanguage.json"
+      },
+      {
+        "language": "cogen-svg",
+        "scopeName": "source.cogen.svg",
+        "path": "./syntaxes/generated/cogen-svg.tmLanguage.json"
+      },
+      {
+        "language": "cogen-css",
+        "scopeName": "source.cogen.css",
+        "path": "./syntaxes/generated/cogen-css.tmLanguage.json"
+      },
+      {
+        "language": "cogen-scss",
+        "scopeName": "source.cogen.scss",
+        "path": "./syntaxes/generated/cogen-scss.tmLanguage.json"
+      },
+      {
+        "language": "cogen-less",
+        "scopeName": "source.cogen.less",
+        "path": "./syntaxes/generated/cogen-less.tmLanguage.json"
+      },
+      {
+        "language": "cogen-edge",
+        "scopeName": "source.cogen.edge",
+        "path": "./syntaxes/generated/cogen-edge.tmLanguage.json",
+        "embeddedLanguages": {
+          "source.css": "css",
+          "source.js": "javascript"
+        }
+      },
+      {
+        "language": "cogen-blade",
+        "scopeName": "source.cogen.blade",
+        "path": "./syntaxes/generated/cogen-blade.tmLanguage.json",
+        "embeddedLanguages": {
+          "source.php": "php",
+          "source.css": "css",
+          "source.js": "javascript"
+        }
+      },
+      {
+        "language": "cogen-handlebars",
+        "scopeName": "source.cogen.handlebars",
+        "path": "./syntaxes/generated/cogen-handlebars.tmLanguage.json",
+        "embeddedLanguages": {
+          "source.css": "css",
+          "source.js": "javascript"
+        }
+      },
+      {
+        "language": "cogen-ejs",
+        "scopeName": "source.cogen.ejs",
+        "path": "./syntaxes/generated/cogen-ejs.tmLanguage.json",
+        "embeddedLanguages": {
+          "source.css": "css",
+          "source.js": "javascript"
+        }
+      },
+      {
+        "language": "cogen-nunjucks",
+        "scopeName": "source.cogen.nunjucks",
+        "path": "./syntaxes/generated/cogen-nunjucks.tmLanguage.json",
+        "embeddedLanguages": {
+          "source.css": "css",
+          "source.js": "javascript"
+        }
+      },
+      {
+        "language": "cogen-twig",
+        "scopeName": "source.cogen.twig",
+        "path": "./syntaxes/generated/cogen-twig.tmLanguage.json",
+        "embeddedLanguages": {
+          "source.css": "css",
+          "source.js": "javascript"
+        }
+      },
+      {
+        "language": "cogen-vue",
+        "scopeName": "source.cogen.vue",
+        "path": "./syntaxes/generated/cogen-vue.tmLanguage.json",
+        "embeddedLanguages": {
+          "source.css": "css",
+          "source.js": "javascript"
+        }
+      },
+      {
+        "language": "cogen-svelte",
+        "scopeName": "source.cogen.svelte",
+        "path": "./syntaxes/generated/cogen-svelte.tmLanguage.json",
+        "embeddedLanguages": {
+          "source.css": "css",
+          "source.js": "javascript"
+        }
+      },
+      {
+        "language": "cogen-php",
+        "scopeName": "source.cogen.php",
+        "path": "./syntaxes/generated/cogen-php.tmLanguage.json",
+        "embeddedLanguages": {
+          "source.php": "php",
+          "source.css": "css",
+          "source.js": "javascript"
+        }
+      },
+      {
+        "language": "cogen-java",
+        "scopeName": "source.cogen.java",
+        "path": "./syntaxes/generated/cogen-java.tmLanguage.json"
+      },
+      {
+        "language": "cogen-kotlin",
+        "scopeName": "source.cogen.kotlin",
+        "path": "./syntaxes/generated/cogen-kotlin.tmLanguage.json"
+      },
+      {
+        "language": "cogen-csharp",
+        "scopeName": "source.cogen.csharp",
+        "path": "./syntaxes/generated/cogen-csharp.tmLanguage.json"
+      },
+      {
+        "language": "cogen-go",
+        "scopeName": "source.cogen.go",
+        "path": "./syntaxes/generated/cogen-go.tmLanguage.json"
+      },
+      {
+        "language": "cogen-python",
+        "scopeName": "source.cogen.python",
+        "path": "./syntaxes/generated/cogen-python.tmLanguage.json"
+      },
+      {
+        "language": "cogen-ruby",
+        "scopeName": "source.cogen.ruby",
+        "path": "./syntaxes/generated/cogen-ruby.tmLanguage.json"
+      },
+      {
+        "language": "cogen-rust",
+        "scopeName": "source.cogen.rust",
+        "path": "./syntaxes/generated/cogen-rust.tmLanguage.json"
+      },
+      {
+        "language": "cogen-dart",
+        "scopeName": "source.cogen.dart",
+        "path": "./syntaxes/generated/cogen-dart.tmLanguage.json"
+      },
+      {
+        "language": "cogen-swift",
+        "scopeName": "source.cogen.swift",
+        "path": "./syntaxes/generated/cogen-swift.tmLanguage.json"
+      },
+      {
+        "language": "cogen-c",
+        "scopeName": "source.cogen.c",
+        "path": "./syntaxes/generated/cogen-c.tmLanguage.json"
+      },
+      {
+        "language": "cogen-cpp",
+        "scopeName": "source.cogen.cpp",
+        "path": "./syntaxes/generated/cogen-cpp.tmLanguage.json"
+      },
+      {
+        "language": "cogen-shell",
+        "scopeName": "source.cogen.shell",
+        "path": "./syntaxes/generated/cogen-shell.tmLanguage.json"
+      },
+      {
+        "language": "cogen-dockerfile",
+        "scopeName": "source.cogen.dockerfile",
+        "path": "./syntaxes/generated/cogen-dockerfile.tmLanguage.json"
+      },
+      {
+        "language": "cogen-plain",
+        "scopeName": "source.cogen.plain",
+        "path": "./syntaxes/cogen-plain.tmLanguage.json"
+      },
+      {
+        "scopeName": "cogen.injection",
+        "path": "./syntaxes/cogen.injection.tmLanguage.json",
+        "injectTo": [
+          "source.cogen.ts",
+          "source.cogen.tsx",
+          "source.cogen.js",
+          "source.cogen.jsx",
+          "source.cogen.json",
+          "source.cogen.jsonc",
+          "source.cogen.yaml",
+          "source.cogen.toml",
+          "source.cogen.xml",
+          "source.cogen.dotenv",
+          "source.cogen.sql",
+          "source.cogen.prisma",
+          "source.cogen.graphql",
+          "source.cogen.html",
+          "source.cogen.markdown",
+          "source.cogen.svg",
+          "source.cogen.css",
+          "source.cogen.scss",
+          "source.cogen.less",
+          "source.cogen.edge",
+          "source.cogen.blade",
+          "source.cogen.handlebars",
+          "source.cogen.ejs",
+          "source.cogen.nunjucks",
+          "source.cogen.twig",
+          "source.cogen.vue",
+          "source.cogen.svelte",
+          "source.cogen.php",
+          "source.cogen.java",
+          "source.cogen.kotlin",
+          "source.cogen.csharp",
+          "source.cogen.go",
+          "source.cogen.python",
+          "source.cogen.ruby",
+          "source.cogen.rust",
+          "source.cogen.dart",
+          "source.cogen.swift",
+          "source.cogen.c",
+          "source.cogen.cpp",
+          "source.cogen.shell",
+          "source.cogen.dockerfile",
+          "source.cogen.plain"
+        ]
+      }
+    ],
+    "snippets": [
+      {
+        "language": "cogen-ts",
+        "path": "./snippets/cogen.json"
+      },
+      {
+        "language": "cogen-tsx",
+        "path": "./snippets/cogen.json"
+      },
+      {
+        "language": "cogen-js",
+        "path": "./snippets/cogen.json"
+      },
+      {
+        "language": "cogen-jsx",
+        "path": "./snippets/cogen.json"
+      },
+      {
+        "language": "cogen-json",
+        "path": "./snippets/cogen.json"
+      },
+      {
+        "language": "cogen-jsonc",
+        "path": "./snippets/cogen.json"
+      },
+      {
+        "language": "cogen-yaml",
+        "path": "./snippets/cogen.json"
+      },
+      {
+        "language": "cogen-toml",
+        "path": "./snippets/cogen.json"
+      },
+      {
+        "language": "cogen-xml",
+        "path": "./snippets/cogen.json"
+      },
+      {
+        "language": "cogen-dotenv",
+        "path": "./snippets/cogen.json"
+      },
+      {
+        "language": "cogen-sql",
+        "path": "./snippets/cogen.json"
+      },
+      {
+        "language": "cogen-prisma",
+        "path": "./snippets/cogen.json"
+      },
+      {
+        "language": "cogen-graphql",
+        "path": "./snippets/cogen.json"
+      },
+      {
+        "language": "cogen-html",
+        "path": "./snippets/cogen.json"
+      },
+      {
+        "language": "cogen-markdown",
+        "path": "./snippets/cogen.json"
+      },
+      {
+        "language": "cogen-svg",
+        "path": "./snippets/cogen.json"
+      },
+      {
+        "language": "cogen-css",
+        "path": "./snippets/cogen.json"
+      },
+      {
+        "language": "cogen-scss",
+        "path": "./snippets/cogen.json"
+      },
+      {
+        "language": "cogen-less",
+        "path": "./snippets/cogen.json"
+      },
+      {
+        "language": "cogen-edge",
+        "path": "./snippets/cogen.json"
+      },
+      {
+        "language": "cogen-blade",
+        "path": "./snippets/cogen.json"
+      },
+      {
+        "language": "cogen-handlebars",
+        "path": "./snippets/cogen.json"
+      },
+      {
+        "language": "cogen-ejs",
+        "path": "./snippets/cogen.json"
+      },
+      {
+        "language": "cogen-nunjucks",
+        "path": "./snippets/cogen.json"
+      },
+      {
+        "language": "cogen-twig",
+        "path": "./snippets/cogen.json"
+      },
+      {
+        "language": "cogen-vue",
+        "path": "./snippets/cogen.json"
+      },
+      {
+        "language": "cogen-svelte",
+        "path": "./snippets/cogen.json"
+      },
+      {
+        "language": "cogen-php",
+        "path": "./snippets/cogen.json"
+      },
+      {
+        "language": "cogen-java",
+        "path": "./snippets/cogen.json"
+      },
+      {
+        "language": "cogen-kotlin",
+        "path": "./snippets/cogen.json"
+      },
+      {
+        "language": "cogen-csharp",
+        "path": "./snippets/cogen.json"
+      },
+      {
+        "language": "cogen-go",
+        "path": "./snippets/cogen.json"
+      },
+      {
+        "language": "cogen-python",
+        "path": "./snippets/cogen.json"
+      },
+      {
+        "language": "cogen-ruby",
+        "path": "./snippets/cogen.json"
+      },
+      {
+        "language": "cogen-rust",
+        "path": "./snippets/cogen.json"
+      },
+      {
+        "language": "cogen-dart",
+        "path": "./snippets/cogen.json"
+      },
+      {
+        "language": "cogen-swift",
+        "path": "./snippets/cogen.json"
+      },
+      {
+        "language": "cogen-c",
+        "path": "./snippets/cogen.json"
+      },
+      {
+        "language": "cogen-cpp",
+        "path": "./snippets/cogen.json"
+      },
+      {
+        "language": "cogen-shell",
+        "path": "./snippets/cogen.json"
+      },
+      {
+        "language": "cogen-dockerfile",
+        "path": "./snippets/cogen.json"
+      },
+      {
+        "language": "cogen-plain",
+        "path": "./snippets/cogen.json"
+      }
+    ]
+  },
+  "activationEvents": [
+    "onStartupFinished",
+    "onLanguage:cogen-ts",
+    "onLanguage:cogen-tsx",
+    "onLanguage:cogen-js",
+    "onLanguage:cogen-jsx",
+    "onLanguage:cogen-json",
+    "onLanguage:cogen-jsonc",
+    "onLanguage:cogen-yaml",
+    "onLanguage:cogen-toml",
+    "onLanguage:cogen-xml",
+    "onLanguage:cogen-dotenv",
+    "onLanguage:cogen-sql",
+    "onLanguage:cogen-prisma",
+    "onLanguage:cogen-graphql",
+    "onLanguage:cogen-html",
+    "onLanguage:cogen-markdown",
+    "onLanguage:cogen-svg",
+    "onLanguage:cogen-css",
+    "onLanguage:cogen-scss",
+    "onLanguage:cogen-less",
+    "onLanguage:cogen-edge",
+    "onLanguage:cogen-blade",
+    "onLanguage:cogen-handlebars",
+    "onLanguage:cogen-ejs",
+    "onLanguage:cogen-nunjucks",
+    "onLanguage:cogen-twig",
+    "onLanguage:cogen-vue",
+    "onLanguage:cogen-svelte",
+    "onLanguage:cogen-php",
+    "onLanguage:cogen-java",
+    "onLanguage:cogen-kotlin",
+    "onLanguage:cogen-csharp",
+    "onLanguage:cogen-go",
+    "onLanguage:cogen-python",
+    "onLanguage:cogen-ruby",
+    "onLanguage:cogen-rust",
+    "onLanguage:cogen-dart",
+    "onLanguage:cogen-swift",
+    "onLanguage:cogen-c",
+    "onLanguage:cogen-cpp",
+    "onLanguage:cogen-shell",
+    "onLanguage:cogen-dockerfile",
+    "onLanguage:cogen-plain"
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Cogen (Dart)",
+  "scopeName": "source.cogen.dart",
+  "patterns": [
+    {
+      "include": "source.dart"
+    }
+  ]
+}

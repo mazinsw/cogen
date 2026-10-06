@@ -1,0 +1,10 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Cogen (Less)",
+  "scopeName": "source.cogen.less",
+  "patterns": [
+    {
+      "include": "source.css.less"
+    }
+  ]
+}

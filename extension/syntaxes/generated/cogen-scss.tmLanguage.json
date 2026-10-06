@@ -1,0 +1,10 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Cogen (SCSS)",
+  "scopeName": "source.cogen.scss",
+  "patterns": [
+    {
+      "include": "source.css.scss"
+    }
+  ]
+}

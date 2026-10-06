@@ -1,0 +1,10 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Cogen (Svelte)",
+  "scopeName": "source.cogen.svelte",
+  "patterns": [
+    {
+      "include": "source.svelte"
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+const name = '$[field.replace(a,b(c))]';

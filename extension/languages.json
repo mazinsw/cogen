@@ -1,0 +1,667 @@
+[
+  {
+    "id": "ts",
+    "name": "TypeScript",
+    "hostLanguage": "typescript",
+    "extensions": [
+      "ts",
+      "mts",
+      "cts"
+    ],
+    "scope": "source.ts",
+    "comments": {
+      "lineComment": "//",
+      "blockComment": [
+        "/*",
+        "*/"
+      ]
+    }
+  },
+  {
+    "id": "tsx",
+    "name": "TypeScript React",
+    "hostLanguage": "typescriptreact",
+    "extensions": [
+      "tsx"
+    ],
+    "scope": "source.tsx",
+    "comments": {
+      "lineComment": "//",
+      "blockComment": [
+        "/*",
+        "*/"
+      ]
+    }
+  },
+  {
+    "id": "js",
+    "name": "JavaScript",
+    "hostLanguage": "javascript",
+    "extensions": [
+      "js",
+      "mjs",
+      "cjs"
+    ],
+    "scope": "source.js",
+    "comments": {
+      "lineComment": "//",
+      "blockComment": [
+        "/*",
+        "*/"
+      ]
+    }
+  },
+  {
+    "id": "jsx",
+    "name": "JavaScript React",
+    "hostLanguage": "javascriptreact",
+    "extensions": [
+      "jsx"
+    ],
+    "scope": "source.js.jsx",
+    "comments": {
+      "lineComment": "//",
+      "blockComment": [
+        "/*",
+        "*/"
+      ]
+    }
+  },
+  {
+    "id": "json",
+    "name": "JSON",
+    "hostLanguage": "json",
+    "extensions": [
+      "json"
+    ],
+    "scope": "source.json",
+    "comments": {
+      "lineComment": "//",
+      "blockComment": [
+        "/*",
+        "*/"
+      ]
+    }
+  },
+  {
+    "id": "jsonc",
+    "name": "JSON with Comments",
+    "hostLanguage": "jsonc",
+    "extensions": [
+      "jsonc"
+    ],
+    "scope": "source.json.comments",
+    "comments": {
+      "lineComment": "//",
+      "blockComment": [
+        "/*",
+        "*/"
+      ]
+    }
+  },
+  {
+    "id": "yaml",
+    "name": "YAML",
+    "hostLanguage": "yaml",
+    "extensions": [
+      "yaml",
+      "yml"
+    ],
+    "scope": "source.yaml",
+    "comments": {
+      "lineComment": "#"
+    }
+  },
+  {
+    "id": "toml",
+    "name": "TOML",
+    "hostLanguage": "toml",
+    "extensions": [
+      "toml"
+    ],
+    "scope": "source.toml",
+    "comments": {
+      "lineComment": "#"
+    }
+  },
+  {
+    "id": "xml",
+    "name": "XML",
+    "hostLanguage": "xml",
+    "extensions": [
+      "xml",
+      "xsd",
+      "xsl"
+    ],
+    "scope": "text.xml",
+    "comments": {
+      "blockComment": [
+        "<!--",
+        "-->"
+      ]
+    }
+  },
+  {
+    "id": "dotenv",
+    "name": "Environment",
+    "hostLanguage": "dotenv",
+    "extensions": [
+      "env"
+    ],
+    "scope": "source.dotenv",
+    "comments": {
+      "lineComment": "#"
+    }
+  },
+  {
+    "id": "sql",
+    "name": "SQL",
+    "hostLanguage": "sql",
+    "extensions": [
+      "sql"
+    ],
+    "scope": "source.sql",
+    "comments": {
+      "lineComment": "--",
+      "blockComment": [
+        "/*",
+        "*/"
+      ]
+    }
+  },
+  {
+    "id": "prisma",
+    "name": "Prisma",
+    "hostLanguage": "prisma",
+    "extensions": [
+      "prisma"
+    ],
+    "scope": "source.prisma",
+    "comments": {
+      "lineComment": "//"
+    }
+  },
+  {
+    "id": "graphql",
+    "name": "GraphQL",
+    "hostLanguage": "graphql",
+    "extensions": [
+      "graphql",
+      "gql"
+    ],
+    "scope": "source.graphql",
+    "comments": {
+      "lineComment": "#"
+    }
+  },
+  {
+    "id": "html",
+    "name": "HTML",
+    "hostLanguage": "html",
+    "extensions": [
+      "html",
+      "htm"
+    ],
+    "scope": "text.html.basic",
+    "comments": {
+      "blockComment": [
+        "<!--",
+        "-->"
+      ]
+    },
+    "embeddedLanguages": {
+      "source.css": "css",
+      "source.js": "javascript"
+    }
+  },
+  {
+    "id": "markdown",
+    "name": "Markdown",
+    "hostLanguage": "markdown",
+    "extensions": [
+      "md",
+      "markdown"
+    ],
+    "scope": "text.html.markdown",
+    "comments": {
+      "blockComment": [
+        "<!--",
+        "-->"
+      ]
+    }
+  },
+  {
+    "id": "svg",
+    "name": "SVG",
+    "hostLanguage": "xml",
+    "extensions": [
+      "svg"
+    ],
+    "scope": "text.xml.svg",
+    "comments": {
+      "blockComment": [
+        "<!--",
+        "-->"
+      ]
+    }
+  },
+  {
+    "id": "css",
+    "name": "CSS",
+    "hostLanguage": "css",
+    "extensions": [
+      "css"
+    ],
+    "scope": "source.css",
+    "comments": {
+      "blockComment": [
+        "/*",
+        "*/"
+      ]
+    }
+  },
+  {
+    "id": "scss",
+    "name": "SCSS",
+    "hostLanguage": "scss",
+    "extensions": [
+      "scss"
+    ],
+    "scope": "source.css.scss",
+    "comments": {
+      "lineComment": "//",
+      "blockComment": [
+        "/*",
+        "*/"
+      ]
+    }
+  },
+  {
+    "id": "less",
+    "name": "Less",
+    "hostLanguage": "less",
+    "extensions": [
+      "less"
+    ],
+    "scope": "source.css.less",
+    "comments": {
+      "lineComment": "//",
+      "blockComment": [
+        "/*",
+        "*/"
+      ]
+    }
+  },
+  {
+    "id": "edge",
+    "name": "Edge",
+    "hostLanguage": "edge",
+    "extensions": [
+      "edge"
+    ],
+    "scope": "text.html.edge",
+    "comments": {
+      "blockComment": [
+        "{{--",
+        "--}}"
+      ]
+    },
+    "embeddedLanguages": {
+      "source.css": "css",
+      "source.js": "javascript"
+    }
+  },
+  {
+    "id": "blade",
+    "name": "Blade",
+    "hostLanguage": "blade",
+    "extensions": [
+      "blade.php"
+    ],
+    "scope": "text.html.php.blade",
+    "comments": {
+      "blockComment": [
+        "{{--",
+        "--}}"
+      ]
+    },
+    "embeddedLanguages": {
+      "source.php": "php",
+      "source.css": "css",
+      "source.js": "javascript"
+    }
+  },
+  {
+    "id": "handlebars",
+    "name": "Handlebars",
+    "hostLanguage": "handlebars",
+    "extensions": [
+      "hbs",
+      "handlebars"
+    ],
+    "scope": "text.html.handlebars",
+    "comments": {
+      "blockComment": [
+        "{{!--",
+        "--}}"
+      ]
+    },
+    "embeddedLanguages": {
+      "source.css": "css",
+      "source.js": "javascript"
+    }
+  },
+  {
+    "id": "ejs",
+    "name": "EJS",
+    "hostLanguage": "html",
+    "extensions": [
+      "ejs"
+    ],
+    "scope": "text.html.ejs",
+    "comments": {
+      "blockComment": [
+        "<%#",
+        "%>"
+      ]
+    },
+    "embeddedLanguages": {
+      "source.css": "css",
+      "source.js": "javascript"
+    }
+  },
+  {
+    "id": "nunjucks",
+    "name": "Nunjucks",
+    "hostLanguage": "nunjucks",
+    "extensions": [
+      "njk"
+    ],
+    "scope": "text.html.nunjucks",
+    "comments": {
+      "blockComment": [
+        "{#",
+        "#}"
+      ]
+    },
+    "embeddedLanguages": {
+      "source.css": "css",
+      "source.js": "javascript"
+    }
+  },
+  {
+    "id": "twig",
+    "name": "Twig",
+    "hostLanguage": "twig",
+    "extensions": [
+      "twig"
+    ],
+    "scope": "text.html.twig",
+    "comments": {
+      "blockComment": [
+        "{#",
+        "#}"
+      ]
+    },
+    "embeddedLanguages": {
+      "source.css": "css",
+      "source.js": "javascript"
+    }
+  },
+  {
+    "id": "vue",
+    "name": "Vue",
+    "hostLanguage": "vue",
+    "extensions": [
+      "vue"
+    ],
+    "scope": "source.vue",
+    "comments": {
+      "blockComment": [
+        "<!--",
+        "-->"
+      ]
+    },
+    "embeddedLanguages": {
+      "source.css": "css",
+      "source.js": "javascript"
+    }
+  },
+  {
+    "id": "svelte",
+    "name": "Svelte",
+    "hostLanguage": "svelte",
+    "extensions": [
+      "svelte"
+    ],
+    "scope": "source.svelte",
+    "comments": {
+      "blockComment": [
+        "<!--",
+        "-->"
+      ]
+    },
+    "embeddedLanguages": {
+      "source.css": "css",
+      "source.js": "javascript"
+    }
+  },
+  {
+    "id": "php",
+    "name": "PHP",
+    "hostLanguage": "php",
+    "extensions": [
+      "php"
+    ],
+    "scope": "text.html.php",
+    "comments": {
+      "lineComment": "//",
+      "blockComment": [
+        "/*",
+        "*/"
+      ]
+    },
+    "embeddedLanguages": {
+      "source.php": "php",
+      "source.css": "css",
+      "source.js": "javascript"
+    }
+  },
+  {
+    "id": "java",
+    "name": "Java",
+    "hostLanguage": "java",
+    "extensions": [
+      "java"
+    ],
+    "scope": "source.java",
+    "comments": {
+      "lineComment": "//",
+      "blockComment": [
+        "/*",
+        "*/"
+      ]
+    }
+  },
+  {
+    "id": "kotlin",
+    "name": "Kotlin",
+    "hostLanguage": "kotlin",
+    "extensions": [
+      "kt",
+      "kts"
+    ],
+    "scope": "source.kotlin",
+    "comments": {
+      "lineComment": "//",
+      "blockComment": [
+        "/*",
+        "*/"
+      ]
+    }
+  },
+  {
+    "id": "csharp",
+    "name": "C#",
+    "hostLanguage": "csharp",
+    "extensions": [
+      "cs"
+    ],
+    "scope": "source.cs",
+    "comments": {
+      "lineComment": "//",
+      "blockComment": [
+        "/*",
+        "*/"
+      ]
+    }
+  },
+  {
+    "id": "go",
+    "name": "Go",
+    "hostLanguage": "go",
+    "extensions": [
+      "go"
+    ],
+    "scope": "source.go",
+    "comments": {
+      "lineComment": "//",
+      "blockComment": [
+        "/*",
+        "*/"
+      ]
+    }
+  },
+  {
+    "id": "python",
+    "name": "Python",
+    "hostLanguage": "python",
+    "extensions": [
+      "py"
+    ],
+    "scope": "source.python",
+    "comments": {
+      "lineComment": "#"
+    }
+  },
+  {
+    "id": "ruby",
+    "name": "Ruby",
+    "hostLanguage": "ruby",
+    "extensions": [
+      "rb"
+    ],
+    "scope": "source.ruby",
+    "comments": {
+      "lineComment": "#"
+    }
+  },
+  {
+    "id": "rust",
+    "name": "Rust",
+    "hostLanguage": "rust",
+    "extensions": [
+      "rs"
+    ],
+    "scope": "source.rust",
+    "comments": {
+      "lineComment": "//",
+      "blockComment": [
+        "/*",
+        "*/"
+      ]
+    }
+  },
+  {
+    "id": "dart",
+    "name": "Dart",
+    "hostLanguage": "dart",
+    "extensions": [
+      "dart"
+    ],
+    "scope": "source.dart",
+    "comments": {
+      "lineComment": "//",
+      "blockComment": [
+        "/*",
+        "*/"
+      ]
+    }
+  },
+  {
+    "id": "swift",
+    "name": "Swift",
+    "hostLanguage": "swift",
+    "extensions": [
+      "swift"
+    ],
+    "scope": "source.swift",
+    "comments": {
+      "lineComment": "//",
+      "blockComment": [
+        "/*",
+        "*/"
+      ]
+    }
+  },
+  {
+    "id": "c",
+    "name": "C",
+    "hostLanguage": "c",
+    "extensions": [
+      "c",
+      "h"
+    ],
+    "scope": "source.c",
+    "comments": {
+      "lineComment": "//",
+      "blockComment": [
+        "/*",
+        "*/"
+      ]
+    }
+  },
+  {
+    "id": "cpp",
+    "name": "C++",
+    "hostLanguage": "cpp",
+    "extensions": [
+      "cpp",
+      "cc",
+      "hpp"
+    ],
+    "scope": "source.cpp",
+    "comments": {
+      "lineComment": "//",
+      "blockComment": [
+        "/*",
+        "*/"
+      ]
+    }
+  },
+  {
+    "id": "shell",
+    "name": "Shell",
+    "hostLanguage": "shellscript",
+    "extensions": [
+      "sh",
+      "bash"
+    ],
+    "scope": "source.shell",
+    "comments": {
+      "lineComment": "#"
+    }
+  },
+  {
+    "id": "dockerfile",
+    "name": "Dockerfile",
+    "hostLanguage": "dockerfile",
+    "extensions": [
+      "dockerfile"
+    ],
+    "scope": "source.dockerfile",
+    "comments": {
+      "lineComment": "#"
+    }
+  }
+]

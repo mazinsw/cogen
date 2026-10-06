@@ -1,0 +1,13 @@
+import { Model } from './model';
+
+export class $[Table.norm] extends Model {
+$[field.each]
+  $[field.if(boolean)]
+  public $[fIeld.norm]: boolean;
+  $[field.else.if(integer)]
+  public $[fIeld.norm]: number;
+  $[field.else]
+  public $[fIeld.norm]: string;
+  $[field.end]
+$[field.end]
+}

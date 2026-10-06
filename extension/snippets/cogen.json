@@ -1,0 +1,22 @@
+{
+  "Each loop": {
+    "prefix": ["each", "$each"],
+    "body": ["\\$[${1|field,table,reference,inherited,index,unique,primary,constraint,foreign,option,comment,description|}.each${2:(${3:condition})}]", "$0", "\\$[$1.end]"],
+    "description": "Loop over the items of a level"
+  },
+  "If": {
+    "prefix": ["if", "$if"],
+    "body": ["\\$[${1|field,table,reference,inherited,descriptor,index,unique,primary,constraint,foreign|}.if(${2:condition})]$0\\$[$1.end]"],
+    "description": "Condition block"
+  },
+  "If else": {
+    "prefix": ["ifelse", "$ifelse"],
+    "body": ["\\$[${1|field,table,reference,inherited,descriptor,index,unique,primary,constraint,foreign|}.if(${2:condition})]${3}\\$[$1.else]${4}\\$[$1.end]$0"],
+    "description": "Condition block with else"
+  },
+  "Replace": {
+    "prefix": ["replace", "$replace"],
+    "body": ["\\$[${1|field,table|}.${2:norm}.replace(${3:pattern},${4:replacement})]$0"],
+    "description": "Regex replace on a value"
+  }
+}

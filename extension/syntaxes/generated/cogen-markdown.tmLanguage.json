@@ -1,0 +1,10 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Cogen (Markdown)",
+  "scopeName": "source.cogen.markdown",
+  "patterns": [
+    {
+      "include": "text.html.markdown"
+    }
+  ]
+}

@@ -1,0 +1,241 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Cogen command injection",
+  "scopeName": "cogen.injection",
+  "injectionSelector": "L:source.cogen -meta.command.cogen",
+  "patterns": [
+    {
+      "include": "#command"
+    }
+  ],
+  "repository": {
+    "command": {
+      "name": "meta.command.cogen",
+      "begin": "\\$\\[",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.command.begin.cogen"
+        }
+      },
+      "end": "\\]",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.command.end.cogen"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#level"
+        },
+        {
+          "include": "#regex-call"
+        },
+        {
+          "include": "#replace-call"
+        },
+        {
+          "include": "#control"
+        },
+        {
+          "include": "#condition"
+        },
+        {
+          "include": "#property"
+        },
+        {
+          "include": "#operator"
+        },
+        {
+          "include": "#accessor"
+        }
+      ]
+    },
+    "level": {
+      "match": "(?i)(?<=\\$\\[)(?:table|inherited|reference|field|descriptor|image|primary_key|primary|option|constraint|index|unique|foreign|comment|description)\\b",
+      "name": "entity.name.namespace.level.cogen"
+    },
+    "control": {
+      "match": "(?i)(?<=\\.)(~?)(each|reverse_each|if|else|end|exists|contains)\\b",
+      "captures": {
+        "1": {
+          "name": "keyword.operator.logical.not.cogen"
+        },
+        "2": {
+          "name": "keyword.control.cogen"
+        }
+      }
+    },
+    "property": {
+      "match": "(?<=\\.)\\w+",
+      "name": "variable.other.property.cogen"
+    },
+    "accessor": {
+      "match": "\\.",
+      "name": "punctuation.accessor.cogen"
+    },
+    "operator": {
+      "match": "[~&|]",
+      "name": "keyword.operator.logical.cogen"
+    },
+    "condition": {
+      "name": "meta.condition.cogen",
+      "begin": "\\(",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.section.parens.begin.cogen"
+        }
+      },
+      "end": "\\)",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.section.parens.end.cogen"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#operator"
+        },
+        {
+          "match": "(?i)\\b(?:bigint|blob|boolean|char|currency|date|datetime|double|enum|float|int|integer|json|string|text|time|timestamp|tinyint)\\b",
+          "name": "support.type.cogen"
+        },
+        {
+          "match": "\\w+",
+          "name": "entity.other.attribute-name.cogen"
+        },
+        {
+          "include": "#condition"
+        }
+      ]
+    },
+    "regex-call": {
+      "begin": "(?i)(?<=\\.|~)(match|finds)(\\()",
+      "beginCaptures": {
+        "1": {
+          "name": "keyword.control.cogen"
+        },
+        "2": {
+          "name": "punctuation.section.parens.begin.cogen"
+        }
+      },
+      "end": "\\)",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.section.parens.end.cogen"
+        }
+      },
+      "contentName": "string.regexp.cogen",
+      "patterns": [
+        {
+          "include": "#regex-content"
+        }
+      ]
+    },
+    "regex-content": {
+      "patterns": [
+        {
+          "match": "\\\\.",
+          "name": "constant.character.escape.cogen"
+        },
+        {
+          "begin": "\\(",
+          "end": "\\)",
+          "name": "meta.group.regexp.cogen",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.definition.group.regexp.cogen"
+            }
+          },
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.definition.group.regexp.cogen"
+            }
+          },
+          "patterns": [
+            {
+              "include": "#regex-content"
+            }
+          ]
+        }
+      ]
+    },
+    "replace-call": {
+      "begin": "(?i)(?<=\\.)(replace)(\\()",
+      "beginCaptures": {
+        "1": {
+          "name": "support.function.replace.cogen"
+        },
+        "2": {
+          "name": "punctuation.section.parens.begin.cogen"
+        }
+      },
+      "end": "\\)",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.section.parens.end.cogen"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#replacement"
+        },
+        {
+          "match": "\\\\.",
+          "name": "string.regexp.cogen constant.character.escape.cogen"
+        },
+        {
+          "begin": "\\(",
+          "end": "\\)",
+          "name": "string.regexp.cogen meta.group.regexp.cogen",
+          "patterns": [
+            {
+              "include": "#regex-content"
+            }
+          ]
+        },
+        {
+          "match": "[^\\\\(),]+",
+          "name": "string.regexp.cogen"
+        }
+      ]
+    },
+    "replacement": {
+      "begin": ",",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.separator.arguments.cogen"
+        }
+      },
+      "end": "(?=\\))",
+      "patterns": [
+        {
+          "match": "(,)([gimuy]*)(?=\\))",
+          "captures": {
+            "1": {
+              "name": "punctuation.separator.arguments.cogen"
+            },
+            "2": {
+              "name": "storage.modifier.flags.cogen"
+            }
+          }
+        },
+        {
+          "match": "\\\\[LUE]",
+          "name": "constant.character.escape.case.cogen"
+        },
+        {
+          "match": "\\$\\d+",
+          "name": "variable.other.capture.cogen"
+        },
+        {
+          "match": "\\\\.",
+          "name": "constant.character.escape.cogen"
+        },
+        {
+          "match": "[^\\\\,)$]+|\\$",
+          "name": "string.unquoted.replacement.cogen"
+        }
+      ]
+    }
+  }
+}

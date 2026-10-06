@@ -1,0 +1,5 @@
+<ul>
+$[table.each]
+  <li class="$[table.style]">$[table.name]</li>
+$[table.end]
+</ul>

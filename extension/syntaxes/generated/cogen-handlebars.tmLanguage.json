@@ -1,0 +1,10 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Cogen (Handlebars)",
+  "scopeName": "source.cogen.handlebars",
+  "patterns": [
+    {
+      "include": "text.html.handlebars"
+    }
+  ]
+}

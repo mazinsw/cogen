@@ -1,0 +1,10 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Cogen (Shell)",
+  "scopeName": "source.cogen.shell",
+  "patterns": [
+    {
+      "include": "source.shell"
+    }
+  ]
+}
