@@ -39,28 +39,32 @@ export function resolveSlashs(cmm: string): string {
 }
 
 export function recase(wordcase: string, input: string, upperDb?: string) {
-  let entry = input;
-  let result = entry;
-  if (canUpper(entry, upperDb)) {
-    entry = entry.toUpperCase();
-  }
-  if (
-    isLowerCase(wordcase[0]) &&
-    wordcase.length > 1 &&
-    isUpperCase(wordcase[1])
-  )
-    result = camelCase(entry);
-  else if (isLowerCase(wordcase[0])) result = result.toLowerCase();
+  const camel =
+    isLowerCase(wordcase[0]) && wordcase.length > 1 && isUpperCase(wordcase[1]);
+  let result = input;
+  if (camel) result = camelCase(input);
+  else if (isLowerCase(wordcase[0])) return input.toLowerCase();
   else if (wordcase.length > 1 && isUpperCase(wordcase[1]))
-    result = result.toUpperCase();
+    return input.toUpperCase();
   else if (
     wordcase.length > 1 &&
     isUpperCase(wordcase[0]) &&
     isLowerCase(wordcase[1])
   )
-    result = result.substring(0, 1).toUpperCase() + result.substring(1);
-  else result = entry;
-  return result;
+    result = input.substring(0, 1).toUpperCase() + input.substring(1);
+  return upperWords(result, upperDb, camel);
+}
+
+/** uppercase the words of the name listed in upperDb, i.e. CpfCliente -> CPFCliente */
+function upperWords(name: string, upperDb?: string, keepFirst?: boolean) {
+  if (!upperDb) {
+    return name;
+  }
+  return name.replace(/[A-Za-z][a-z0-9]*/g, (word, offset) =>
+    (!keepFirst || offset > 0) && canUpper(word, upperDb)
+      ? word.toUpperCase()
+      : word,
+  );
 }
 
 export function canUpper(entry: string, db?: string): boolean {

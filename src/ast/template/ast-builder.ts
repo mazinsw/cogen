@@ -329,6 +329,9 @@ export class ASTBuilder implements TemplateParserListener {
         case !!prop.tableProp().K_EXTRA():
           constant.addProperty(Constant.Property.EXTRA);
           break;
+        case !!prop.tableProp().K_IDENTIFIER():
+          constant.addProperty(Constant.Property.IDENTIFIER);
+          break;
       }
     });
     block.addStatement(this.addReplaceStmt(constant, ctx.replaceProp()));
@@ -432,6 +435,9 @@ export class ASTBuilder implements TemplateParserListener {
           break;
         case !!prop.fieldProp().K_NOID():
           constant.addProperty(Constant.Property.NO_ID);
+          break;
+        case !!prop.fieldProp().K_IDENTIFIER():
+          constant.addProperty(Constant.Property.IDENTIFIER);
           break;
       }
     });

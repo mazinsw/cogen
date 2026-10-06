@@ -19,7 +19,7 @@ export class Configuration {
     this.setProjectFile('config.properties');
     this.setTemplatePath('scripts/template/');
     this.setOutputPath('storage/generated/');
-    this.setDictionary('');
+    this.setLang(DEFAULT_LANG);
   }
 
   public getProjectFile() {
@@ -71,8 +71,10 @@ export class Configuration {
     return this.lang;
   }
 
+  /** set the language and its default despluralization rules */
   public setLang(lang: string) {
     this.lang = lang;
+    this.setDictionary(defaultDictionary(lang));
     return this;
   }
 
@@ -133,13 +135,11 @@ export class Configuration {
     if (props.has('outputPath')) this.outputPath = props.get('outputPath');
     if (props.has('templatePath'))
       this.templatePath = props.get('templatePath');
-    this.lang = props.get('lang', 'pt-BR');
-    let defaultDict = 'oes|aes/3/ao;is/2/l/4;res|ses/2/;es|as|os|ds/1/;ns/2/m';
-    if (['en', 'en-us'].includes(this.lang.toLowerCase())) {
-      defaultDict = 'ies/3/y;s/1/';
-    }
-    this.setDictionary(props.get('dict.' + this.lang, defaultDict));
-    this.setUpperWords(props.get('upperWords'));
+    if (props.has('lang')) this.setLang(props.get('lang'));
+    if (props.has('dict.' + this.lang))
+      this.setDictionary(props.get('dict.' + this.lang));
+    if (props.has('upperWords')) this.setUpperWords(props.get('upperWords'));
+    if (props.has('legacy')) this.legacy = props.get('legacy') === 'true';
     if (props.has('filter')) this.setFilterTables(props.get('filter'));
     if (props.has('exclude')) this.setExcludeTables(props.get('exclude'));
   }
@@ -150,12 +150,27 @@ export class Configuration {
     props.set('outputPath', this.outputPath);
     props.set('templatePath', this.templatePath);
     props.set('upperWords', this.getUpperWords());
+    props.set('lang', this.lang);
+    props.set('dict.' + this.lang, this.dictionary.join(';'));
+    if (this.legacy) props.set('legacy', 'true');
     if (this.filterTables.length > 0)
       props.set('filter', this.filterTables.join(','));
     if (this.excludeTables.length > 0)
       props.set('exclude', this.excludeTables.join(','));
     await props.save();
   }
+}
+
+const DEFAULT_LANG = 'pt-BR';
+
+export function isEnglish(lang?: string): boolean {
+  return /^en(-|$)/i.test(lang || '');
+}
+
+function defaultDictionary(lang: string): string {
+  return isEnglish(lang)
+    ? 'ies/3/y;s/1/'
+    : 'oes|aes/3/ao;is/2/l/4;res|ses/2/;es|as|os|ds/1/;ns/2/m';
 }
 
 function parseTableList(tables: string): string[] {

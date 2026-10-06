@@ -3,6 +3,8 @@ import { SourceContext } from '@/ast/entity/source';
 
 export abstract class LoopBlock extends ConditionBlock {
   public reverse?: boolean;
+  /** the condition chose what to iterate (legacy loops), don't filter with it */
+  protected conditionSelects = false;
 
   public abstract buildContext(
     context: SourceContext,
@@ -15,7 +17,10 @@ export abstract class LoopBlock extends ConditionBlock {
     const length = this.getLength(context);
     for (let index = 0; index < length; index++) {
       const newContext = this.buildContext(context, index, runIndex);
-      const loop = !this.condition || this.condition.check(newContext);
+      const loop =
+        !this.condition ||
+        this.conditionSelects ||
+        this.condition.check(newContext);
       if (!loop) {
         continue;
       }

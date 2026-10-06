@@ -31,7 +31,7 @@ src/
                    field-base-constant.ts / table-base-constant.ts compute property values
   util/            configuration, .properties, naming (normalize, unix, plural, gender), replace()
 tests/             jest specs mirroring src/
-samples/           example schema and legacy-mode templates
+samples/           example schema and templates
 extension/         VS Code extension; scripts/gen-vocabulary.mjs builds completion/hover from the grammar and docs/templating.md
 docs/              user documentation
 ```
@@ -52,4 +52,4 @@ Imports use the `@/` alias for `src/`.
 - Prettier: single quotes, trailing commas.
 - Conventional commits: `feat:`, `fix:`, `docs:`, `build:`...
 - Docs are English. Every example in `docs/` must produce the output shown; check by running it.
-- Keep `samples/` working in legacy mode (`-l`).
+- Keep `samples/` generating the same output; compare before/after with `npm run cogen -- -p samples/cogen.properties -t samples/<dir> -o <out> samples/input.sql`.

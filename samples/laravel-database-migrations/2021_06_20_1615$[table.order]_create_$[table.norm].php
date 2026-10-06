@@ -18,14 +18,14 @@ $[field.each(all)]
     $[field.if(primary)]
         $[field.if(enum)]
             $[field.if(few_fields)]
-            $table->enum('$[field]', [$[field.each(option)]$[field.if(first)]$[field.else], $[field.end]'$[field.option]'$[field.end]])$[field.if(null)]->nullable()$[field.end]$[field.if(default)]->default($[field.default])$[field.end];
+            $table->enum('$[field]', [$[option.each]$[field.if(first)]$[field.else], $[field.end]'$[field.option]'$[option.end]])$[field.if(null)]->nullable()$[field.end]$[field.if(default)]->default($[field.default])$[field.end];
             $[field.else]
             $table->enum(
                 '$[field]',
                 [
-                $[field.each(option)]
+                $[option.each]
                     '$[field.option]',
-                $[field.end]
+                $[option.end]
                 ]
             )$[field.if(null)]->nullable()$[field.end]$[field.if(default)]->default($[field.default])$[field.end];
             $[field.end]
@@ -66,14 +66,14 @@ $[field.each(all)]
             $table->boolean('$[field]')$[field.if(null)]->nullable()$[field.end]$[field.if(info)]->default($[Field.info])$[field.end];
     $[field.else.if(enum)]
         $[field.if(few_fields)]
-            $table->enum('$[field]', [$[field.each(option)]$[field.if(first)]$[field.else], $[field.end]'$[field.option]'$[field.end]])$[field.if(null)]->nullable()$[field.end]$[field.if(default)]->default($[field.default])$[field.end];
+            $table->enum('$[field]', [$[option.each]$[field.if(first)]$[field.else], $[field.end]'$[field.option]'$[option.end]])$[field.if(null)]->nullable()$[field.end]$[field.if(default)]->default($[field.default])$[field.end];
         $[field.else]
             $table->enum(
                 '$[field]',
                 [
-            $[field.each(option)]
+            $[option.each]
                     '$[field.option]',
-            $[field.end]
+            $[option.end]
                 ]
             )$[field.if(null)]->nullable()$[field.end]$[field.if(default)]->default($[field.default])$[field.end];
         $[field.end]
@@ -99,9 +99,7 @@ $[field.each(all)]
         $[field.end]
     $[field.end]
 $[field.end]
-$[table.each(unique)]
-    $[unique.if(primary)]
-    $[unique.else]
+$[unique.each]
         $[unique.if(few_fields)]
             $table->unique([$[unique.each(all)]$[field.if(first)]$[field.else], $[field.end]'$[field]'$[unique.end]]);
         $[unique.else]
@@ -114,9 +112,8 @@ $[table.each(unique)]
                 '$[unique.name]'
             );
         $[unique.end]
-    $[unique.end]
-$[table.end]
-$[table.each(index)]
+$[unique.end]
+$[index.each]
     $[index.if(few_fields)]
             $table->index([$[index.each(all)]$[field.if(first)]$[field.else], $[field.end]'$[field]'$[index.end]]);
     $[index.else]
@@ -129,7 +126,7 @@ $[table.each(index)]
                 '$[index.name]'
             );
     $[index.end]
-$[table.end]
+$[index.end]
 $[field.each(reference)]
             $table->foreign('$[field]')
                 ->references('id')->on('$[reference]')

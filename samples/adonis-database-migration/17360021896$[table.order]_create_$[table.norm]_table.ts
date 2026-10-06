@@ -88,16 +88,13 @@ $[field.end]
 $[table.exists(unique)]
 
 $[table.end]
-$[table.each(unique)]
-$[unique.if(primary)]
-$[unique.else]
+$[unique.each]
       table.unique([$[unique.each(all)]$[field.if(non_first)], $[field.end]'$[field]'$[unique.end]])
 $[unique.end]
-$[table.end]
 $[table.exists(index)]
 
 $[table.end]
-$[table.each(index)]
+$[index.each]
 $[index.if(few_fields)]
       table.index([$[index.each(all)]$[field.if(non_first)], $[field.end]'$[field]'$[index.end]]$[index.if(fulltext)], undefined, 'FULLTEXT'$[index.end])
 $[index.else]
@@ -112,7 +109,7 @@ $[index.end]
 $[index.end]
       )
 $[index.end]
-$[table.end]
+$[index.end]
     })
   }
 

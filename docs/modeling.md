@@ -87,7 +87,7 @@ A comment command is a bracketed tag at the **end** of a table or column comment
 | `[L:style\|extra]` | table, field | CSS class / style name and an extra one. | `$[table.style]`, `$[table.style.extra]`, `$[field.style]` |
 | `[K:package\|path]` | table | Package / namespace and its directory. | `$[table.package]`, `$[table.path]`, `package` and `path` conditions |
 | `[H:parent_table]` | table | The table extends another one. | `$[table.inherited]`, `$[inherited.*]`, `inherited` condition |
-| `[ID:value]` | table, field | Free identifier. | Parsed, but not reachable from templates yet. |
+| `[ID:value]` | table, field | Free identifier. | `$[table.identifier]`, `$[field.identifier]` |
 
 ## Names
 
@@ -108,11 +108,12 @@ The `$[...]` level casing changes the output: see [Output casing](templating.md#
 
 Table names are singularized with a dictionary of suffix rules:
 
-- No project file: no rules, names are not singularized.
-- With a [project file](cli.md#project-file): rules for its `lang` key, `pt-BR` by default. Set `lang=en` for English schemas.
+- The language is `pt-BR` by default. Set `--lang en` or `lang=en` in the [project file](cli.md#project-file) for English schemas.
 - [`-d`](cli.md#despluralize-rules) or the `dict.<lang>` key replaces the rules.
 
-Field names are singularized only by `$[field.norm.singular]`. Plurals are built by appending `s` to the singular (`category` → `categorys`) unless `[N:...]` / `[U:...]` gives one, so give irregular plurals explicitly: `COMMENT='[U:category|categories]'`.
+Field names are singularized only by `$[field.norm.singular]`.
+
+Plurals are built from the singular with the language rules: `category` → `categories`, `box` → `boxes` in English; `opcao` → `opcoes`, `papel` → `papeis` in Portuguese. Give irregular ones explicitly: `COMMENT='[U:person|people]'`.
 
 ### Numbered fields
 
@@ -120,7 +121,7 @@ Fields that differ only by a trailing number, like `phone1`, `phone2`, form an a
 
 ### Uppercase words
 
-The `upperWords` project key (or `-u "|CPF|CNPJ|"`) lists acronyms meant to stay uppercase when a name is recased. It only applies when the whole name equals a listed word, and the common casings (`field`, `Field`, `FIELD`) override it, so in practice it rarely changes the output.
+The `upperWords` project key (or `-u "|CPF|CNPJ|"`) lists acronyms kept uppercase inside recased names: with `|CPF|`, a field `cpf_number` gives `$[Field.norm]` → `CPFNumber` and `$[fIeld.norm]` → `cpfNumber`. All-lowercase levels (`$[field.norm]`) stay lowercase.
 
 ### Gender
 

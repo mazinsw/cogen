@@ -45,6 +45,7 @@ export class TableEach extends LoopBlock {
   }
 
   public getLength(context: SourceContext): number {
+    this.conditionSelects = false;
     if (
       !(this.condition instanceof ExpressionCondition) ||
       !context.config.legacy
@@ -53,10 +54,12 @@ export class TableEach extends LoopBlock {
     }
     const expressionCondition = this.condition as ExpressionCondition;
     if (expressionCondition.expression === Expression.PROPERTY_INDEX) {
+      this.conditionSelects = true;
       this.legacyIndex = new TableIndexEach();
       return this.legacyIndex.getLength(context);
     }
     if (expressionCondition.expression === Expression.ATTRIBUTE_COMMENT) {
+      this.conditionSelects = true;
       this.legacyComment = new CommentEach();
       return this.legacyComment.getLength({
         ...context,
@@ -73,6 +76,7 @@ export class TableEach extends LoopBlock {
     if (this.newType === undefined) {
       return context.data.tables.length;
     }
+    this.conditionSelects = true;
     this.legacyConstraint = new TableConstraintEach();
     return this.legacyConstraint.getLength({
       ...context,

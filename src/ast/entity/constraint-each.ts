@@ -1,39 +1,17 @@
 import { Constraint } from '@/ast/entity/constraint';
-import { LoopBlock } from '@/ast/entity/loop-block';
+import { KeyEach } from '@/ast/entity/key-each';
 import { SourceContext, SourceType } from '@/ast/entity/source';
+import { Table } from '@/ast/entity/table';
 
-export class ConstraintEach extends LoopBlock {
-  private constraint: Constraint;
+export class ConstraintEach extends KeyEach<Constraint> {
+  protected readonly keyType = SourceType.CONSTRAINT;
+  protected readonly keyLabel = 'constraint';
 
-  public buildContext(
-    context: SourceContext,
-    position: number,
-    runPosition: number,
-  ): SourceContext {
-    const index = Math.min(this.parentLevel, context.tableStack.length - 1);
-    const table = context.tableStack[index];
-    const orderField = this.constraint.fields[position];
-    const field = table.find(orderField.name);
-    if (!field) {
-      throw new Error(
-        `Field ${orderField.name} not found in table ${table.name} from constraint ${this.constraint.name}`,
-      );
-    }
-    return {
-      ...context,
-      field,
-      index: this.constraint,
-      type: SourceType.CONSTRAINT,
-      position: runPosition,
-    };
+  protected tableKeys(table: Table): Constraint[] {
+    return table.constraints;
   }
 
-  public getLength(context: SourceContext): number {
-    const index = Math.min(this.parentLevel, context.tableStack.length - 1);
-    const table = context.tableStack[index];
-    this.constraint =
-      (context.type === SourceType.CONSTRAINT ? context.index : null) ||
-      (context.field && table.findForeignKey(context.field.name));
-    return this.constraint?.fields.length ?? 0;
+  protected fieldKey(table: Table, context: SourceContext): Constraint | null {
+    return table.findForeignKey(context.field.name);
   }
 }

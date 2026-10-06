@@ -21,10 +21,11 @@ cogen [options] input.sql
 | `-w`, `--write` | `cogen.properties` | Save the current options to a project file after a successful run. |
 | `--filter` | `users,posts` | Generate files only for these tables. |
 | `-e`, `--exclude` | `migrations` | Don't generate files for these tables. |
+| `--lang` | `en` | Language of the schema names, sets the default [singularization rules](#despluralize-rules): `pt-BR` (default) or `en`. Resets `-d`, so put `-d` after it. |
 | `-l`, `--legacy` | | Use [legacy loops](templating.md#legacy-mode). |
 | `-d`, `--despluralize` | `"ies/3/y;s/1/"` | Singularization [rules](#despluralize-rules). |
 | `-u`, `--uppercase` | `"\|USA\|W3C\|"` | [Uppercase words](modeling.md#uppercase-words). |
-| `-s`, `--silent` | | Don't print generated files nor timing. |
+| `-s`, `--silent` | | Don't print generated files nor timing. Errors are still printed. |
 | `-h`, `--help` | | Show help. |
 
 Options are applied in order: `-p` loads the project file at its position, and options after it override its values.
@@ -59,12 +60,13 @@ exclude=migrations
 | `inputFile` (or `file`) | Input SQL file. |
 | `templatePath` | Template directory. |
 | `outputPath` (or `path`) | Output directory. |
-| `lang` | Language of the schema names, picks the default singularization rules: `pt-BR` (default) or `en` / `en-us`. |
+| `lang` | Same as `--lang`. |
 | `dict.<lang>` | Singularization [rules](#despluralize-rules) for that language, e.g. `dict.en=ies/3/y;s/1/`. |
 | `upperWords` | [Uppercase words](modeling.md#uppercase-words), `\|` separated. |
 | `filter`, `exclude` | Comma separated table lists, see [below](#generating-only-some-tables). |
+| `legacy` | `true` for [legacy loops](templating.md#legacy-mode). |
 
-Without a project file no singularization rules are loaded. `-w` writes `inputFile`, `outputPath`, `templatePath`, `upperWords`, `filter` and `exclude`; it doesn't keep `lang` or `dict.*`, so add them by hand.
+`-w` writes every key above that has a value.
 
 ## Despluralize rules
 
@@ -116,4 +118,4 @@ cogen -t templates/ -o src/ --filter users,posts,orders --exclude orders schema.
 | `0` | Success, or `--help`. |
 | `3` | An option is missing its argument, or the project file can't be read. |
 | `4` | No input file given. |
-| `5` | The SQL or a template failed to parse, or a template failed to render. Parse errors are printed as `line:column: message` (not with `-s`). |
+| `5` | The SQL or a template failed to parse, or a template failed to render. Parse errors are printed as `line:column: message`. |

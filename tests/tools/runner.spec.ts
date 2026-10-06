@@ -369,3 +369,97 @@ describe('Runner', () => {
     });
   });
 });
+
+describe('Keys, options and names', () => {
+  const schema =
+    "CREATE TABLE users (id INT, name VARCHAR(80), role ENUM('admin','viewer') COMMENT '[E:Administrator|Viewer]', PRIMARY KEY (id), UNIQUE KEY users_name_unique (name)) COMMENT='[ID:usr]';\n" +
+    'CREATE TABLE posts (id INT, user_id INT, title VARCHAR(80), body TEXT, PRIMARY KEY (id),' +
+    ' INDEX posts_title_idx (title, body), FULLTEXT INDEX posts_body_ft (body),' +
+    " CONSTRAINT fk_posts_user FOREIGN KEY (user_id) REFERENCES users (id)) COMMENT='[H:users]';\n";
+  const english = () => new Configuration().setLang('en');
+
+  async function render(template: string, legacy?: boolean) {
+    return runTemplateText(schema, template, {
+      configuration: english(),
+      legacy,
+      logger: { addMessage() {} },
+      tableFilter: (table) => table.name === 'posts',
+    });
+  }
+
+  it('iterate table indexes and their fields', async () => {
+    expect(
+      await render(
+        '$[index.each]$[index.name]:$[index.each]$[field],$[index.end]$[index.if(fulltext)]FT$[index.end];$[index.end]',
+      ),
+    ).toBe('posts_title_idx:title,body,;posts_body_ft:body,FT;');
+  });
+
+  it('iterate table foreign keys and constraints', async () => {
+    expect(
+      await render(
+        '$[foreign.each]$[foreign.name]:$[field]->$[reference];$[foreign.end]|$[constraint.each]$[constraint.name];$[constraint.end]',
+      ),
+    ).toBe('fk_posts_user:user_id->users;|primary;fk_posts_user;');
+  });
+
+  it('field index condition includes plain indexes', async () => {
+    expect(await render('$[field.each(index)]$[field],$[field.end]')).toBe(
+      'id,title,body,',
+    );
+  });
+
+  it('legacy foreign key loop', async () => {
+    expect(
+      await render(
+        '$[table.each(foreign)]$[foreign.name]:$[foreign.each]$[field]$[foreign.end];$[table.end]',
+        true,
+      ),
+    ).toBe('fk_posts_user:user_id;');
+  });
+
+  it('option value, label, unix, number and count', async () => {
+    const result = await runTemplateText(
+      schema,
+      '$[field.each(option)]$[option.each]$[option]/$[option.unix]/$[Option.name]/$[option.number]/$[option.count];$[option.end]$[field.end]',
+      {
+        configuration: english(),
+        logger: { addMessage() {} },
+        tableFilter: (table) => table.name === 'users',
+      },
+    );
+    expect(result).toBe(
+      'admin/admin/Administrator/1/2;viewer/viewer/Viewer/2/2;',
+    );
+  });
+
+  it('inherited without parent renders nothing and runs else', async () => {
+    const result = await runTemplateText(
+      schema,
+      '[$[inherited.norm]]$[inherited.if(all)]parent$[inherited.else]none$[inherited.end];',
+      { configuration: english(), logger: { addMessage() {} } },
+    );
+    expect(result).toBe('[]none;[user]parent;');
+  });
+
+  it('identifier and language plurals', async () => {
+    const result = await runTemplateText(
+      "CREATE TABLE categories (id INT) COMMENT='[ID:cat]';",
+      '$[table.identifier] $[table.unix.plural] $[Table.name.plural]',
+      { configuration: english(), logger: { addMessage() {} } },
+    );
+    expect(result).toBe('cat categories Categories');
+  });
+
+  it('upper words inside names', async () => {
+    const result = await runTemplateText(
+      'CREATE TABLE people (cpf_number VARCHAR(11));',
+      '$[field.each]$[Field.norm] $[fIeld.norm] $[field.norm]$[field.end]',
+      {
+        configuration: english().setUpperWords('|CPF|'),
+        logger: { addMessage() {} },
+      },
+    );
+    expect(result).toBe('CPFNumber cpfNumber cpfnumber');
+  });
+});

@@ -331,6 +331,7 @@ tableProp:
   | K_PATH
   | K_STYLE
   | K_EXTRA
+  | K_IDENTIFIER
   ;
 
 fieldProp:
@@ -365,6 +366,7 @@ fieldProp:
   | K_UPDATE
   | K_INSERT
   | K_NOID
+  | K_IDENTIFIER
   ;
 
 attribute:

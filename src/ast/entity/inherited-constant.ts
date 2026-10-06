@@ -9,6 +9,9 @@ export class InheritedConstant extends TableBaseConstant {
     const tablePosition = context.data.findTableIndex(
       contextTable.getAttribute(Table.Attribute.INHERITED),
     );
+    if (tablePosition < 0) {
+      return;
+    }
     const table = context.data.tables[tablePosition];
     super.execute({
       ...context,

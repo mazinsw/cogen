@@ -6,7 +6,7 @@ import { FulltextIndex } from '@/ast/entity/fulltext-index';
 import { PrimaryKey } from '@/ast/entity/primary-key';
 import { SourceContext, SourceType } from '@/ast/entity/source';
 import { getGenderChar } from '@/util/gender';
-import { despluralize } from '@/util/plural';
+import { despluralize, pluralize } from '@/util/plural';
 
 export enum Expression {
   ATTRIBUTE_COMMENT,
@@ -121,7 +121,8 @@ export class ExpressionCondition extends Condition {
           (context.type === SourceType.INDEX &&
             table.findIndex(context.field)) ||
           (context.type === SourceType.PRIMARY && table.getPrimaryKey()) ||
-          table.getUniqueIndex(context.field)));
+          table.getUniqueIndex(context.field) ||
+          table.findIndex(context.field)));
 
     const asIndex = () =>
       [
@@ -140,14 +141,15 @@ export class ExpressionCondition extends Condition {
     const isPluralizable = () =>
       asTable()
         ? table.name.toLowerCase() ===
-          (
-            table.getNormalizedAndDespluralizedName(context.config) + 's'
+          pluralize(
+            table.getNormalizedAndDespluralizedName(context.config),
+            context.config.getLang(),
           ).toLowerCase()
         : !!context.field &&
           context.field?.name.toLowerCase() ===
-            (
-              context.field?.getNormalizedAndDespluralizedName(context.config) +
-              's'
+            pluralize(
+              context.field?.getNormalizedAndDespluralizedName(context.config),
+              context.config.getLang(),
             ).toLowerCase();
 
     switch (this.expression) {

@@ -20,7 +20,11 @@ export class Runner {
   /** Restrict generation to some tables, other tables stay visible to templates */
   public tableFilter?: (table: Table) => boolean;
 
+  /** Parse errors are reported even when progress messages are silenced */
+  private errorLogger: LogListener;
+
   constructor(private logger?: LogListener) {
+    this.errorLogger = logger || { addMessage: console.error };
     this.setConfiguration(new Configuration());
   }
 
@@ -42,7 +46,7 @@ export class Runner {
       this.configuration,
       this.configuration.getInputFile(),
     );
-    this.dataSource.setLogger(this.logger);
+    this.dataSource.setLogger(this.errorLogger);
     try {
       await this.dataSource.load();
     } catch (error) {
@@ -74,7 +78,7 @@ export class Runner {
         this.configuration,
         tempFile,
       );
-      filenameTemplateSource.setLogger(this.logger);
+      filenameTemplateSource.setLogger(this.errorLogger);
       if (tempFile.includes('$[')) {
         await filenameTemplateSource.load(true);
       }
@@ -82,7 +86,7 @@ export class Runner {
         this.configuration,
         file.path,
       );
-      contentTemplateSource.setLogger(this.logger);
+      contentTemplateSource.setLogger(this.errorLogger);
       if (!file.isDirectory) {
         await contentTemplateSource.load();
       }

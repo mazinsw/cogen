@@ -7,7 +7,7 @@ import { Table } from '@/ast/entity/table';
 import { getGenderChar } from '@/util/gender';
 import { firstLetters, recase } from '@/util/helper';
 import { normalize } from '@/util/normalize';
-import { despluralize } from '@/util/plural';
+import { despluralize, pluralize } from '@/util/plural';
 import { unixTransform } from '@/util/unix';
 
 export class FieldBaseConstant extends Constant {
@@ -21,7 +21,11 @@ export class FieldBaseConstant extends Constant {
     let image = context.type === SourceType.IMAGE;
     let option = context.type === SourceType.OPTION;
     // let onAction = false;
-    let text = context.field.name;
+    // inside an option loop the value is the current enum item
+    let text =
+      option && context.option !== undefined
+        ? context.option
+        : context.field.name;
     let firstAttribute = Field.Attribute.UNKNOWN;
     for (const property of this.properties) {
       switch (property) {
@@ -96,7 +100,10 @@ export class FieldBaseConstant extends Constant {
             unixTransform(
               normalize(
                 context.field.getAttribute(Field.Attribute.NAMES, 1) ||
-                  context.field.getNormalizedName() + 's',
+                  pluralize(
+                    context.field.getNormalizedName(),
+                    context.config.getLang(),
+                  ),
               ),
             );
           text = recase(this.caseSample, text);
@@ -226,6 +233,10 @@ export class FieldBaseConstant extends Constant {
           ).toString();
           break;
         case Constant.Property.NUMBER:
+          if (option && !array) {
+            text = (context.position + 1).toString();
+            break;
+          }
           const commonField = table.indexedFields.get(
             context.field.getNormalizedName(),
           );
@@ -240,6 +251,15 @@ export class FieldBaseConstant extends Constant {
           array = true;
           break;
         case Constant.Property.COUNT:
+          if (option && !array) {
+            text =
+              context.field.getType() instanceof EnumType
+                ? (
+                    context.field.getType() as EnumType
+                  ).elements.length.toString()
+                : '';
+            break;
+          }
           text = (
             table.indexedFields.get(context.field.getNormalizedName())?.size ??
             ''

@@ -1,41 +1,17 @@
 import { ForeignKey } from '@/ast/entity/foreign-key';
-import { LoopBlock } from '@/ast/entity/loop-block';
+import { KeyEach } from '@/ast/entity/key-each';
 import { SourceContext, SourceType } from '@/ast/entity/source';
+import { Table } from '@/ast/entity/table';
 
-export class ForeignEach extends LoopBlock {
-  private foreign: ForeignKey;
+export class ForeignEach extends KeyEach<ForeignKey> {
+  protected readonly keyType = SourceType.FOREIGN;
+  protected readonly keyLabel = 'foreign key';
 
-  public buildContext(
-    context: SourceContext,
-    position: number,
-    runPosition: number,
-  ): SourceContext {
-    const index = Math.min(this.parentLevel, context.tableStack.length - 1);
-    const table = context.tableStack[index];
-    const orderField = this.foreign.fields[position];
-    const field = table.find(orderField.name);
-    if (!field) {
-      throw new Error(
-        `Field ${orderField.name} not found in table ${table.name} from foreign key ${this.foreign.name}`,
-      );
-    }
-    return {
-      ...context,
-      field,
-      index: this.foreign,
-      type: SourceType.FOREIGN,
-      position: runPosition,
-    };
+  protected tableKeys(table: Table): ForeignKey[] {
+    return table.getForeignKeys();
   }
 
-  public getLength(context: SourceContext): number {
-    const index = Math.min(this.parentLevel, context.tableStack.length - 1);
-    const table = context.tableStack[index];
-    this.foreign =
-      (context.type === SourceType.FOREIGN
-        ? (context.index as ForeignKey)
-        : null) ||
-      (context.field && table.findForeignKey(context.field.name));
-    return this.foreign?.fields.length ?? 0;
+  protected fieldKey(table: Table, context: SourceContext): ForeignKey | null {
+    return table.findForeignKey(context.field.name);
   }
 }

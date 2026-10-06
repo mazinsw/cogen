@@ -57,7 +57,7 @@ GET /$[table]
 $[table.end]
 ```
 
-`$[table]` is the raw SQL name. Generated plurals only append `s` (`$[table.unix.plural]` would give `categorys`), so irregular plurals need `[U:category|categories]` in the table comment.
+`$[table]` is the raw SQL name. `$[table.unix.plural]` would give the same here: plurals are rebuilt from the singular with the `lang` rules.
 
 The `.cgn` suffix is optional and removed from the output name. It stops editors and linters from parsing templates as TypeScript.
 
@@ -72,7 +72,7 @@ templatePath=templates/
 outputPath=src/
 ```
 
-`lang=en` loads English singularization rules, so `products` becomes `Product`.
+`lang=en` loads English singularization rules, so `products` becomes `Product` (the default is `pt-BR`).
 
 ## 5. Generate
 

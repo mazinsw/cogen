@@ -4,6 +4,7 @@ import { Table } from '@/ast/entity/table';
 import { getGenderChar } from '@/util/gender';
 import { firstLetters, recase } from '@/util/helper';
 import { normalize } from '@/util/normalize';
+import { pluralize } from '@/util/plural';
 import { unixTransform } from '@/util/unix';
 
 export class TableBaseConstant extends Constant {
@@ -62,11 +63,18 @@ export class TableBaseConstant extends Constant {
         case Constant.Property.PLURAL:
           text = table.getAttribute(firstAttribute, 1);
           if (!text && firstAttribute === Table.Attribute.NAMES) {
-            text =
-              table.getNormalizedAndDespluralizedName(context.config) + 's';
+            text = pluralize(
+              table.getNormalizedAndDespluralizedName(context.config),
+              context.config.getLang(),
+            );
           } else if (!text && firstAttribute !== Table.Attribute.NAMES) {
             text = unixTransform(
-              normalize(table.getNormalizedName(context.config) + 's'),
+              normalize(
+                pluralize(
+                  table.getNormalizedName(context.config),
+                  context.config.getLang(),
+                ),
+              ),
             );
           }
           text = recase(this.caseSample, text, context.config.getUpperWords());

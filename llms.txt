@@ -7,8 +7,8 @@ Key facts for writing templates:
 - Tags: `$[table.norm]`, `$[Field.name]`, `$[field.each(~ignored)]...$[field.end]`, `$[field.if(number)]...$[field.else]...$[field.end]`. The casing of the level word (`table`, `Table`, `TABLE`) sets the output casing.
 - A line break right after a block tag is dropped; spaces before a block tag are kept, so put block tags at column 0.
 - `$[...]` in a template path generates one file per table; field tags in a path generate one file per field.
-- Without a project file no singularization happens; set `lang=en` in a `.properties` project file (`-p`) for English names.
-- Some loops (indexes, unique keys, constraints) need legacy mode (`-l`).
+- Names are singularized/pluralized with `pt-BR` rules by default; pass `--lang en` (or `lang=en` in a `.properties` project file) for English schemas.
+- At table level `$[index.each]`, `$[unique.each]`, `$[foreign.each]`, `$[constraint.each]` iterate keys; nested inside a key they iterate its fields.
 
 ## Docs
 
@@ -20,7 +20,7 @@ Key facts for writing templates:
 
 ## Optional
 
-- [Samples](samples): Laravel, Adonis and React templates with an example schema (legacy mode)
+- [Samples](samples): Laravel, Adonis and React templates with an example schema
 - [Template grammar](src/grammar/TemplateParser.g4): authoritative syntax
 - [SQL grammar](src/grammar/SQLParser.g4): authoritative accepted SQL
 - [AGENTS.md](AGENTS.md): guide for agents changing cogen itself

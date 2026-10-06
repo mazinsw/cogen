@@ -87,7 +87,7 @@ A level is the first word of a tag: it says *what* the tag talks about.
 | `image` | The first image field (`[I:...]`). | Always (empty when none). |
 | `option` | An enum item. | Inside `$[option.each]`. |
 | `reference` | The table referenced by the current field's foreign key. | Field with `reference`. |
-| `inherited` | The parent table from `[H:...]`. | Tables with `inherited`. Guard with `$[table.if(inherited)]`: values crash without a parent. |
+| `inherited` | The parent table from `[H:...]`. | Tables with `inherited`; empty otherwise, and `$[inherited.if(...)]` is false. |
 | `index`, `unique`, `primary_key`, `constraint`, `foreign` | An index / unique key / primary key / any constraint / foreign key. Value: `.name` only. | Inside the matching loop, see [Indexes and constraints](#indexes-and-constraints). |
 | `comment`, `description` | Comment lines, for loops only. | `$[comment.each]`, `$[description.each]`. |
 
@@ -164,7 +164,8 @@ $[field.end]
 | `$[inherited.each]` | Fields of the parent table. |
 | `$[option.each]` | Items of the current enum field. |
 | `$[comment.each]` / `$[description.each]` | Lines of the current table/field comment, wrapped at 72 chars. Print the line with `$[table.comment]` or `$[field.comment]`; `description` escapes `'` as `\'`. |
-| `$[index.each]`, `$[unique.each]`, `$[primary.each]`, `$[constraint.each]`, `$[foreign.each]` | Fields of the current index / key, see Indexes and constraints below. |
+| `$[index.each]`, `$[unique.each]`, `$[constraint.each]`, `$[foreign.each]` | At table level: the keys of the table. Inside a key or field: the fields of that key. See Indexes and constraints below. |
+| `$[primary.each]` | Fields of the primary key. |
 
 The optional condition **filters** items: `$[field.each(reference & required)]`. Without it every item is visited (`each(all)` is the same).
 
@@ -177,22 +178,18 @@ Inside a loop, `first` and `non_first` refer to the position among the **filtere
 
 ### Indexes and constraints
 
-Inside `$[field.each(reference)]`, `$[foreign.each]` loops over the fields of the current field's foreign key, and `$[foreign.name]` inside it is the key name:
+`$[index.each]`, `$[unique.each]`, `$[constraint.each]` and `$[foreign.each]` work at two depths:
+
+- **At table level** (outside field loops, or directly inside `$[table.each]`) they iterate the keys of the table. Each key becomes the current one: `$[index.name]` is its name, `$[field]` its first field.
+- **Inside a key loop or a field** they iterate the fields of the current key (for a field: the key the field belongs to).
+
+So two nested loops list every index with its fields:
 
 ```
-$[field.each(reference)]
-$[field] -> $[reference]($[reference.each(primary)]$[field]$[reference.end]) on delete $[FIELD.on.delete] [$[foreign.each]$[foreign.name]$[foreign.end]]
-$[field.end]
-```
-→ `user_id -> users(id) on delete CASCADE [fk_posts_user]`
-
-To loop over all indexes or constraints of a table, use [legacy mode](#legacy-mode), where `$[table.each(index)]` iterates indexes instead of filtering tables:
-
-```
-$[table.each(index)]
+$[index.each]
 $[index.name]: $[index.each]$[field.if(non_first)], $[field.end]$[field]$[index.end]$[index.if(fulltext)] (fulltext)$[index.end]
 
-$[table.end]
+$[index.end]
 ```
 →
 
@@ -203,12 +200,23 @@ posts_body_ft: body (fulltext)
 
 The empty line is needed because a line ending with a block tag loses its line break, see [Whitespace](#whitespace).
 
-| Legacy loop | Iterates | Name tag |
-|---|---|---|
-| `$[table.each(index)]` | Legacy mode: plain and fulltext indexes. | `$[index.name]`, fields with `$[index.each]` |
-| `$[table.each(unique)]` | Legacy mode: unique keys, primary key included (`$[unique.if(primary)]`). | `$[unique.name]`, `$[unique.each]` |
-| `$[table.each(primary)]` | Legacy mode: the primary key. | `$[primary_key.name]`, `$[primary.each]` |
-| `$[table.each(constraint)]` | Legacy mode: primary key, unique keys and foreign keys. | `$[constraint.name]`, `$[constraint.each]` |
+| Loop at table level | Iterates |
+|---|---|
+| `$[index.each]` | Plain and fulltext indexes. |
+| `$[unique.each]` | Unique keys, without the primary key. |
+| `$[constraint.each]` | Primary key, unique keys and foreign keys. |
+| `$[foreign.each]` | Foreign keys. Inside, `$[reference]` is the referenced table. |
+
+`$[primary.each]` always iterates the primary key fields; its name is `$[primary_key.name]`.
+
+Foreign keys by field:
+
+```
+$[field.each(reference)]
+$[field] -> $[reference]($[reference.each(primary)]$[field]$[reference.end]) on delete $[FIELD.on.delete] [$[foreign.each]$[foreign.name]$[foreign.end]]
+$[field.end]
+```
+→ `user_id -> users(id) on delete CASCADE [fk_posts_user]`
 
 ## Conditions
 
@@ -273,9 +281,11 @@ Indenting them (`  $[field.each]` ... `  $[field.end]`) would add their indentat
 
 [`-l` / `--legacy`](cli.md#options) restores the old meaning of some loops, used by the templates in [`samples/`](../samples):
 
+Prefer the default mode for new templates. Legacy is kept for old templates.
+
 | Tag | Default | Legacy |
 |---|---|---|
-| `$[table.each(index)]`, `each(unique)`, `each(primary)`, `each(constraint)` | Tables matching the condition. | Indexes / keys of the current table. |
+| `$[table.each(index)]`, `each(unique)`, `each(primary)`, `each(constraint)`, `each(foreign)` | Tables matching the condition. | Indexes / keys of the current table (unique includes the primary key), like `$[index.each]` at table level. |
 | `$[table.each(comment)]` | Tables with a comment. | Lines of the table comment. |
 | `$[field.each(option)]` | Enum fields with options. | Items of the current enum field. |
 | `$[field.each(comment)]`, `each(description)` | Fields with a comment. | Lines of the field comment. |
@@ -342,7 +352,7 @@ import { upload } from './upload';
 $[table.end]
 ```
 
-More complete templates for Laravel, Adonis and React live in [`samples/`](../samples) (legacy mode).
+More complete templates for Laravel, Adonis and React live in [`samples/`](../samples).
 
 ## Reference
 
@@ -358,10 +368,10 @@ For `table`, `reference` and `inherited`.
 | `$[table.norm]` | PascalCase singular name (`posts` → `Post`). |
 | `$[table.norm.default]` | PascalCase name, not singularized (`Posts`). |
 | `$[table.unix]` | snake_case singular name, or `[U:...]`. |
-| `$[table.unix.plural]` | snake_case plural, or second `[U:...]` argument. |
+| `$[table.unix.plural]` | snake_case plural (by `lang` rules), or second `[U:...]` argument. |
 | `$[table.unix.default]` | Second `[U:...]` argument, or snake_case of `norm.default`. |
 | `$[table.name]` | Display name: `[N:...]`, or `norm`. |
-| `$[table.name.plural]` | Second `[N:...]` argument, or `name` + `s`. |
+| `$[table.name.plural]` | Second `[N:...]` argument, or plural of `name`. |
 | `$[table.comment]` | Comment without commands. Inside `$[comment.each]`: the current line. |
 | `$[table.gender]` | `a` or `o`, from `[G:...]` or guessed. |
 | `$[table.chars]` | Lowercase initials of `norm` (`UserProfile` → `up`). |
@@ -372,6 +382,7 @@ For `table`, `reference` and `inherited`.
 | `$[table.order]` | Zero-padded position of the table in the SQL file (`0`, `1`... or `00`, `01`... with 10+ tables). |
 | `$[table.style]` | First `[L:...]` argument. |
 | `$[table.style.extra]` | Second `[L:...]` argument. |
+| `$[table.identifier]` | `[ID:...]`. |
 
 ### Field properties
 
@@ -393,13 +404,18 @@ For `field`, `descriptor`, `primary`, `image` and `option`.
 | `$[field.length]` | Declared `VARCHAR` length. |
 | `$[field.size]` | Size in bytes for numeric and date types, `0` otherwise (see [types](modeling.md#column-types)). |
 | `$[field.mask]` | `[M:...]`. |
+| `$[field.identifier]` | `[ID:...]`. |
 | `$[field.style]`, `$[field.style.extra]` | `[L:...]` arguments. |
 | `$[field.gender]` | `a` or `o`. |
 | `$[field.chars]`, `$[field.letter]` | Lowercase initials of `norm` / first letter of the raw name. |
 | `$[field.array.index]`, `.array.number`, `.array.count` | Position (from 0 / from 1) and size of a [numbered field](modeling.md#numbered-fields) group. Empty for other fields. |
 | `$[field.option]` | Inside `$[option.each]`: the enum item value. |
 | `$[field.option.unix]` | Inside `$[option.each]`: the item value in snake_case. |
-| `$[option.name]` | Inside `$[option.each]`: the `[E:...]` label of the item, or the field name. |
+| `$[option]` | Inside `$[option.each]`: the enum item value (same as `$[field.option]`). |
+| `$[option.name]` | Inside `$[option.each]`: the `[E:...]` label of the item, or its value. |
+| `$[option.unix]` | Inside `$[option.each]`: the item value in snake_case. |
+| `$[option.number]` | Inside `$[option.each]`: item position, from 1. |
+| `$[option.count]` | Number of items of the enum field. |
 | `$[option.norm]` | Inside `$[option.each]`: the item value in PascalCase. |
 | `$[option.index]` | Inside `$[option.each]`: item position, from 0. |
 | `$[option.low]`, `$[option.high]` | First (`0`) and last item index of the enum field. |
@@ -427,7 +443,7 @@ For `field`, `descriptor`, `primary`, `image` and `option`.
 | `self_reference` | Foreign key to its own table. |
 | `depends` | The field references the outer table of a `$[table.each]`. *table*: the loop table references the outer table. |
 | `unique` | Part of a unique key or the primary key. *table*: has unique keys. |
-| `index` | Part of a unique key or the primary key. *table*: has indexes. |
+| `index` | Part of any index or key except foreign keys. Inside a key loop: true. *table*: has indexes. |
 | `constraint` | The table has constraints besides the primary key. |
 | `fulltext` | Inside an index loop: the index is `FULLTEXT`. |
 | `required` / `not_null` / `non_null` | `NOT NULL`. |
@@ -447,7 +463,7 @@ For `field`, `descriptor`, `primary`, `image` and `option`.
 | `array` | Is a [numbered field](modeling.md#numbered-fields). |
 | `repeated` | Numbered field after the first one. |
 | `masculine`, `feminine` | Gender. *table* too. |
-| `pluralizable`, `unpluralizable` | The SQL name is (not) the singular name + `s`. *table* too. |
+| `pluralizable`, `unpluralizable` | The SQL name is (not) the plural of its singular name. *table* too. |
 | `few_fields` | Enum with fewer than 4 items; inside an index loop, index with fewer than 4 fields. True for non-enum fields. |
 | `many` | Enum with 2+ items / index with 2+ fields. True for non-enum fields. |
 | `single` | Enum with 1 item / index with 1 field. True for non-enum fields. |

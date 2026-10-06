@@ -56,7 +56,7 @@ export interface Products {
 }
 ```
 
-Add `lang=en` to a [project file](docs/cli.md#project-file) and the interface is named `Product`.
+Add `--lang en` and the interface is named `Product`.
 
 ## How it works
 

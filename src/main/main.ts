@@ -60,6 +60,11 @@ export class Main implements LogListener {
           config.setDictionary(args[i + 1]);
           i++;
           break;
+        case '--lang':
+          if (i + 1 >= args.length) return this.showHelp(3, cmd);
+          config.setLang(args[i + 1]);
+          i++;
+          break;
         case '--filter':
           if (i + 1 >= args.length) return this.showHelp(3, cmd);
           config.setFilterTables(args[i + 1]);
@@ -127,6 +132,9 @@ export class Main implements LogListener {
       '\t(--filter) my_table,other_table: generate only for these tables',
     );
     console.log('\t(-h|--help): show this help');
+    console.log(
+      '\t(--lang) en: schema names language, sets the default despluralization rules (pt-BR, en)',
+    );
     console.log('\t(-l|--legacy): use legacy loops instead of as filter');
     console.log('\t(-o|--output) storage/generated: set the output directory');
     console.log('\t(-p|--project) cogen.properties: read a project from file');

@@ -3,12 +3,16 @@ import { Table } from '@/ast/entity/table';
 import { TestConditionBlock } from '@/ast/entity/test-condition-block';
 
 export class InheritedConditionBlock extends TestConditionBlock {
-  public buildTestContext(context: SourceContext): SourceContext {
+  public buildTestContext(context: SourceContext): SourceContext | null {
     const index = Math.min(this.parentLevel, context.tableStack.length - 1);
     const contextTable = context.tableStack[index];
     const tablePosition = context.data.findTableIndex(
       contextTable.getAttribute(Table.Attribute.INHERITED),
     );
+    if (tablePosition < 0) {
+      // a test needs the parent table, a plain else runs without it
+      return this.condition ? null : context;
+    }
     const table = context.data.tables[tablePosition];
     return {
       ...context,

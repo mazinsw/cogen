@@ -1,5 +1,5 @@
 import { Configuration } from '@/util/configuration';
-import { despluralize } from '@/util/plural';
+import { despluralize, pluralize } from '@/util/plural';
 
 describe('Plural', () => {
   it('despluralize pt-BR words from dictionary', async () => {
@@ -26,5 +26,23 @@ describe('Plural', () => {
     expect(despluralize('Companies', dictionary)).toBe('Company');
     expect(despluralize('Users', dictionary)).toBe('User');
     expect(despluralize('Cards', dictionary)).toBe('Card');
+  });
+});
+
+describe('Pluralize', () => {
+  it('pluralize en words', () => {
+    expect(
+      ['category', 'post', 'box', 'day', 'match'].map((w) =>
+        pluralize(w, 'en'),
+      ),
+    ).toEqual(['categories', 'posts', 'boxes', 'days', 'matches']);
+  });
+
+  it('pluralize pt-BR words', () => {
+    expect(
+      ['opcao', 'papel', 'cidade', 'item', 'cor', 'funil'].map((w) =>
+        pluralize(w, 'pt-BR'),
+      ),
+    ).toEqual(['opcoes', 'papeis', 'cidades', 'itens', 'cores', 'funis']);
   });
 });

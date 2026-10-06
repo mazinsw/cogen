@@ -1,39 +1,17 @@
-import { Index } from '@/ast/entity';
-import { LoopBlock } from '@/ast/entity/loop-block';
+import { Index } from '@/ast/entity/index';
+import { KeyEach } from '@/ast/entity/key-each';
 import { SourceContext, SourceType } from '@/ast/entity/source';
+import { Table } from '@/ast/entity/table';
 
-export class IndexEach extends LoopBlock {
-  private index: Index;
+export class IndexEach extends KeyEach<Index> {
+  protected readonly keyType = SourceType.INDEX;
+  protected readonly keyLabel = 'index';
 
-  public buildContext(
-    context: SourceContext,
-    position: number,
-    runPosition: number,
-  ): SourceContext {
-    const index = Math.min(this.parentLevel, context.tableStack.length - 1);
-    const table = context.tableStack[index];
-    const orderField = this.index.fields[position];
-    const field = table.find(orderField.name);
-    if (!field) {
-      throw new Error(
-        `Field ${orderField.name} not found in table ${table.name} from index ${this.index.name}`,
-      );
-    }
-    return {
-      ...context,
-      field,
-      index: this.index,
-      type: SourceType.INDEX,
-      position: runPosition,
-    };
+  protected tableKeys(table: Table): Index[] {
+    return table.indexes;
   }
 
-  public getLength(context: SourceContext): number {
-    const index = Math.min(this.parentLevel, context.tableStack.length - 1);
-    const table = context.tableStack[index];
-    this.index =
-      (context.type === SourceType.INDEX ? context.index : null) ||
-      (context.field && table.findIndex(context.field));
-    return this.index?.fields.length || 0;
+  protected fieldKey(table: Table, context: SourceContext): Index | null {
+    return table.findIndex(context.field);
   }
 }
