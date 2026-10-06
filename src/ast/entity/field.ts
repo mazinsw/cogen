@@ -4,12 +4,16 @@ import { Value } from '@/ast/entity/value';
 import { Configuration } from '@/util/configuration';
 import { normalize } from '@/util/normalize';
 
+export type GeneratedStorage = 'virtual' | 'stored';
+
 export class Field extends CommentedNode {
   private type: DataType;
   private value: Value;
   private notNull: boolean;
   private autoIncrement: boolean;
   private unsigned: boolean;
+  private generated?: GeneratedStorage;
+  private expression?: string;
   private normalizedName?: string;
   private normalizedAndDespluralizedName?: string;
 
@@ -51,6 +55,22 @@ export class Field extends CommentedNode {
 
   public setUnsigned(unsigned: boolean) {
     this.unsigned = unsigned;
+  }
+
+  public getGenerated(): GeneratedStorage | undefined {
+    return this.generated;
+  }
+
+  public setGenerated(generated: GeneratedStorage) {
+    this.generated = generated;
+  }
+
+  public getExpression(): string | undefined {
+    return this.expression;
+  }
+
+  public setExpression(expression: string) {
+    this.expression = expression;
   }
 
   public getNormalizedName() {

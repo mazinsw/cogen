@@ -80,6 +80,11 @@ K_NO: N O;
 K_ACTION: A C T I O N;
 K_CREATE: C R E A T E;
 K_FALSE: F A L S E;
+K_GENERATED: G E N E R A T E D;
+K_ALWAYS: A L W A Y S;
+K_AS: A S;
+K_VIRTUAL: V I R T U A L;
+K_STORED: S T O R E D;
 K_TRUE: T R U E;
 
 DOT: '.';
@@ -106,6 +111,9 @@ STRING:
 COMMENT: '/*' .*? ( '*/' | EOF ) -> skip;
 SINGLE_COMMENT: '--' ~[\r\n]* -> skip;
 WS: [\t\r\n ]+ -> skip;
+
+/* any other char, like expression operators */
+OTHER: .;
 
 fragment A : [aA];
 fragment B : [bB];

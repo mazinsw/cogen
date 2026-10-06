@@ -134,6 +134,9 @@ export class FieldBaseConstant extends Constant {
           }
           text = context.field.getValue()?.toString() ?? 'null';
           break;
+        case Constant.Property.EXPRESSION:
+          text = context.field.getExpression() ?? '';
+          break;
         case Constant.Property.NORMALIZED:
           if (option) {
             text = normalize(

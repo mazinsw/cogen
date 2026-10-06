@@ -359,6 +359,7 @@ fieldProp:
   | K_HEIGHT
   | K_FOLDER
   | K_DEFAULT
+  | K_EXPRESSION
   | K_ON
   | K_DELETE
   | K_UPDATE
@@ -386,6 +387,7 @@ property:
   | K_FIRST
   | K_FOREIGN
   | K_FULLTEXT
+  | K_GENERATED
   | K_IGNORED
   | K_IMAGE
   | K_INDEX
@@ -410,9 +412,11 @@ property:
   | K_SEARCHABLE
   | K_SELF_REFERENCE
   | K_SINGLE
+  | K_STORED
   | K_UNIQUE
   | K_UNPLURALIZABLE
   | K_UNSIGNED
+  | K_VIRTUAL
   ;
 
 type:

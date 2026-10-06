@@ -64,9 +64,13 @@ constraintName: idName;
 constraintTable: idName;
 
 columnDefinition:
-    dataType (columnNull|columnNotNull)? (K_DEFAULT columnDefaultValue)?
+    dataType generatedColumn? (columnNull|columnNotNull)? (K_DEFAULT columnDefaultValue)?
       autoIncrement? ((K_UNIQUE K_KEY?) | (K_PRIMARY? K_KEY))?
       (K_COMMENT fieldComment)?;
+
+generatedColumn: (K_GENERATED K_ALWAYS)? K_AS generatedExpression (K_VIRTUAL | K_STORED)?;
+generatedExpression: '(' expressionToken* ')';
+expressionToken: ~('(' | ')') | '(' expressionToken* ')';
 
 autoIncrement: K_AUTO_INCREMENT;
 columnDefaultValue: defaultValue;

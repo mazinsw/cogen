@@ -79,16 +79,16 @@ export function isUpperCase(entry: string): boolean {
 }
 
 export function camelCase(titleCase: string): string {
-  let camelCase = '';
+  let result = '';
   for (let i = 0; i < titleCase.length; i++) {
     if (isUpperCase(titleCase[i])) {
-      camelCase += titleCase[i].toLowerCase();
+      result += titleCase[i].toLowerCase();
     } else {
-      camelCase += titleCase.substring(i);
+      result += titleCase.substring(i);
       break;
     }
   }
-  return camelCase;
+  return result;
 }
 
 export function firstLetters(typeName: string) {

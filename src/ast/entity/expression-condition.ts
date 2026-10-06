@@ -26,6 +26,7 @@ export enum Expression {
   PROPERTY_FIRST,
   PROPERTY_FOREIGN,
   PROPERTY_FULLTEXT,
+  PROPERTY_GENERATED,
   PROPERTY_IGNORED,
   PROPERTY_IMAGE,
   PROPERTY_INDEX,
@@ -48,9 +49,11 @@ export enum Expression {
   PROPERTY_SEARCHABLE,
   PROPERTY_SELF_REFERENCE,
   PROPERTY_SINGLE,
+  PROPERTY_STORED,
   PROPERTY_UNIQUE,
   PROPERTY_UNPLURALIZABLE,
   PROPERTY_UNSIGNED,
+  PROPERTY_VIRTUAL,
 
   TYPE_BIGINT,
   TYPE_BLOB,
@@ -230,6 +233,12 @@ export class ExpressionCondition extends Condition {
         return !!context.field && context.field.isNotNull();
       case Expression.PROPERTY_UNSIGNED:
         return !!context.field && context.field.isUnsigned();
+      case Expression.PROPERTY_GENERATED:
+        return !!context.field?.getGenerated();
+      case Expression.PROPERTY_VIRTUAL:
+        return context.field?.getGenerated() === 'virtual';
+      case Expression.PROPERTY_STORED:
+        return context.field?.getGenerated() === 'stored';
       case Expression.PROPERTY_DEFAULT:
         return !!context.field && !!context.field.getValue();
       case Expression.PROPERTY_INFO:

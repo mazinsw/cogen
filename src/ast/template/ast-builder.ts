@@ -415,6 +415,9 @@ export class ASTBuilder implements TemplateParserListener {
         case !!prop.fieldProp().K_DEFAULT():
           constant.addProperty(Constant.Property.DEFAULT);
           break;
+        case !!prop.fieldProp().K_EXPRESSION():
+          constant.addProperty(Constant.Property.EXPRESSION);
+          break;
         case !!prop.fieldProp().K_ON():
           constant.addProperty(Constant.Property.ON);
           break;
@@ -1492,6 +1495,12 @@ export class ASTBuilder implements TemplateParserListener {
           return (condition.expression = Expression.PROPERTY_REQUIRED);
         case !!property.K_UNSIGNED():
           return (condition.expression = Expression.PROPERTY_UNSIGNED);
+        case !!property.K_GENERATED():
+          return (condition.expression = Expression.PROPERTY_GENERATED);
+        case !!property.K_VIRTUAL():
+          return (condition.expression = Expression.PROPERTY_VIRTUAL);
+        case !!property.K_STORED():
+          return (condition.expression = Expression.PROPERTY_STORED);
         case !!property.K_DEFAULT():
           return (condition.expression = Expression.PROPERTY_DEFAULT);
         case !!property.K_INFO():

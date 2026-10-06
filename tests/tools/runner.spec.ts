@@ -230,4 +230,20 @@ describe('Runner', () => {
     );
     expect(result).toBe('AABB');
   });
+
+  it('generated columns', async () => {
+    const result = await runTemplateText(
+      'CREATE TABLE Members (user_id INT, leave_at TIMESTAMP NULL, ' +
+        'active_user_id INT GENERATED ALWAYS AS (if((`leave_at` is null), `user_id`, NULL)) VIRTUAL, ' +
+        'total INT AS (user_id + 1) STORED NOT NULL);',
+      '$[field.each(generated)]$[field] $[field.if(virtual)]virtual$[field.end]' +
+        '$[field.if(stored)]stored$[field.end] $[field.expression]\n$[field.end]' +
+        '$[field.each(~generated)]$[field] $[field.end]',
+    );
+    expect(result).toBe(
+      'active_user_id virtual if((`leave_at` is null), `user_id`, NULL)\n' +
+        'total stored user_id + 1\n' +
+        'user_id leave_at ',
+    );
+  });
 });

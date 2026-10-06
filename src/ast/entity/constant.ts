@@ -7,6 +7,7 @@ enum Property {
   COUNT,
   DEFAULT,
   DELETE,
+  EXPRESSION,
   FOLDER,
   GENDER,
   HEIGHT,

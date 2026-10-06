@@ -157,6 +157,7 @@ commands:
 - `$[field]` name of table field
   - `$[field.replace(_url,_file)]` replace field name from ie. image_url to image_file
   - `$[field.unix]` name of field in unix format
+  - `$[field.expression]` expression of a generated column, without outer parentheses, example: ``if((`leave_at` is null),`user_id`,NULL)``
   - `$[field.norm]` name of field normalized
   - `$[field.norm.singular]` Table name normalized on singular
   - `$[field.name]` Beautiful name of table field
@@ -200,6 +201,7 @@ commands:
     - few_fields
     - first
     - float
+    - generated: virtual or stored generated column (`GENERATED ALWAYS AS (expr)`)
     - image
     - info
     - integer
@@ -220,12 +222,14 @@ commands:
     - searchable
     - self_reference
     - single
+    - stored: stored generated column
     - string
     - text
     - time
     - unique
     - unpluralizable
     - unsigned
+    - virtual: virtual generated column
   - `$[field.else]` when if condition is false (must be the last before field.end)
   - `$[field.else.if(type|attribute)]` when if condition is false and make a test if field type or has attributes
   - `$[field.end]` end if

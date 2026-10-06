@@ -40,6 +40,8 @@ import {
   FieldStmtContext,
   ForeignStmtContext,
   FulltextStmtContext,
+  GeneratedColumnContext,
+  GeneratedExpressionContext,
   IdNameContext,
   IndexColNameContext,
   IndexStmtContext,
@@ -84,6 +86,7 @@ import {
 import { SQLParserListener } from '@/grammar/SQLParserListener';
 import { Comment } from '@/util/comment';
 import { CharStream, CharStreams, CommonTokenStream, Token } from 'antlr4ts';
+import { Interval } from 'antlr4ts/misc/Interval';
 import { ParseTreeWalker } from 'antlr4ts/tree/ParseTreeWalker';
 
 export class ASTBuilder implements SQLParserListener {
@@ -389,6 +392,20 @@ export class ASTBuilder implements SQLParserListener {
   public enterAutoIncrement(_: AutoIncrementContext): void {
     const field = this.stack.peek() as Field;
     field.setAutoIncrement(true);
+  }
+
+  public enterGeneratedColumn(ctx: GeneratedColumnContext): void {
+    const field = this.stack.peek() as Field;
+    field.setGenerated(ctx.K_STORED() != null ? 'stored' : 'virtual');
+  }
+
+  public enterGeneratedExpression(ctx: GeneratedExpressionContext): void {
+    const field = this.stack.peek() as Field;
+    const start = ctx.start.startIndex + 1;
+    const stop = ctx.stop.stopIndex - 1;
+    field.setExpression(
+      ctx.start.inputStream.getText(Interval.of(start, stop)).trim(),
+    );
   }
 
   public enterFieldComment(ctx: FieldCommentContext): void {
