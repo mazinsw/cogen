@@ -1,8 +1,13 @@
 import { DataSource } from '@/ast/entity/data-source';
+import { Table } from '@/ast/entity/table';
 import { SourceType } from '@/ast/entity/source';
 import { TemplateSource } from '@/ast/entity/templace-source';
 import { Configuration } from '@/util/configuration';
-import { FileEntry, readDirRecursive } from '@/util/file';
+import {
+  FileEntry,
+  readDirRecursive,
+  stripTemplateExtension,
+} from '@/util/file';
 import { LogListener } from '@/util/log-listener';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -12,6 +17,8 @@ export class Runner {
   public dataSource: DataSource;
   private files: FileEntry[];
   public contents: string;
+  /** Restrict generation to some tables, other tables stay visible to templates */
+  public tableFilter?: (table: Table) => boolean;
 
   constructor(private logger?: LogListener) {
     this.setConfiguration(new Configuration());
@@ -103,6 +110,9 @@ export class Runner {
     let tableIndex = -1;
     for (const table of this.dataSource.getTables()) {
       tableIndex++;
+      if (this.tableFilter && !this.tableFilter(table)) {
+        continue;
+      }
       let fieldIndex = -1;
       const fields = table.fields.length === 0 ? [undefined] : table.fields;
       for (const field of fields) {
@@ -127,6 +137,9 @@ export class Runner {
           if (destFile.includes(path.sep + path.sep)) {
             continue;
           }
+        }
+        if (!isDirectory) {
+          destFile = stripTemplateExtension(destFile);
         }
         if (parentFile === destFile) {
           continue;

@@ -6,6 +6,16 @@ export interface FileEntry {
   isDirectory: boolean;
 }
 
+/** Optional suffix of template files, removed from the generated file name */
+export const TEMPLATE_EXTENSION = '.cgn';
+
+export function stripTemplateExtension(filePath: string): string {
+  if (filePath.toLowerCase().endsWith(TEMPLATE_EXTENSION)) {
+    return filePath.slice(0, -TEMPLATE_EXTENSION.length);
+  }
+  return filePath;
+}
+
 export async function readDirRecursive(baseDir: string): Promise<FileEntry[]> {
   const result: FileEntry[] = [];
   async function walk(currentDir: string) {

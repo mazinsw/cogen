@@ -1,4 +1,10 @@
+import { DataSource } from '@/ast/entity/data-source';
+import { TemplateSource } from '@/ast/entity/templace-source';
+import { Runner } from '@/tools/runner';
 import { runTemplateText } from '@/util/template';
+import * as fs from 'node:fs';
+import * as os from 'node:os';
+import * as path from 'node:path';
 
 describe('Runner', () => {
   it('example sql to class', async () => {
@@ -245,5 +251,82 @@ describe('Runner', () => {
         'total stored user_id + 1\n' +
         'user_id leave_at ',
     );
+  });
+
+  it('strip template extension from file name', async () => {
+    const files: string[] = [];
+    await runTemplateText(
+      'CREATE TABLE Users (); CREATE TABLE Products ();',
+      'content',
+      {
+        filename: 'src/$[table.unix].html.cgn',
+        async onWriteFile(destFile) {
+          files.push(destFile);
+        },
+      },
+    );
+    expect(files).toEqual([
+      path.join('src', 'users.html'),
+      path.join('src', 'products.html'),
+    ]);
+  });
+
+  it('strip template extension from static file name', async () => {
+    const files: string[] = [];
+    await runTemplateText('CREATE TABLE Users ();', 'content', {
+      filename: 'src/index.ts.cgn',
+      async onWriteFile(destFile) {
+        files.push(destFile);
+      },
+    });
+    expect(files).toEqual(['src/index.ts']);
+  });
+
+  it('keep plain template file name', async () => {
+    const files: string[] = [];
+    await runTemplateText('CREATE TABLE Users ();', 'content', {
+      filename: 'src/$[table.unix].ts',
+      async onWriteFile(destFile) {
+        files.push(destFile);
+      },
+    });
+    expect(files).toEqual([path.join('src', 'users.ts')]);
+  });
+
+  it('keep template extension on directory', async () => {
+    const tempDir = await fs.promises.mkdtemp(path.join(os.tmpdir(), 'cogen-'));
+    try {
+      const runner = new Runner();
+      runner.dataSource = new DataSource(
+        runner.getConfiguration(),
+        'CREATE TABLE Users ();',
+      );
+      await runner.dataSource.load(true);
+      const filenameSource = new TemplateSource(
+        runner.getConfiguration(),
+        path.join(tempDir, '$[table.unix].cgn'),
+      );
+      await filenameSource.load(true);
+      const contentSource = new TemplateSource(runner.getConfiguration(), '');
+      await runner.generate(
+        filenameSource,
+        contentSource,
+        undefined,
+        tempDir,
+        true,
+      );
+      expect(fs.readdirSync(tempDir)).toEqual(['users.cgn']);
+    } finally {
+      await fs.promises.rm(tempDir, { recursive: true, force: true });
+    }
+  });
+
+  it('generate only filtered tables', async () => {
+    const result = await runTemplateText(
+      'CREATE TABLE Users (); CREATE TABLE Products ();',
+      '$[table.unix]:$[table.each]$[table.unix],$[table.end]',
+      { tableFilter: (table) => table.getName() === 'Products' },
+    );
+    expect(result).toBe('products:users,products,');
   });
 });
