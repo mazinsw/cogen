@@ -1,0 +1,26 @@
+# cogen
+
+> cogen (`@mazinsw/cogen`) is a CLI code generator. It parses a MySQL `CREATE TABLE` schema, where column and table comments may carry extra metadata as bracketed commands like `[N:Display name]` or `[S]`, and renders every file of a template directory once per table (or once overall) using a `$[level.property]` tag language with `if`/`each`/`else`/`end` blocks. Template files may end in `.cgn`, which is stripped from the output name.
+
+Key facts for writing templates:
+
+- Tags: `$[table.norm]`, `$[Field.name]`, `$[field.each(~ignored)]...$[field.end]`, `$[field.if(number)]...$[field.else]...$[field.end]`. The casing of the level word (`table`, `Table`, `TABLE`) sets the output casing.
+- A line break right after a block tag is dropped; spaces before a block tag are kept, so put block tags at column 0.
+- `$[...]` in a template path generates one file per table; field tags in a path generate one file per field.
+- Without a project file no singularization happens; set `lang=en` in a `.properties` project file (`-p`) for English names.
+- Some loops (indexes, unique keys, constraints) need legacy mode (`-l`).
+
+## Docs
+
+- [README](README.md): overview, install, minimal example
+- [Getting started](docs/getting-started.md): tutorial from schema to generated files
+- [Modeling](docs/modeling.md): supported SQL, type mapping, comment commands, naming rules
+- [Templating](docs/templating.md): tag syntax, levels, loops, conditions, replace(), whitespace, legacy mode, full reference tables
+- [Command line](docs/cli.md): options, project file keys, despluralize rules, filter/exclude, exit codes
+
+## Optional
+
+- [Samples](samples): Laravel, Adonis and React templates with an example schema (legacy mode)
+- [Template grammar](src/grammar/TemplateParser.g4): authoritative syntax
+- [SQL grammar](src/grammar/SQLParser.g4): authoritative accepted SQL
+- [AGENTS.md](AGENTS.md): guide for agents changing cogen itself

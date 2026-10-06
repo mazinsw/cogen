@@ -214,7 +214,7 @@ const CONTROL_DOCS: Record<string, string> = {
     '`replace(pattern,replacement,flags)`: regex replace on the value. Replacement supports `$1`, `\\U`, `\\L`, `\\E`.',
 };
 
-/** Equivalent README level when a level shares the properties of another one */
+/** Equivalent documented level when a level shares the properties of another one */
 function docLevel(level: string): string[] {
   if (TABLE_LEVELS.has(level)) return [level, 'table'];
   if (FIELD_LEVELS.has(level)) return [level, 'field'];

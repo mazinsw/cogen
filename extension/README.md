@@ -1,6 +1,6 @@
 # Cogen Templates
 
-Editor support for [cogen](https://github.com/mazinsw/cogen) templates.
+Editor support for [cogen](https://github.com/mazinsw/cogen) templates. Template language reference: [docs/templating.md](https://github.com/mazinsw/cogen/blob/main/docs/templating.md).
 
 Name templates `<output name>.cgn`, e.g. `$[table.unix].ts.cgn`, `index.html.cgn`, `style.css.cgn`, `view.edge.cgn`.
 cogen writes the output without the `.cgn` suffix. Because the file is not a `.ts`/`.html`/... file anymore,

@@ -110,20 +110,20 @@ describe('hover', () => {
     return getHover(textWithCursor.replace('§', ''), character);
   }
 
-  it('property documentation from README', () => {
+  it('property documentation from docs/templating.md', () => {
     expect(hover('$[table.un§ix]').markdown).toContain(
-      'Table name in unix format',
+      'snake_case singular name',
     );
     expect(hover('$[table.unix.plu§ral]').markdown).toContain('plural');
-    expect(hover('$[descriptor.no§rm]').markdown).toContain(
-      'name of field normalized',
-    );
+    expect(hover('$[descriptor.no§rm]').markdown).toContain('PascalCase name');
   });
 
   it('control and attribute documentation', () => {
-    expect(hover('$[field.ea§ch]').markdown).toContain('for each');
+    expect(hover('$[field.ea§ch]').markdown).toContain(
+      'Fields of the current table',
+    );
     expect(hover('$[field.if(gene§rated)]').markdown).toContain(
-      'generated column',
+      'Generated column',
     );
     expect(hover('$[field.if(str§ing)]').markdown).toContain('field type');
   });
