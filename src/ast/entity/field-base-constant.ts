@@ -27,6 +27,7 @@ export class FieldBaseConstant extends Constant {
         ? context.option
         : context.field.name;
     let firstAttribute = Field.Attribute.UNKNOWN;
+    let kebab = false;
     for (const property of this.properties) {
       switch (property) {
         case Constant.Property.STYLE:
@@ -115,7 +116,9 @@ export class FieldBaseConstant extends Constant {
             context.field.name;
           text = recase(this.caseSample, info);
           break;
+        case Constant.Property.KEBAB:
         case Constant.Property.UNIX:
+          kebab = property === Constant.Property.KEBAB;
           if (option && !(context.field.getType() instanceof EnumType)) {
             text = '';
             break;
@@ -295,6 +298,9 @@ export class FieldBaseConstant extends Constant {
             unixTransform(table.getNormalizedName(context.config));
           break;
       }
+    }
+    if (kebab) {
+      text = (text || '').replace(/_/g, '-');
     }
     context.output.appendContents(text || '');
   }

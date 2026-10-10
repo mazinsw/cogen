@@ -287,6 +287,9 @@ export class ASTBuilder implements TemplateParserListener {
         case !!prop.tableProp().K_UNIX():
           constant.addProperty(Constant.Property.UNIX);
           break;
+        case !!prop.tableProp().K_KEBAB():
+          constant.addProperty(Constant.Property.KEBAB);
+          break;
         case !!prop.tableProp().K_PLURAL():
           constant.addProperty(Constant.Property.PLURAL);
           break;
@@ -345,6 +348,9 @@ export class ASTBuilder implements TemplateParserListener {
       switch (true) {
         case !!prop.fieldProp().K_UNIX():
           constant.addProperty(Constant.Property.UNIX);
+          break;
+        case !!prop.fieldProp().K_KEBAB():
+          constant.addProperty(Constant.Property.KEBAB);
           break;
         case !!prop.fieldProp().K_NAME():
           constant.addProperty(Constant.Property.NAME);

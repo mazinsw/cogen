@@ -370,6 +370,7 @@ For `table`, `reference` and `inherited`.
 | `$[table.unix]` | snake_case singular name, or `[U:...]`. |
 | `$[table.unix.plural]` | snake_case plural (by `lang` rules), or second `[U:...]` argument. |
 | `$[table.unix.default]` | Second `[U:...]` argument, or snake_case of `norm.default`. |
+| `$[table.kebab]` | kebab-case of `unix` (`[U:user_profile]` → `user-profile`). Also `.kebab.plural` and `.kebab.default`. |
 | `$[table.name]` | Display name: `[N:...]`, or `norm`. |
 | `$[table.name.plural]` | Second `[N:...]` argument, or plural of `name`. |
 | `$[table.comment]` | Comment without commands. Inside `$[comment.each]`: the current line. |
@@ -395,6 +396,7 @@ For `field`, `descriptor`, `primary`, `image` and `option`.
 | `$[field.norm.singular]` | `norm`, singularized with the table rules. |
 | `$[field.noid]` | `norm` without a trailing `Id` (`user_id` → `User`). |
 | `$[field.unix]` | snake_case name, or `[U:...]`. |
+| `$[field.kebab]` | kebab-case of `unix` (`first_name` → `first-name`). |
 | `$[field.name]` | Display name: `[N:...]`, or the raw name. |
 | `$[field.info]` | `[F:...]`, else `[N:...]`, else the raw name. |
 | `$[field.comment]` | Comment without commands. Inside `$[comment.each]`: the current line. |
@@ -414,6 +416,7 @@ For `field`, `descriptor`, `primary`, `image` and `option`.
 | `$[option]` | Inside `$[option.each]`: the enum item value (same as `$[field.option]`). |
 | `$[option.name]` | Inside `$[option.each]`: the `[E:...]` label of the item, or its value. |
 | `$[option.unix]` | Inside `$[option.each]`: the item value in snake_case. |
+| `$[option.kebab]` | Inside `$[option.each]`: the item value in kebab-case. |
 | `$[option.number]` | Inside `$[option.each]`: item position, from 1. |
 | `$[option.count]` | Number of items of the enum field. |
 | `$[option.norm]` | Inside `$[option.each]`: the item value in PascalCase. |

@@ -462,4 +462,16 @@ describe('Keys, options and names', () => {
     );
     expect(result).toBe('CPFNumber cpfNumber cpfnumber');
   });
+  it('kebab-case from unix names', async () => {
+    const result = await runTemplateText(
+      "CREATE TABLE user_profiles (first_name VARCHAR(45), status ENUM('in_review') COMMENT '[U:situation_code]') COMMENT='[U:account_profile|account_profiles]';\n" +
+        'CREATE TABLE BlogPosts (PostTitle VARCHAR(45));',
+      '$[table.kebab] $[table.kebab.plural] $[table.kebab.default] $[TABLE.kebab]:$[field.each]$[field.kebab],$[field.end]$[field.each(option)]$[option.each]$[option.kebab]/$[option.unix]$[option.end]$[field.end];',
+      { configuration: english(), logger: { addMessage() {} } },
+    );
+    expect(result).toBe(
+      'account-profile account-profiles account-profiles ACCOUNT-PROFILE:first-name,situation-code,in-review/in_review;' +
+        'blog-post blog-posts blog-posts BLOG-POST:post-title,;',
+    );
+  });
 });

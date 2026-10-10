@@ -13,6 +13,7 @@ export class TableBaseConstant extends Constant {
     const table = context.tableStack[index];
     let text = table.name;
     let firstAttribute = Table.Attribute.NAMES;
+    let kebab = false;
     for (const property of this.properties) {
       switch (property) {
         case Constant.Property.STYLE:
@@ -86,7 +87,9 @@ export class TableBaseConstant extends Constant {
             table.getNormalizedAndDespluralizedName(context.config);
           text = recase(this.caseSample, info);
           break;
+        case Constant.Property.KEBAB:
         case Constant.Property.UNIX:
+          kebab = property === Constant.Property.KEBAB;
           firstAttribute = Table.Attribute.UNIX_NAMES;
           const unixName =
             table.getAttribute(firstAttribute) ||
@@ -127,6 +130,9 @@ export class TableBaseConstant extends Constant {
           text = table.getAttribute(Table.Attribute.IDENTIFIER);
           break;
       }
+    }
+    if (kebab) {
+      text = (text || '').replace(/_/g, '-');
     }
     context.output.appendContents(text || '');
   }

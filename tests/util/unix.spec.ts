@@ -6,5 +6,7 @@ describe('Unix transform', () => {
     expect(unixTransform('TTesteBBom')).toBe('tteste_bbom');
     expect(unixTransform('Bom')).toBe('bom');
     expect(unixTransform('BBom')).toBe('bbom');
+    expect(unixTransform('in_review')).toBe('in_review');
+    expect(unixTransform('in review')).toBe('in_review');
   });
 });

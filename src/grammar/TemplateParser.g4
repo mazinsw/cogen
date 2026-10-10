@@ -317,6 +317,7 @@ word: WORD;
 
 tableProp:
     K_UNIX
+  | K_KEBAB
   | K_PLURAL
   | K_NORM
   | K_DEFAULT
@@ -337,6 +338,7 @@ tableProp:
 fieldProp:
     K_NAME
   | K_UNIX
+  | K_KEBAB
   | K_NORM
   | K_SINGULAR
   | K_INFO

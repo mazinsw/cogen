@@ -34,6 +34,7 @@ enum Property {
   SIZE,
   STYLE,
   UNIX,
+  KEBAB,
   UPDATE,
   WIDTH,
   EXTRA,

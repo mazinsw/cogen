@@ -72,7 +72,7 @@ A comment command is a bracketed tag at the **end** of a table or column comment
 | Command | Applies to | Meaning | Read in templates with |
 |---|---|---|---|
 | `[N:name\|plural]` | table, field | Display name and its plural. | `$[table.name]`, `$[table.name.plural]`, `$[field.name]` |
-| `[U:unix\|plural]` | table, field | Override the snake_case name and its plural. | `$[table.unix]`, `$[table.unix.plural]`, `$[field.unix]` |
+| `[U:unix\|plural]` | table, field | Override the snake_case name and its plural. | `$[table.unix]`, `$[table.unix.plural]`, `$[field.unix]`, `$[table.kebab]` |
 | `[G:a]` / `[G:o]` | table, field | Grammatical gender: `a` feminine, `o` masculine. Overrides the automatic guess. | `$[table.gender]`, `feminine` / `masculine` conditions |
 | `[F:text]` | table, field | Free information. Commonly a default value literal for code (`[F:false]`). | `$[field.info]`, `info` condition |
 | `[E:Label 1\|Label 2\|...]` | enum field | Display label of each enum item, in declaration order. | `$[option.name]` inside `$[option.each]` |
@@ -100,6 +100,7 @@ Every table and field has several derived names. For a table named `user_profile
 | `norm.default` | `norm` without singularizing | `UserProfiles` | `Empresas` |
 | `unix` | snake_case of `norm`, or `[U:...]` | `user_profile` | `empresa` |
 | `unix.plural` | second `[U:...]` argument, or `unix` + `s` | `user_profiles` | `empresas` |
+| `kebab` | `unix` with `-` instead of `_` | `user-profile` | `empresa` |
 | `name` | first `[N:...]` argument, or `norm` (fields: the raw name) | `UserProfile` | `Empresa` |
 
 The `$[...]` level casing changes the output: see [Output casing](templating.md#output-casing).

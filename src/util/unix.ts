@@ -8,7 +8,11 @@ export function unixTransform(input: string): string {
   word = word.replace(/\p{M}/gu, '');
   for (let i = 0; i < word.length; i++) {
     const ch = word.charAt(i);
-    if (lastIsUpper) {
+    if (/[_\s]/.test(ch)) {
+      // existing separator: keep a single one
+      result += '_';
+      lastIsUpper = true;
+    } else if (lastIsUpper) {
       if (isLowerCase(ch)) {
         lastIsUpper = false;
       }
@@ -20,5 +24,5 @@ export function unixTransform(input: string): string {
       result += ch;
     }
   }
-  return result.replace(/\s/g, '_');
+  return result;
 }
